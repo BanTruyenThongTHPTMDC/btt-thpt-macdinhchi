@@ -134,7 +134,7 @@ function handleFilesSelected(e) {
  */
 function addFiles(fileList) {
   const maxLimit = CONFIG.MAX_FILES || 20;
-  const maxMb = CONFIG.MAX_FILE_SIZE_MB || 25;
+  const maxMb = CONFIG.MAX_FILE_SIZE_MB || 50;
 
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
@@ -281,6 +281,7 @@ async function handleFormSubmit(e) {
       eventName: formData.get("eventName"),
       timeLocation: formData.get("timeLocation") || "",
       caption: formData.get("caption"),
+      hugeFileLink: (formData.get("hugeFileLink") || "").trim(),
       files: filePayloads
     };
 
@@ -400,9 +401,11 @@ function showSuccessModal(ticketCode, folderUrl, fileCount) {
   document.getElementById("summaryFileCount").textContent = `${fileCount} tệp tư liệu`;
   
   const linkEl = document.getElementById("summaryFolderLink");
+  const directLink = document.getElementById("btnOpenDriveDirect");
   if (folderUrl && folderUrl.startsWith("http")) {
     linkEl.href = folderUrl;
     linkEl.style.display = "inline-block";
+    if (directLink) directLink.href = folderUrl;
   } else {
     linkEl.style.display = "none";
   }

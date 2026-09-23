@@ -173,12 +173,24 @@
               </div>
               <h3 class="drop-title">Kéo &amp; thả hình ảnh hoặc video vào đây</h3>
               <p class="drop-subtitle">hoặc <span class="highlight-browse">bấm vào để chọn tệp từ máy</span></p>
-              <p class="drop-note">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp.</p>
+              <p class="drop-note">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp (lên đến 50MB/tệp).</p>
               <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;" onchange="handleFilesSelected(event)">
             </div>
 
             <!-- Danh sách file đã chọn -->
             <div id="fileListContainer" class="file-list-grid" style="display: none;"></div>
+
+            <!-- Tùy chọn video dung lượng lớn (Drive/Cloud Link) -->
+            <div class="form-group" style="margin-top: 1.25rem;">
+              <label for="hugeFileLink" class="input-label">
+                🔗 Link Google Drive / Cloud chứa Video dung lượng lớn (Không bắt buộc)
+              </label>
+              <input type="url" id="hugeFileLink" name="hugeFileLink" class="custom-input" 
+                     placeholder="Nếu có video nặng hàng trăm MB hoặc nhiều GB, dán link Google Drive / OneDrive tại đây...">
+              <p class="field-hint" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                💡 <strong>Kho Drive trường 5TB:</strong> Với video nặng hàng trăm MB đến vài GB, bạn có thể dán link tại đây hoặc kéo thả trực tiếp vào thư mục Drive sau khi gửi!
+              </p>
+            </div>
           </div>
         </fieldset>
 
@@ -234,6 +246,19 @@
           <span class="detail-key">Thư mục Drive:</span>
           <a id="summaryFolderLink" href="#" target="_blank" class="detail-val link-drive">Mở trên Google Drive ↗</a>
         </div>
+      </div>
+
+      <!-- Hộp hướng dẫn thả video lớn vào Drive -->
+      <div class="drive-extra-box" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.2rem; text-align: left;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #166534; display: block; margin-bottom: 4px;">
+          📁 Cần tải thêm Video gốc dung lượng lớn (vài GB)?
+        </span>
+        <p style="font-size: 0.8rem; color: #15803d; margin-bottom: 8px;">
+          Thư mục Google Drive của bài viết đã sẵn sàng trên kho 5TB. Bạn có thể mở thư mục bên dưới để thả thêm các video nặng hàng trăm MB đến hàng GB trực tiếp:
+        </p>
+        <a id="btnOpenDriveDirect" href="#" target="_blank" class="btn-drive-open" style="display: block; text-align: center; text-decoration: none; padding: 7px 12px;">
+          MỞ THƯ MỤC DRIVE ĐỂ KÉO THẢ THÊM VIDEO ↗
+        </a>
       </div>
 
       <button type="button" class="btn-secondary" onclick="resetFormAndCloseModal()">

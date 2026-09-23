@@ -20,7 +20,7 @@ const CONFIG = {
 
   // Giới hạn tệp tải lên
   MAX_FILES: 20,
-  MAX_FILE_SIZE_MB: 25, // MB mỗi file
+  MAX_FILE_SIZE_MB: 50, // MB mỗi file (Hỗ trợ video clip ngắn trực tiếp)
 
   // Tên trường
   SCHOOL_NAME: "THPT Mạc Đĩnh Chi",
