@@ -19,7 +19,7 @@ const CONFIG = {
   API_ENDPOINT: "https://script.google.com/macros/s/AKfycbxjxkgs9mIdOqxcfbZoypQrRj7ZMefRRPXqJGiOSWxFIr3-xVrQn3ZU80qwG-JGtbS_jA/exec",
 
   // Giới hạn tệp tải lên
-  MAX_FILES: 10,
+  MAX_FILES: 20,
   MAX_FILE_SIZE_MB: 25, // MB mỗi file
 
   // Tên trường
@@ -45,16 +45,16 @@ const CONFIG = {
     "Thầy Nguyễn Hoài Nam (Văn phòng - Học vụ)"
   ],
 
-  // 8+1 Trạng thái chuẩn hóa
+  // 8+1 Trạng thái chuẩn hóa (text thuần gọn đẹp)
   BTT_STATUSES: [
-    "① MỚI NHẬN",
-    "② ĐÃ PHÂN CÔNG",
-    "③ ĐANG DUYỆT",
-    "④ YÊU CẦU SỬA",
-    "⑤ ĐÃ SỬA – CHỜ DUYỆT",
-    "⑥ ĐÃ DUYỆT",
-    "⑦ ĐÃ LÊN LỊCH",
-    "⑧ ĐÃ ĐĂNG",
+    "MỚI NHẬN",
+    "ĐÃ PHÂN CÔNG",
+    "ĐANG DUYỆT",
+    "YÊU CẦU CHỈNH SỬA",
+    "ĐÃ SỬA – CHỜ DUYỆT",
+    "ĐÃ DUYỆT",
+    "ĐÃ LÊN LỊCH",
+    "ĐÃ ĐĂNG",
     "TẠM DỪNG – CHỜ XÁC MINH"
   ]
 };

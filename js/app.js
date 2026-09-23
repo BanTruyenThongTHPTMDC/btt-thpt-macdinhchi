@@ -133,7 +133,7 @@ function handleFilesSelected(e) {
  * Thêm file vào danh sách và kiểm tra giới hạn
  */
 function addFiles(fileList) {
-  const maxLimit = CONFIG.MAX_FILES || 10;
+  const maxLimit = CONFIG.MAX_FILES || 20;
   const maxMb = CONFIG.MAX_FILE_SIZE_MB || 25;
 
   for (let i = 0; i < fileList.length; i++) {
@@ -260,10 +260,10 @@ async function handleFormSubmit(e) {
       const percent = Math.round(10 + ((i + 1) / totalFiles) * 40);
       showProgressModal(`Đang xử lý tệp ${i + 1}/${totalFiles}: ${file.name}...`, percent);
       
-      const base64Data = await readFileAsBase64(file);
+      const base64Data = await compressAndReadAsBase64(file);
       filePayloads.push({
         name: file.name,
-        type: file.type,
+        type: file.type.startsWith("image/") ? "image/jpeg" : file.type,
         base64: base64Data
       });
     }
@@ -315,18 +315,59 @@ async function handleFormSubmit(e) {
 }
 
 /**
- * Đọc file thành chuỗi Base64
+ * Đọc file thành chuỗi Base64 (Kèm nén ảnh thông minh nếu > 1.5MB để upload mượt 20 file)
  */
-function readFileAsBase64(file) {
+function compressAndReadAsBase64(file) {
   return new Promise((resolve, reject) => {
+    // Nếu không phải ảnh (video, pdf, docx...) hoặc ảnh nhỏ (< 1.5MB), đọc trực tiếp
+    if (!file.type.startsWith("image/") || file.size < 1.5 * 1024 * 1024) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rawBase64 = reader.result.split(",")[1];
+        resolve(rawBase64);
+      };
+      reader.onerror = err => reject(err);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    // Nếu là ảnh lớn > 1.5MB (ảnh chụp điện thoại 4K/8K), tối ưu kích thước để đảm bảo tải lên 20 tệp mượt mà
     const reader = new FileReader();
-    reader.onload = () => {
-      // Kết quả reader.result dạng "data:image/jpeg;base64,xxxx..."
-      // Cần bỏ đoạn tiền tố "data:...;base64,"
-      const rawBase64 = reader.result.split(",")[1];
-      resolve(rawBase64);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+        const maxDimension = 2400; // Độ phân giải cực nét cho truyền thông (2.4K)
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Xuất ra JPEG chất lượng cao 88%
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
+        const base64 = dataUrl.split(",")[1];
+        resolve(base64);
+      };
+      img.onerror = () => {
+        const rawBase64 = e.target.result.split(",")[1];
+        resolve(rawBase64);
+      };
+      img.src = e.target.result;
     };
-    reader.onerror = error => reject(error);
+    reader.onerror = err => reject(err);
     reader.readAsDataURL(file);
   });
 }

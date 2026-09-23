@@ -227,7 +227,7 @@ function getBadgeClass(status) {
   if (status.includes("MỚI NHẬN")) return "badge-blue";
   if (status.includes("PHÂN CÔNG")) return "badge-purple";
   if (status.includes("ĐANG DUYỆT")) return "badge-yellow";
-  if (status.includes("YÊU CẦU SỬA")) return "badge-red";
+  if (status.includes("YÊU CẦU")) return "badge-red";
   if (status.includes("ĐÃ SỬA")) return "badge-orange";
   if (status.includes("ĐÃ DUYỆT")) return "badge-teal";
   if (status.includes("ĐÃ LÊN LỊCH")) return "badge-indigo";
@@ -333,7 +333,7 @@ function handleStatusChangeInModal() {
     chkSendEmail.checked = true;
   }
 
-  if (status.includes("YÊU CẦU SỬA") && !feedbackInput.value) {
+  if (status.includes("YÊU CẦU") && !feedbackInput.value) {
     feedbackInput.placeholder = "⚠️ BẮT BUỘC: Vui lòng ghi rõ các điểm cần sửa để gửi thông báo cho người nộp...";
     feedbackInput.focus();
   }
