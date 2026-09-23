@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Tiếp Nhận Bài Truyền Thông | THPT Mạc Đĩnh Chi</title>
+  <meta name="description" content="Hệ thống tiếp nhận bài viết, hình ảnh và tư liệu truyền thông nội bộ trường THPT Mạc Đĩnh Chi năm học 2026 - 2027">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="top-nav-bar">
+    <div class="nav-container">
+      <span class="nav-school">TRƯỜNG THPT MẠC ĐĨNH CHI</span>
+      <a href="admin.html" class="nav-admin-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>Nội Bộ BTT (Admin)</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Header / Hero Banner -->
+  <header class="hero-header">
+    <div class="header-container">
+      <div class="brand-badge">
+        <span class="pulse-dot"></span>
+        <span>HỆ THỐNG TRUYỀN THÔNG NỘI BỘ • 2026 - 2027</span>
+      </div>
+      <h1 class="school-title">CỔNG TIẾP NHẬN BÀI TRUYỀN THÔNG</h1>
+      <p class="portal-subtitle">Tiếp nhận bài viết, hình ảnh &amp; tư liệu sự kiện</p>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    <div class="form-wrapper">
+      
+      <!-- Role Switcher: Giáo viên vs Học sinh/CLB -->
+      <section class="role-selector-card" aria-label="Chọn đối tượng nộp bài">
+        <label class="section-label">BẠN ĐANG NỘP BÀI VỚI VAI TRÒ:</label>
+        <div class="segmented-control" role="tablist">
+          <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true" onclick="switchRole('teacher')">
+            <span class="tab-icon">👨‍🏫</span>
+            <div class="tab-info">
+              <span class="tab-title">Giáo Viên / Tổ Chuyên Môn</span>
+              <span class="tab-desc">20 Tổ bộ môn &amp; Phòng ban</span>
+            </div>
+          </button>
+          
+          <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false" onclick="switchRole('student')">
+            <span class="tab-icon">🎒</span>
+            <div class="tab-info">
+              <span class="tab-title">Học Sinh / CLB / Đoàn Đội</span>
+              <span class="tab-desc">7 Câu lạc bộ &amp; Các khối lớp</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Submission Form -->
+      <form id="submissionForm" class="submission-form" onsubmit="handleFormSubmit(event)">
+        
+        <!-- Fieldset: Thông tin người gửi -->
+        <fieldset class="form-section">
+          <legend class="legend-title">
+            <span class="step-num">1</span>
+            <span>Thông Tin Đại Diện Nộp Bài</span>
+          </legend>
+
+          <div class="form-grid grid-2">
+            <!-- Đơn vị / Bộ phận -->
+            <div class="form-group">
+              <label for="deptSelect" class="input-label required">Tổ Chuyên Môn / Đơn Vị / CLB</label>
+              <select id="deptSelect" name="dept" required class="custom-select">
+                <!-- Sẽ được điền tự động qua JavaScript theo Role -->
+              </select>
+            </div>
+
+            <!-- Họ và tên -->
+            <div class="form-group">
+              <label for="submitterName" class="input-label required">Họ và Tên Người Đại Diện</label>
+              <input type="text" id="submitterName" name="submitter" required 
+                     placeholder="Ví dụ: Thầy Đoàn Minh Tâm / Nguyễn Văn A" class="custom-input">
+            </div>
+
+            <!-- Số điện thoại / Zalo -->
+            <div class="form-group">
+              <label for="submitterPhone" class="input-label required">Số Điện Thoại / Zalo Liên Hệ</label>
+              <input type="tel" id="submitterPhone" name="phone" required 
+                     placeholder="Ví dụ: 090xxxxxxx" class="custom-input">
+            </div>
+
+            <!-- Email nhận biên nhận -->
+            <div class="form-group">
+              <label for="submitterEmail" class="input-label required">Email Nhận Kết Quả Duyệt Bài</label>
+              <input type="email" id="submitterEmail" name="email" required 
+                     placeholder="Địa chỉ email để nhận mã Ticket tự động" class="custom-input">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset: Nội dung bài viết -->
+        <fieldset class="form-section">
+          <legend class="legend-title">
+            <span class="step-num">2</span>
+            <span>Nội Dung Sự Kiện &amp; Bài Viết</span>
+          </legend>
+
+          <div class="form-grid grid-2">
+            <!-- Phân loại hoạt động -->
+            <div class="form-group">
+              <label for="categorySelect" class="input-label required">Phân Loại Hoạt Động</label>
+              <select id="categorySelect" name="category" required class="custom-select">
+                <option value="Hoạt động chuyên môn">Hoạt động chuyên môn (Chuyên đề, Thao giảng, SHCM)</option>
+                <option value="Hoạt động học sinh">Hoạt động học sinh (Ngoại khóa, STEM, Trải nghiệm)</option>
+                <option value="Hoạt động Đoàn - Phong trào">Hoạt động Đoàn - Phong trào tình nguyện</option>
+                <option value="Cuộc thi / Hội thi các cấp">Cuộc thi / Hội thi các cấp</option>
+                <option value="Thành tích / Khen thưởng">Thành tích / Khen thưởng vinh danh</option>
+                <option value="Sự kiện cấp trường">Sự kiện lớn cấp trường</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            <!-- Tiêu đề sự kiện -->
+            <div class="form-group">
+              <label for="eventName" class="input-label required">Tên Sự Kiện / Tiêu Đề Bài Viết</label>
+              <input type="text" id="eventName" name="eventName" required 
+                     placeholder="Ví dụ: Chuyên đề dạy học STEM môn Vật lí..." class="custom-input">
+            </div>
+          </div>
+
+          <!-- Thời gian & Địa điểm -->
+          <div class="form-group">
+            <label for="timeLocation" class="input-label">Thời Gian &amp; Địa Điểm Diễn Ra (Nếu có)</label>
+            <input type="text" id="timeLocation" name="timeLocation" 
+                   placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
+          </div>
+
+          <!-- Caption đề xuất -->
+          <div class="form-group">
+            <label for="captionText" class="input-label required">Caption Đề Xuất Đăng Fanpage / Web</label>
+            <textarea id="captionText" name="caption" rows="5" required 
+                      placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt." 
+                      class="custom-textarea"></textarea>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset: Tải tệp hình ảnh & Video -->
+        <fieldset class="form-section">
+          <legend class="legend-title">
+            <span class="step-num">3</span>
+            <span>Tải Lên Hình Ảnh &amp; Video Gốc</span>
+          </legend>
+
+          <div class="upload-container">
+            <div class="drop-zone" id="dropZone" onclick="triggerFileInput()">
+              <div class="drop-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <h3 class="drop-title">Kéo &amp; thả hình ảnh hoặc video vào đây</h3>
+              <p class="drop-subtitle">hoặc <span class="highlight-browse">bấm vào để chọn tệp từ máy</span></p>
+              <p class="drop-note">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 10 tệp.</p>
+              <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;" onchange="handleFilesSelected(event)">
+            </div>
+
+            <!-- Danh sách file đã chọn -->
+            <div id="fileListContainer" class="file-list-grid" style="display: none;"></div>
+          </div>
+        </fieldset>
+
+        <!-- Nút gửi bài -->
+        <div class="submit-wrapper">
+          <button type="submit" id="btnSubmit" class="btn-primary">
+            <span id="btnSubmitText">🚀 GỬI BÀI DUYỆT TRUYỀN THÔNG</span>
+            <div id="btnSpinner" class="spinner" style="display: none;"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Modal Kết Quả Nộp Bài Thành Công -->
+  <div id="successModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="success-icon-wrap">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+
+      <h2 class="modal-title">GỬI BÀI THÀNH CÔNG!</h2>
+      <p class="modal-desc">Ban Truyền Thông THPT Mạc Đĩnh Chi đã tiếp nhận bài viết của bạn.</p>
+
+      <div class="ticket-badge-card">
+        <span class="ticket-label">MÃ BÀI VIẾT (TICKET ID)</span>
+        <div class="ticket-code-row">
+          <span id="ticketCodeDisplay" class="ticket-code">TT-2026-0001</span>
+          <button type="button" class="btn-copy" onclick="copyTicketCode()" title="Sao chép mã bài">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyText">Sao chép</span>
+          </button>
+        </div>
+        <p class="ticket-instruction">Vui lòng lưu lại mã này để trích dẫn khi trao đổi hoặc phản hồi chỉnh sửa.</p>
+      </div>
+
+      <div class="summary-details">
+        <div class="detail-row">
+          <span class="detail-key">Trạng thái:</span>
+          <span class="detail-val badge-status">① MỚI NHẬN</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Tư liệu đã tải lên:</span>
+          <span id="summaryFileCount" class="detail-val">3 tệp</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Thư mục Drive:</span>
+          <a id="summaryFolderLink" href="#" target="_blank" class="detail-val link-drive">Mở trên Google Drive ↗</a>
+        </div>
+      </div>
+
+      <button type="button" class="btn-secondary" onclick="resetFormAndCloseModal()">
+        Nộp thêm bài viết khác
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Bar Modal -->
+  <div id="progressModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card progress-card">
+      <div class="spinner large"></div>
+      <h3 id="progressTitle" class="progress-title">Đang tải dữ liệu &amp; tư liệu lên Google Drive...</h3>
+      <p id="progressSubtitle" class="progress-subtitle">Vui lòng không tắt trang web trong giây lát.</p>
+      <div class="progress-bar-bg">
+        <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+      <span id="progressPercent" class="progress-percent">0%</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p><strong>BAN TRUYỀN THÔNG — TRƯỜNG THPT MẠC ĐĨNH CHI</strong></p>
+      <p>Số 04 Tân Hòa Đông, Phường 14, Quận 6, TP. Hồ Chí Minh</p>
+      <p class="copyright">Hệ thống Quản lý Truyền thông Nội bộ v2.0 • 2026 - 2027</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
