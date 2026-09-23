@@ -48,23 +48,29 @@ Toàn bộ giải pháp bao gồm 2 thành phần chính:
 
 Bạn có thể đưa thư mục `Web_NopBai_TruyenThong` lên Internet hoàn toàn miễn phí bằng một trong hai cách dưới đây:
 
-### CÁCH 1: DÙNG CLOUDFLARE PAGES (KHUYÊN DÙNG — NHANH & MƯỢT NHẤT TẠI VIỆT NAM)
-1. Truy cập: [https://pages.cloudflare.com/](https://pages.cloudflare.com/) và đăng ký/đăng nhập tài khoản miễn phí.
-2. Tại bảng điều khiển Cloudflare, vào mục **Workers & Pages** ➔ chọn **Create application** ➔ chuyển sang tab **Pages** ➔ bấm **Upload assets**.
-3. Đặt tên dự án (ví dụ: `truyenthong-mdc`).
-4. Kéo thả toàn bộ thư mục **`Web_NopBai_TruyenThong`** vào ô tải lên.
-5. Bấm **Deploy site**.
-6. **Xong!** Bạn sẽ nhận được ngay link web công khai miễn phí:  
-   👉 `https://truyenthong-mdc.pages.dev`  
-   *(Bạn có thể tạo mã QR cho link này dán tại bảng tin hoặc gửi vào group Zalo của trường).*
+### CÁCH KẾT NỐI REPO GITHUB VỚI CLOUDFLARE PAGES (TỰ ĐỘNG CẬP NHẬT KHI ĐỔI CODE)
 
----
+Repository GitHub của bạn đã được tạo và đẩy mã nguồn thành công:
+👉 **Repo GitHub:** [https://github.com/BanTruyenThongTHPTMDC/btt-thpt-macdinhchi](https://github.com/BanTruyenThongTHPTMDC/btt-thpt-macdinhchi)
 
-### CÁCH 2: DÙNG VERCEL
-1. Truy cập: [https://vercel.com/](https://vercel.com/) và đăng nhập bằng GitHub hoặc Email.
-2. Kéo thả thư mục `Web_NopBai_TruyenThong` vào giao diện Vercel.
-3. Bấm **Deploy**.
-4. Bạn sẽ có link dạng: `https://truyenthong-mdc.vercel.app`.
+**Các bước kết nối trên Cloudflare Pages (mất 1 phút):**
+1. Truy cập: [https://dash.cloudflare.com/](https://dash.cloudflare.com/) (hoặc [pages.cloudflare.com](https://pages.cloudflare.com/)) và đăng nhập.
+2. Ở thanh bên trái, chọn **Compute (Workers & Pages)** ➔ **Create application** (Tạo ứng dụng) ➔ Chọn tab **Pages**.
+3. Bấm chọn **Connect to Git** (Kết nối với Git).
+4. Nếu chưa liên kết tài khoản GitHub, bấm **Add account** để cấp quyền cho Cloudflare đọc repo GitHub của `BanTruyenThongTHPTMDC`.
+5. Chọn repository: **`BanTruyenThongTHPTMDC/btt-thpt-macdinhchi`** ➔ Bấm **Begin setup** (Bắt đầu thiết lập).
+6. Ở màn hình cấu hình build:
+   - **Project name**: Giữ nguyên hoặc đặt tên tùy ý (ví dụ `btt-thpt-macdinhchi`).
+   - **Production branch**: `main`
+   - **Framework preset**: Chọn `None` (vì web dùng HTML/CSS/JS thuần cực nhẹ).
+   - **Build command**: Để trống.
+   - **Build output directory**: Để trống (hoặc `/`).
+7. Bấm **Save and Deploy** (Lưu và Triển khai).
+8. Sau ~20 giây, Cloudflare Pages sẽ cấp đường link trực tuyến miễn phí trọn đời:
+   👉 **`https://btt-thpt-macdinhchi.pages.dev`**  
+   *(Và trang admin: `https://btt-thpt-macdinhchi.pages.dev/admin.html`)*
+
+✨ **Lợi ích cực lớn:** Kể từ bây giờ, bất cứ khi nào bạn chỉnh sửa code trên máy tính và gõ lệnh `git push`, Cloudflare Pages sẽ tự động nhận diện và cập nhật website ngay lập tức mà không cần làm thủ công lại!
 
 ---
 
