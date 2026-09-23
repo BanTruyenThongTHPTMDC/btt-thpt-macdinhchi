@@ -6,21 +6,24 @@
 
 let allTickets = [];
 let activeTicket = null;
+let isAuthenticated = false; // Lưu trong bộ nhớ RAM trang hiện tại, reset khi F5/tải lại
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Xóa mọi dấu vết session cũ: đảm bảo mỗi lần tải lại trang đều phải nhập mã PIN
+  sessionStorage.removeItem("btt_admin_authenticated");
+  localStorage.removeItem("btt_admin_authenticated");
   checkAuth();
 });
 
 /**
- * 1. Kiểm tra xác thực mã PIN
+ * 1. Kiểm tra xác thực mã PIN (Bắt buộc nhập mỗi lần vào hoặc F5 lại trang)
  */
 function checkAuth() {
-  const isAuth = sessionStorage.getItem("btt_admin_authenticated");
   const pinScreen = document.getElementById("pinScreen");
   const dashboard = document.getElementById("adminDashboard");
   const btnLogout = document.getElementById("btnLogout");
 
-  if (isAuth === "true") {
+  if (isAuthenticated) {
     pinScreen.style.display = "none";
     dashboard.style.display = "block";
     btnLogout.style.display = "inline-block";
@@ -29,7 +32,11 @@ function checkAuth() {
     pinScreen.style.display = "flex";
     dashboard.style.display = "none";
     btnLogout.style.display = "none";
-    document.getElementById("pinInput").focus();
+    const pinInput = document.getElementById("pinInput");
+    if (pinInput) {
+      pinInput.value = "";
+      pinInput.focus();
+    }
   }
 }
 
@@ -39,7 +46,7 @@ function handlePinSubmit(e) {
   const validPin = CONFIG.ADMIN_PIN || "mdc2026";
 
   if (inputPin === validPin) {
-    sessionStorage.setItem("btt_admin_authenticated", "true");
+    isAuthenticated = true;
     document.getElementById("pinError").style.display = "none";
     checkAuth();
   } else {
@@ -50,7 +57,9 @@ function handlePinSubmit(e) {
 }
 
 function logoutAdmin() {
+  isAuthenticated = false;
   sessionStorage.removeItem("btt_admin_authenticated");
+  localStorage.removeItem("btt_admin_authenticated");
   checkAuth();
 }
 
