@@ -268,6 +268,27 @@ function openReviewModal(ticketCode) {
   document.getElementById("updateChannel").value = activeTicket.channel || "Fanpage THPT Mạc Đĩnh Chi";
   document.getElementById("updatePostUrl").value = activeTicket.postUrl || "";
 
+  // Cấu hình hiển thị email người nộp & hộp gửi email
+  const chkSendEmail = document.getElementById("chkSendEmail");
+  const btnSendDirectEmail = document.getElementById("btnSendDirectEmail");
+  const previewEmail = document.getElementById("previewSubmitterEmail");
+
+  if (activeTicket.email && activeTicket.email.includes("@")) {
+    previewEmail.textContent = `${activeTicket.email} (${activeTicket.submitter})`;
+    if (chkSendEmail) {
+      chkSendEmail.disabled = false;
+      chkSendEmail.checked = true;
+    }
+    if (btnSendDirectEmail) btnSendDirectEmail.disabled = false;
+  } else {
+    previewEmail.textContent = "Bài này không có địa chỉ email";
+    if (chkSendEmail) {
+      chkSendEmail.disabled = true;
+      chkSendEmail.checked = false;
+    }
+    if (btnSendDirectEmail) btnSendDirectEmail.disabled = true;
+  }
+
   // Cảnh báo lần sửa
   const revAlert = document.getElementById("revisionAlert");
   const revNum = document.getElementById("revCountNum");
@@ -296,8 +317,15 @@ function copyCaptionText() {
 function handleStatusChangeInModal() {
   const status = document.getElementById("updateStatus").value;
   const feedbackInput = document.getElementById("updateFeedback");
+  const chkSendEmail = document.getElementById("chkSendEmail");
+
+  // Tự động tích chọn gửi email khi đổi trạng thái
+  if (chkSendEmail && !chkSendEmail.disabled) {
+    chkSendEmail.checked = true;
+  }
+
   if (status.includes("YÊU CẦU SỬA") && !feedbackInput.value) {
-    feedbackInput.placeholder = "⚠️ BẮT BUỘC: Vui lòng ghi rõ các điểm cần sửa để gửi thông báo cho giáo viên...";
+    feedbackInput.placeholder = "⚠️ BẮT BUỘC: Vui lòng ghi rõ các điểm cần sửa để gửi thông báo cho người nộp...";
     feedbackInput.focus();
   }
 }
@@ -322,6 +350,8 @@ async function handleUpdateTicket(e) {
   const newFeedback = document.getElementById("updateFeedback").value.trim();
   const newChannel = document.getElementById("updateChannel").value.trim();
   const newPostUrl = document.getElementById("updatePostUrl").value.trim();
+  const chkSendEmail = document.getElementById("chkSendEmail");
+  const shouldSendEmail = chkSendEmail ? chkSendEmail.checked : false;
 
   const payload = {
     action: "updateTicket",
@@ -331,6 +361,7 @@ async function handleUpdateTicket(e) {
     feedback: newFeedback,
     channel: newChannel,
     postUrl: newPostUrl,
+    sendEmail: shouldSendEmail,
     adminUser: newHandler || "Thành viên BTT"
   };
 
@@ -370,7 +401,14 @@ async function handleUpdateTicket(e) {
       closeReviewModal();
       updateMetrics();
       filterTickets();
-      alert(`Đã cập nhật bài viết [${updatedCode}] thành công và đồng bộ về Google Sheets!`);
+
+      let msg = `✅ Đã cập nhật bài viết [${updatedCode}] thành công và đồng bộ về Google Sheets!`;
+      if (result.data && result.data.emailSent) {
+        msg += `\n\n📧 Đã tự động gửi email thông báo tới: ${result.data.recipientEmail}`;
+      } else if (result.data && result.data.emailReason) {
+        msg += `\n\n⚠️ Lưu ý: Chưa gửi được email (${result.data.emailReason})`;
+      }
+      alert(msg);
     } else {
       alert("Lỗi cập nhật: " + (result.message || "Không rõ nguyên nhân"));
     }
@@ -380,5 +418,65 @@ async function handleUpdateTicket(e) {
     spinner.style.display = "none";
     console.error("Lỗi:", error);
     alert("Không thể kết nối đến máy chủ: " + error.message);
+  }
+}
+
+/**
+ * 9. Gửi Email thông báo trực tiếp tức thì từ Web Admin
+ */
+async function handleSendDirectEmail() {
+  if (!activeTicket) return;
+  if (!activeTicket.email || !activeTicket.email.includes("@")) {
+    alert("Bài viết này không có địa chỉ email người nộp hợp lệ!");
+    return;
+  }
+
+  const feedback = document.getElementById("updateFeedback").value.trim();
+  const status = document.getElementById("updateStatus").value;
+  const channel = document.getElementById("updateChannel").value.trim();
+  const postUrl = document.getElementById("updatePostUrl").value.trim();
+
+  const confirmSend = confirm(
+    `Bạn có chắc chắn muốn gửi email thông báo trực tiếp tới:\n👉 ${activeTicket.email} (${activeTicket.submitter})?\n\n` +
+    `Nội dung phản hồi: "${feedback || '(Thông báo cập nhật tiến độ bài viết)'}"`
+  );
+  if (!confirmSend) return;
+
+  const btn = document.getElementById("btnSendDirectEmail");
+  const origText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "⏳ Đang gửi email...";
+
+  const payload = {
+    action: "sendNotificationEmail",
+    ticketCode: activeTicket.code,
+    status: status,
+    feedback: feedback,
+    channel: channel,
+    postUrl: postUrl,
+    adminUser: document.getElementById("updateHandler").value || "Ban Quản Trị BTT"
+  };
+
+  try {
+    const response = await fetch(CONFIG.API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    btn.disabled = false;
+    btn.innerHTML = origText;
+
+    if (result.success) {
+      alert(`✅ Đã gửi email thông báo thành công tới:\n${activeTicket.email}!`);
+    } else {
+      alert(`❌ Không thể gửi email: ${result.message || "Lỗi không xác định"}`);
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = origText;
+    console.error("Lỗi gửi email trực tiếp:", err);
+    alert("Không thể kết nối đến máy chủ: " + err.message);
   }
 }

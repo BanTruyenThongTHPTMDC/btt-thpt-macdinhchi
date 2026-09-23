@@ -1459,6 +1459,81 @@ body {
   margin-top: 1.5rem;
 }
 
+/* Hộp tùy chọn gửi email tự động trong Modal Admin */
+.email-action-box {
+  background: #f0f7ff;
+  border: 1px solid #bae0fd;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+
+.email-toggle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.email-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #0369a1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.email-checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #0284c7;
+  cursor: pointer;
+}
+
+.email-target-info {
+  font-size: 0.78rem;
+  color: #0284c7;
+  margin-top: 5px;
+  padding-left: 25px;
+}
+
+.email-target-info strong {
+  color: #0369a1;
+}
+
+.btn-send-email-direct {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
+}
+
+.btn-send-email-direct:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.btn-send-email-direct:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 @media (max-width: 820px) {
   .review-modal-body {
     grid-template-columns: 1fr;

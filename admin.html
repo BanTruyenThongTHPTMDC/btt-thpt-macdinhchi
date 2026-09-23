@@ -270,9 +270,25 @@
 
             <!-- Lý do yêu cầu sửa / Ghi chú phản hồi -->
             <div class="form-group">
-              <label for="updateFeedback" class="input-label">Ghi Chú Phản Hồi / Lý Do Sửa (Gửi giáo viên)</label>
+              <label for="updateFeedback" class="input-label">Ghi Chú Phản Hồi / Nhận Xét (Gửi người nộp)</label>
               <textarea id="updateFeedback" rows="3" class="custom-textarea" 
-                        placeholder="Nếu chọn 'YÊU CẦU SỬA', hãy ghi rõ chi tiết cần bổ sung vào đây để hệ thống tự động gửi email cho người nộp..."></textarea>
+                        placeholder="Nhập nội dung phản hồi, các điểm cần chỉnh sửa hoặc lời nhắn gửi giáo viên/học sinh..."></textarea>
+            </div>
+
+            <!-- Hộp tùy chọn Tự động gửi Email trực tiếp từ Web -->
+            <div class="email-action-box">
+              <div class="email-toggle-header">
+                <label class="email-checkbox-label" for="chkSendEmail">
+                  <input type="checkbox" id="chkSendEmail" checked>
+                  <span>Tự động gửi email thông báo khi lưu</span>
+                </label>
+                <button type="button" id="btnSendDirectEmail" class="btn-send-email-direct" onclick="handleSendDirectEmail()">
+                  ✉️ Gửi Email Ngay
+                </button>
+              </div>
+              <div id="emailTargetInfo" class="email-target-info">
+                Gửi tới: <strong id="previewSubmitterEmail">Đang kiểm tra email...</strong>
+              </div>
             </div>
 
             <!-- Kênh xuất bản -->
