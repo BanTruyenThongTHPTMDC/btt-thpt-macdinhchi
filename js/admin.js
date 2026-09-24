@@ -13,6 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
   sessionStorage.removeItem("btt_admin_authenticated");
   localStorage.removeItem("btt_admin_authenticated");
   checkAuth();
+
+  // Bắt sự kiện bấm ra ngoài modal hoặc bấm Esc để đóng modal
+  const reviewModal = document.getElementById("reviewModal");
+  if (reviewModal) {
+    reviewModal.addEventListener("click", (e) => {
+      if (e.target === reviewModal) {
+        closeReviewModal();
+      }
+    });
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const modal = document.getElementById("reviewModal");
+      if (modal && modal.style.display !== "none") {
+        closeReviewModal();
+      }
+    }
+  });
 });
 
 /**
@@ -131,8 +149,10 @@ function updateMetrics() {
   const received = allTickets.filter(t => 
     t.status.includes("MỚI NHẬN") || t.status.includes("PHÂN CÔNG") || t.status.includes("ĐANG DUYỆT")
   ).length;
-  const revision = allTickets.filter(t => t.status.includes("YÊU CẦU SỬA")).length;
-  const approved = allTickets.filter(t => t.status.includes("ĐÃ DUYỆT") || t.status.includes("ĐÃ ĐĂNG")).length;
+  const revision = allTickets.filter(t => t.status.includes("YÊU CẦU")).length;
+  const approved = allTickets.filter(t => 
+    t.status.includes("ĐÃ DUYỆT") || t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ LÊN LỊCH")
+  ).length;
 
   document.getElementById("statTotal").textContent = total;
   document.getElementById("statReceived").textContent = received;
@@ -199,6 +219,8 @@ function renderTable(tickets) {
       revBadge = `<span class="badge-rev rev-warning" title="Cảnh báo: Sửa quá 2 lần!">${t.revisionCount} ⚠️</span>`;
     }
 
+    const hasDrive = t.driveFolder && t.driveFolder.startsWith("http");
+
     tr.innerHTML = `
       <td><span class="table-ticket-code">${t.code}</span></td>
       <td class="text-muted text-sm">${t.timestamp}</td>
@@ -213,9 +235,16 @@ function renderTable(tickets) {
       <td><span class="status-badge ${badgeClass}">${t.status}</span></td>
       <td style="text-align: center;">${revBadge}</td>
       <td>
-        <button type="button" class="btn-action-review" onclick="openReviewModal('${t.code}')">
-          Kiểm duyệt ➔
-        </button>
+        <div class="table-actions-cell">
+          <button type="button" class="btn-action-review" onclick="openReviewModal('${t.code}')" title="Xem chi tiết & kiểm duyệt">
+            Kiểm duyệt ➔
+          </button>
+          ${hasDrive ? `
+            <a href="${t.driveFolder}" target="_blank" class="btn-action-drive" title="Mở nhanh thư mục Google Drive của bài này">
+              📁 Drive
+            </a>
+          ` : ""}
+        </div>
       </td>
     `;
 
@@ -271,8 +300,18 @@ function openReviewModal(ticketCode) {
     handlerSelect.appendChild(opt);
   });
 
-  // Trạng thái hiện tại
-  document.getElementById("updateStatus").value = activeTicket.status;
+  // Trạng thái hiện tại (chuẩn hóa để khớp option kể cả bài cũ mang ký hiệu số ①②③)
+  const statusSelect = document.getElementById("updateStatus");
+  const rawStatus = activeTicket.status || "";
+  const cleanStatus = rawStatus.replace(/^[①②③④⑤⑥⑦⑧⑨\s\d.-]+/, "").trim();
+  const matchedOpt = Array.from(statusSelect.options).find(opt => 
+    opt.value === rawStatus || opt.value === cleanStatus || rawStatus.includes(opt.value) || opt.value.includes(cleanStatus)
+  );
+  if (matchedOpt) {
+    statusSelect.value = matchedOpt.value;
+  } else {
+    statusSelect.value = rawStatus;
+  }
   document.getElementById("updateFeedback").value = activeTicket.feedback || "";
   document.getElementById("updateChannel").value = activeTicket.channel || "Fanpage THPT Mạc Đĩnh Chi";
   document.getElementById("updatePostUrl").value = activeTicket.postUrl || "";

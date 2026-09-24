@@ -1277,6 +1277,12 @@ body {
   100% { transform: scale(1); }
 }
 
+.table-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .btn-action-review {
   background: #0077ed;
   color: white;
@@ -1292,6 +1298,29 @@ body {
 
 .btn-action-review:hover {
   background: #005bb5;
+  transform: translateY(-1px);
+}
+
+.btn-action-drive {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 5px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-action-drive:hover {
+  background: #d1fae5;
+  color: #047857;
+  border-color: #6ee7b7;
   transform: translateY(-1px);
 }
 
