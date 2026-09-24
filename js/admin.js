@@ -49,19 +49,27 @@ function checkAuth() {
     dashboard.style.display = "block";
     btnLogout.style.display = "inline-block";
 
-    // Cập nhật huy hiệu vai trò trên Navbar và tiêu đề chào mừng
+    // Cập nhật giao diện theo đúng vai trò (Role-Based Display)
     const roleBadgeContainer = document.getElementById("roleBadgeContainer");
     const adminWelcomeTitle = document.getElementById("adminWelcomeTitle");
     const adminWelcomeDesc = document.getElementById("adminWelcomeDesc");
+    const btnUpgradeSuper = document.getElementById("btnUpgradeSuper");
 
     if (currentUserRole === "superadmin") {
-      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-super">👑 SUPER ADMIN</span>`;
+      // HIỂN THỊ CÁC TAB ĐẶC QUYỀN SUPER ADMIN
+      document.querySelectorAll(".super-only-tab").forEach(tab => tab.style.display = "inline-flex");
+      if (btnUpgradeSuper) btnUpgradeSuper.style.display = "none";
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-super">👑 TỔNG QUẢN TRỊ (SUPER ADMIN)</span>`;
       if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `👑 CHÀO MỪNG TỔNG QUẢN TRỊ — THẦY NGUYỄN HỒ TRỌNG TÍN`;
-      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Quyền hạn tối cao: Toàn quyền quản trị, theo dõi thi đua tổ bộ môn, cân bằng tải đội ngũ BTT và sao lưu dữ liệu.`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Đặc quyền Quản trị tối cao: Xem Báo cáo KPI thi đua toàn trường, Theo dõi tải đội ngũ BTT, Sao lưu dữ liệu & Hủy bài viết.`;
     } else {
-      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-editor">🛡️ BAN TRUYỀN THÔNG</span>`;
-      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `CHÀO MỪNG BAN KIỂM DUYỆT TRUYỀN THÔNG MDC`;
-      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Hệ thống tiếp nhận, xử lý và kiểm duyệt bài viết năm học ${CONFIG.ACADEMIC_YEAR || "2026 - 2027"}`;
+      // ẨN HOÀN TOÀN CÁC TAB CỦA SUPER ADMIN (CHỈ GIỮ LẠI TAB DUYỆT BÀI)
+      document.querySelectorAll(".super-only-tab").forEach(tab => tab.style.display = "none");
+      if (btnUpgradeSuper) btnUpgradeSuper.style.display = "inline-flex";
+      switchAdminTab("tickets");
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-editor">🛡️ BIÊN TẬP VIÊN BTT</span>`;
+      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `CHÀO MỪNG BIÊN TẬP VIÊN BAN TRUYỀN THÔNG MDC`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Chế độ Biên tập viên: Tiếp nhận, xem tệp và kiểm duyệt bài viết. (Các phân hệ Báo cáo thi đua & Quản trị dữ liệu chỉ hiển thị với mã PIN Tổng Quản Trị).`;
     }
 
     initDashboard();
@@ -251,6 +259,7 @@ function renderTable(tickets) {
     }
 
     const hasDrive = t.driveFolder && t.driveFolder.startsWith("http");
+    const isSuper = currentUserRole === "superadmin";
 
     tr.innerHTML = `
       <td><span class="table-ticket-code">${t.code}</span></td>
@@ -274,6 +283,11 @@ function renderTable(tickets) {
             <a href="${t.driveFolder}" target="_blank" class="btn-action-drive" title="Mở nhanh thư mục Google Drive của bài này">
               📁 Drive
             </a>
+          ` : ""}
+          ${isSuper ? `
+            <button type="button" class="btn-action-delete" onclick="handleSuperAdminDelete('${t.code}')" title="Đặc quyền Super Admin: Xóa/Hủy bài">
+              🗑️
+            </button>
           ` : ""}
         </div>
       </td>
@@ -576,6 +590,12 @@ async function handleSendDirectEmail() {
  * 10. Chuyển đổi giữa các phân hệ quản trị
  */
 function switchAdminTab(tabName) {
+  // Kiểm tra quyền: nếu không phải Super Admin thì chặn các tab nâng cao
+  if (tabName !== "tickets" && currentUserRole !== "superadmin") {
+    alert("⛔ Quyền truy cập bị từ chối!\nPhân hệ này dành riêng cho TỔNG QUẢN TRỊ (SUPER ADMIN).\nVui lòng đăng nhập với mã PIN Super Admin hoặc bấm nút 'Mở khóa Super Admin' trên thanh điều hướng.");
+    return;
+  }
+
   currentAdminTab = tabName;
 
   // Cập nhật trạng thái nút tab
@@ -606,6 +626,43 @@ function switchAdminTab(tabName) {
     if (view) view.style.display = "block";
     renderAuditView();
   }
+}
+
+/**
+ * Nâng quyền Super Admin trực tiếp từ giao diện
+ */
+function promptUpgradeSuperAdmin() {
+  const pin = prompt("🔐 Vui lòng nhập mã PIN Tổng Quản Trị (Super Admin) để mở khóa toàn bộ phân hệ:");
+  if (!pin) return;
+  const superPin = CONFIG.SUPER_ADMIN_PIN || "tinmdc2026";
+  if (pin.trim() === superPin) {
+    currentUserRole = "superadmin";
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Super Admin)";
+    logAudit("Nâng quyền Super Admin", "Đã xác thực mã PIN nâng quyền Tổng Quản Trị thành công", "-");
+    alert("🎉 Xác thực thành công! Đã kích hoạt chế độ TỔNG QUẢN TRỊ (SUPER ADMIN). Toàn bộ phân hệ đã được mở khóa!");
+    checkAuth();
+  } else {
+    alert("❌ Mã PIN Super Admin không chính xác. Quyền truy cập bị từ chối!");
+  }
+}
+
+/**
+ * Đặc quyền Super Admin: Xóa/Hủy bài viết
+ */
+function handleSuperAdminDelete(ticketCode) {
+  if (currentUserRole !== "superadmin") {
+    alert("Chỉ Tổng Quản Trị mới có quyền thực hiện thao tác này!");
+    return;
+  }
+
+  const confirmDel = confirm(`⚠️ CẢNH BÁO ĐẶC QUYỀN SUPER ADMIN:\nThầy có chắc chắn muốn hủy / xóa bài viết [${ticketCode}] khỏi danh sách hiển thị không?`);
+  if (!confirmDel) return;
+
+  allTickets = allTickets.filter(t => t.code !== ticketCode);
+  updateMetrics();
+  filterTickets();
+  logAudit("Hủy bài viết (Super Admin)", `Đã xóa bài viết [${ticketCode}] khỏi hệ thống`, ticketCode);
+  alert(`✅ Đã xóa bài viết [${ticketCode}] thành công!`);
 }
 
 /**

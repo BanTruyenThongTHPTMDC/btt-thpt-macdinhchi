@@ -31,6 +31,9 @@
 
       <div class="nav-actions">
         <div id="roleBadgeContainer" class="nav-role-badge"></div>
+        <button type="button" id="btnUpgradeSuper" class="btn-upgrade-super" onclick="promptUpgradeSuperAdmin()" style="display: none;">
+          🔑 Mở khóa Super Admin
+        </button>
         <a href="index.html" class="nav-link-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -76,17 +79,17 @@
         </div>
       </div>
 
-      <nav class="admin-tab-nav" aria-label="Các phân hệ quản trị">
+      <nav class="admin-tab-nav" id="adminTabNav" aria-label="Các phân hệ quản trị">
         <button type="button" class="admin-tab-pill active" id="tabBtnTickets" onclick="switchAdminTab('tickets')">
           📋 Quản Lý Duyệt Bài
         </button>
-        <button type="button" class="admin-tab-pill" id="tabBtnAnalytics" onclick="switchAdminTab('analytics')">
+        <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnAnalytics" onclick="switchAdminTab('analytics')" style="display: none;">
           📊 Báo Cáo &amp; Thi Đua Tổ Bộ Môn
         </button>
-        <button type="button" class="admin-tab-pill" id="tabBtnTeam" onclick="switchAdminTab('team')">
+        <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnTeam" onclick="switchAdminTab('team')" style="display: none;">
           👥 Đội Ngũ BTT &amp; Phân Công
         </button>
-        <button type="button" class="admin-tab-pill" id="tabBtnAudit" onclick="switchAdminTab('audit')">
+        <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnAudit" onclick="switchAdminTab('audit')" style="display: none;">
           🛡️ Nhật Ký &amp; Sao Lưu Dữ Liệu
         </button>
       </nav>
