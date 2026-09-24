@@ -876,6 +876,20 @@ body {
   align-items: center;
 }
 
+.nav-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
 .nav-school {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
