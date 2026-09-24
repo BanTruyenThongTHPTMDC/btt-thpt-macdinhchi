@@ -307,6 +307,7 @@ function getBadgeClass(status) {
   if (status.includes("ĐÃ DUYỆT")) return "badge-teal";
   if (status.includes("ĐÃ LÊN LỊCH")) return "badge-indigo";
   if (status.includes("ĐÃ ĐĂNG")) return "badge-green";
+  if (status.includes("ĐÃ HỦY") || status.includes("TỪ CHỐI")) return "badge-cancel";
   return "badge-gray";
 }
 
@@ -654,22 +655,83 @@ function promptUpgradeSuperAdmin() {
 }
 
 /**
- * Quyền Quản trị viên: Hủy bài viết
+ * Quyền Quản trị viên: Hủy bài viết (Chuyển trạng thái ĐÃ HỦY, ghi lý do lên Google Sheets, bảo toàn Google Drive)
  */
-function handleSuperAdminDelete(ticketCode) {
+async function handleSuperAdminDelete(ticketCode) {
   if (currentUserRole !== "superadmin") {
     alert("Chỉ Quản trị viên mới có quyền thực hiện thao tác này!");
     return;
   }
 
-  const confirmDel = confirm(`Xác nhận hủy / xóa bài viết [${ticketCode}] khỏi danh sách tiếp nhận?`);
-  if (!confirmDel) return;
+  const target = allTickets.find(t => t.code === ticketCode);
+  if (!target) return;
 
-  allTickets = allTickets.filter(t => t.code !== ticketCode);
+  const reason = prompt(
+    `XÁC NHẬN HỦY BÀI VIẾT [${ticketCode}]?\n\n` +
+    `• Tiêu đề: ${target.eventName}\n` +
+    `• Đơn vị nộp: ${target.dept} (${target.submitter})\n\n` +
+    `LƯU Ý: Toàn bộ thư mục và tệp ảnh/video gốc trên Google Drive vẫn được giữ nguyên an toàn 100%.\n\n` +
+    `Vui lòng nhập lý do hủy / từ chối tiếp nhận (sẽ được lưu vào Google Sheets):`,
+    "Không phù hợp định hướng truyền thông / Thông tin trùng lặp"
+  );
+
+  if (reason === null) return; // Người dùng bấm Hủy (Cancel)
+
+  const finalReason = reason.trim() || "Quản trị viên hủy tiếp nhận bài";
+
+  // Tùy chọn gửi email thông báo cho người nộp nếu có email
+  let sendEmail = false;
+  if (target.email && target.email.includes("@")) {
+    sendEmail = confirm(
+      `Thầy có muốn gửi email thông báo lý do hủy tới người nộp không?\n\n` +
+      `Email nhận: ${target.email} (${target.submitter})\n` +
+      `Lý do: "${finalReason}"\n\n` +
+      `Bấm OK để gửi email thông báo, bấm Cancel để chỉ ghi nhận nội bộ trên Sheets.`
+    );
+  }
+
+  // Cập nhật trạng thái tức thì trên giao diện
+  target.status = "ĐÃ HỦY";
+  target.feedback = `[ĐÃ HỦY]: ${finalReason}`;
   updateMetrics();
   filterTickets();
-  logAudit("Hủy bài viết", `Đã hủy bài viết [${ticketCode}] khỏi hệ thống`, ticketCode);
-  alert(`Đã hủy bài viết [${ticketCode}] thành công!`);
+
+  logAudit("Hủy bài viết", `Chuyển trạng thái sang [ĐÃ HỦY] - Lý do: ${finalReason}`, ticketCode);
+
+  // Đồng bộ trạng thái ĐÃ HỦY lên Google Sheets
+  try {
+    const payload = {
+      action: "updateTicket",
+      ticketCode: ticketCode,
+      status: "ĐÃ HỦY",
+      handler: target.handler || "Thầy Tín (Quản trị viên)",
+      feedback: `[ĐÃ HỦY BỞI QUẢN TRỊ VIÊN]: ${finalReason}`,
+      channel: target.channel || "",
+      postUrl: target.postUrl || "",
+      sendEmail: sendEmail,
+      adminUser: "Thầy Tín (Quản trị viên)"
+    };
+
+    const response = await fetch(CONFIG.API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      let msg = `Đã chuyển bài [${ticketCode}] sang trạng thái [ĐÃ HỦY] và đồng bộ thành công vào Google Sheets!\n(Thư mục ảnh/video gốc trên Google Drive được bảo toàn nguyên vẹn).`;
+      if (result.data && result.data.emailSent) {
+        msg += `\n\nĐã gửi email thông báo tới: ${result.data.recipientEmail}`;
+      }
+      alert(msg);
+    } else {
+      alert(`Đã cập nhật trên giao diện, phản hồi từ máy chủ: ${result.message || "Lỗi không xác định"}`);
+    }
+  } catch (err) {
+    console.warn("Lỗi đồng bộ Google Sheets khi hủy bài:", err);
+    alert(`Đã cập nhật trạng thái [ĐÃ HỦY] trên giao diện!\n(Dữ liệu phiên làm việc này đã được ghi vết vào Audit Log)`);
+  }
 }
 
 /**
@@ -711,6 +773,8 @@ function renderAnalyticsView() {
       deptStats[dept].approved++;
     } else if (status.includes("YÊU CẦU")) {
       deptStats[dept].revision++;
+    } else if (status.includes("ĐÃ HỦY")) {
+      // Đã hủy thì không tính vào bài chờ duyệt
     } else {
       deptStats[dept].pending++;
     }

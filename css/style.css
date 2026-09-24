@@ -1253,6 +1253,7 @@ body {
 .badge-indigo { background: #e0e7ff; color: #4338ca; }
 .badge-green  { background: #dcfce7; color: #15803d; }
 .badge-gray   { background: #f1f5f9; color: #475569; }
+.badge-cancel { background: #fef2f2; color: #991b1b; border: 1px dashed #fca5a5; }
 
 .badge-rev {
   display: inline-block;
