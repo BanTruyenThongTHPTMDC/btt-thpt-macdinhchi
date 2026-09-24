@@ -55,6 +55,8 @@
   <!-- Main Container -->
   <main class="main-content">
     <div class="form-wrapper">
+      <!-- Vùng hiển thị thông báo tiêu điểm ghim từ Quản Trị Viên (nếu có) -->
+      <div id="portalNoticeContainer"></div>
 
       <!-- Role Switcher: Giáo viên vs Học sinh/CLB -->
       <section class="role-selector-card" aria-label="Chọn đối tượng nộp bài">
@@ -62,7 +64,12 @@
         <div class="segmented-control" role="tablist">
           <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true"
             onclick="switchRole('teacher')">
-            <span class="tab-icon">👨‍🏫</span>
+            <span class="tab-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+            </span>
             <div class="tab-info">
               <span class="tab-title">Giáo Viên / Tổ Chuyên Môn</span>
               <span class="tab-desc">20 Tổ bộ môn &amp; Phòng ban</span>
@@ -71,10 +78,17 @@
 
           <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false"
             onclick="switchRole('student')">
-            <span class="tab-icon">🎒</span>
+            <span class="tab-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
             <div class="tab-info">
               <span class="tab-title">Học Sinh / CLB / Đoàn Đội</span>
-              <span class="tab-desc">7 Câu lạc bộ &amp; Các khối lớp</span>
+              <span class="tab-desc">Câu lạc bộ &amp; Các khối lớp</span>
             </div>
           </button>
         </div>
@@ -198,7 +212,7 @@
             <!-- Tùy chọn video dung lượng lớn (Drive/Cloud Link) -->
             <div class="form-group" style="margin-top: 1.25rem;">
               <label for="hugeFileLink" class="input-label">
-                🔗 Link Google Drive / Cloud chứa Video dung lượng lớn (Không bắt buộc)
+                Link Google Drive / Cloud chứa Video dung lượng lớn (Không bắt buộc)
               </label>
               <input type="url" id="hugeFileLink" name="hugeFileLink" class="custom-input"
                 placeholder="Nếu có video nặng hàng trăm MB hoặc nhiều GB, dán link Google Drive / OneDrive tại đây...">
@@ -209,7 +223,7 @@
         <!-- Nút gửi bài -->
         <div class="submit-wrapper">
           <button type="submit" id="btnSubmit" class="btn-primary">
-            <span id="btnSubmitText">🚀 GỬI BÀI DUYỆT TRUYỀN THÔNG</span>
+            <span id="btnSubmitText">GỬI BÀI DUYỆT TRUYỀN THÔNG</span>
             <div id="btnSpinner" class="spinner" style="display: none;"></div>
           </button>
         </div>

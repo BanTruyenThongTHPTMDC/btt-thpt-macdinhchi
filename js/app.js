@@ -37,9 +37,89 @@ let selectedFiles = []; // Mảng chứa các File object
 
 // Khởi chạy khi DOM sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
+  applySystemConfig();
   populateDeptDropdown("teacher");
   setupDragAndDrop();
 });
+
+/**
+ * Lấy danh sách CLB & Đơn vị học sinh (kết hợp cấu hình động từ Quản trị viên)
+ */
+function getStudentDepartments() {
+  try {
+    const raw = localStorage.getItem("btt_system_config");
+    if (raw) {
+      const cfg = JSON.parse(raw);
+      if (Array.isArray(cfg.clubsList) && cfg.clubsList.length > 0) {
+        return [
+          ...cfg.clubsList,
+          "Đoàn Thanh niên - Đội Tình nguyện",
+          "Ban Chỉ huy Liên chi Đoàn",
+          "Đại diện Khối 10",
+          "Đại diện Khối 11",
+          "Đại diện Khối 12",
+          "Cộng tác viên Media / Nhiếp ảnh",
+          "Khác"
+        ];
+      }
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc cấu hình CLB:", e);
+  }
+  return DEPARTMENTS.student;
+}
+
+/**
+ * Áp dụng cấu hình vận hành từ Quản Trị Viên (Khóa cổng tiếp nhận & Banner tiêu điểm)
+ */
+function applySystemConfig() {
+  try {
+    const raw = localStorage.getItem("btt_system_config");
+    if (!raw) return;
+    const cfg = JSON.parse(raw);
+
+    // 1. Kiểm tra trạng thái cổng tiếp nhận
+    if (cfg.portalOpen === false) {
+      const formWrapper = document.querySelector(".form-wrapper");
+      if (formWrapper) {
+        formWrapper.innerHTML = `
+          <div class="portal-closed-box">
+            <div class="closed-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h2>CỔNG TIẾP NHẬN BÀI VIẾT ĐANG TẠM ĐÓNG</h2>
+            <p>${cfg.closedReason || "Hệ thống hiện đang tạm ngưng tiếp nhận bài viết mới để phục vụ công tác rà soát, sơ kết học kỳ hoặc bảo trì định kỳ. Quý Thầy/Cô và các bạn học sinh vui lòng liên hệ trực tiếp Ban Truyền Thông để được hỗ trợ."}</p>
+          </div>
+        `;
+        return;
+      }
+    }
+
+    // 2. Kiểm tra thông báo tiêu điểm
+    if (cfg.bannerActive && cfg.bannerText && cfg.bannerText.trim()) {
+      const container = document.getElementById("portalNoticeContainer");
+      if (container) {
+        container.innerHTML = `
+          <div class="portal-notice-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <div class="portal-notice-banner-text">
+              <strong>Thông báo từ Ban Truyền Thông:</strong> ${cfg.bannerText.trim()}
+            </div>
+          </div>
+        `;
+      }
+    }
+  } catch (err) {
+    console.warn("Lỗi áp dụng cấu hình hệ thống:", err);
+  }
+}
 
 /**
  * 1. Chuyển đổi giữa vai trò Giáo viên và Học sinh
@@ -75,9 +155,10 @@ function switchRole(role) {
  */
 function populateDeptDropdown(role) {
   const select = document.getElementById("deptSelect");
+  if (!select) return;
   select.innerHTML = '<option value="" disabled selected>-- Vui lòng chọn tổ / bộ phận / CLB --</option>';
   
-  const list = DEPARTMENTS[role] || [];
+  const list = role === "student" ? getStudentDepartments() : (DEPARTMENTS.teacher || []);
   list.forEach(item => {
     const opt = document.createElement("option");
     opt.value = item;
@@ -240,7 +321,7 @@ async function handleFormSubmit(e) {
   e.preventDefault();
 
   if (!CONFIG.API_ENDPOINT || CONFIG.API_ENDPOINT.includes("SAMPLE_YOUR_SCRIPT_ID_HERE")) {
-    alert("⚠️ Chưa cấu hình API_ENDPOINT trong file js/config.js!\nVui lòng dán link Web App của Google Apps Script vào file config.js để hệ thống hoạt động.");
+    alert("Chưa cấu hình API_ENDPOINT trong file js/config.js!\nVui lòng dán link Web App của Google Apps Script vào file config.js để hệ thống hoạt động.");
     return;
   }
 

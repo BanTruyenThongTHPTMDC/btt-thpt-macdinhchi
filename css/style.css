@@ -1634,16 +1634,20 @@ body {
   align-items: center;
 }
 
+.badge-role-admin,
 .badge-role-super {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #ffffff;
+  background: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #1e3a8a;
   padding: 5px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
-  animation: pulseSuper 2s infinite ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
 }
 
 .badge-role-editor {
@@ -1654,12 +1658,6 @@ body {
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-}
-
-@keyframes pulseSuper {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
 }
 
 /* Header Bar & Tab Navigation */
@@ -2058,16 +2056,261 @@ body {
   font-weight: 700;
 }
 
-/* Print styling */
-@media print {
-  .top-nav-bar, .admin-tab-nav, .view-actions-group, .modal-overlay, #btnLogout {
-    display: none !important;
-  }
-  .admin-main {
-    padding: 0 !important;
-  }
-  .admin-table {
-    font-size: 10pt !important;
-  }
+/* Rank badges (Trang trọng thay thế icon huân chương) */
+.rank-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
+.rank-badge.rank-1 {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.rank-badge.rank-2 {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.rank-badge.rank-3 {
+  background: #ffedd5;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+/* Monogram đội ngũ kiểm duyệt */
+.team-monogram {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: #0077ed;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.05em;
+  box-shadow: 0 1px 3px rgba(0, 119, 237, 0.2);
+}
+
+.team-card-footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.btn-remove-reviewer {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-remove-reviewer:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* Cấu Hình Vận Hành Hệ Thống */
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.config-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.config-card-header {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.config-card-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.config-card-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.config-card-body {
+  padding: 1.25rem 1.5rem;
+  flex: 1;
+}
+
+.config-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.config-toggle-label input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+  transition: var(--transition);
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.config-toggle-label input:checked + .toggle-slider {
+  background-color: #059669;
+}
+
+.config-toggle-label input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.toggle-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.toggle-text.status-open {
+  color: #059669;
+}
+
+.toggle-text.status-closed {
+  color: #dc2626;
+}
+
+.inline-add-group {
+  display: flex;
+  gap: 8px;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dept-tag-item {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-remove-tag {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.btn-remove-tag:hover {
+  color: #ef4444;
+}
+
+/* Thông Báo Ghim & Khóa Cổng Cho Trang Chủ */
+.portal-notice-banner {
+  background: #eff6ff;
+  border-left: 4px solid #0077ed;
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 119, 237, 0.08);
+}
+
+.portal-notice-banner svg {
+  flex-shrink: 0;
+  color: #0077ed;
+}
+
+.portal-notice-banner-text {
+  font-size: 0.88rem;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+
+.portal-closed-box {
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08);
+  margin: 2rem 0;
+}
+
+.portal-closed-box .closed-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1.25rem;
+  color: #dc2626;
+  background: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-closed-box h2 {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  color: #991b1b;
+  margin-bottom: 0.75rem;
+}
+
+.portal-closed-box p {
+  color: #475569;
+  font-size: 0.95rem;
+  max-width: 550px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
 

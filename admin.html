@@ -32,7 +32,7 @@
       <div class="nav-actions">
         <div id="roleBadgeContainer" class="nav-role-badge"></div>
         <button type="button" id="btnUpgradeSuper" class="btn-upgrade-super" onclick="promptUpgradeSuperAdmin()" style="display: none;">
-          🔑 Mở khóa Super Admin
+          Chuyển Quyền Quản Trị
         </button>
         <a href="index.html" class="nav-link-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -50,20 +50,25 @@
   <!-- MÀN HÌNH KHÓA BẢO MẬT (PIN CODE) -->
   <div id="pinScreen" class="pin-screen">
     <div class="pin-card">
-      <div class="pin-icon">🔐</div>
-      <h2 class="pin-title">Khu Vực Quản Trị Nội Bộ</h2>
-      <p class="pin-desc">Dành riêng cho Thành viên Ban Truyền Thông THPT Mạc Đĩnh Chi</p>
+      <div class="pin-icon-wrap">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0077ed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2 class="pin-title">Cổng Quản Trị Nội Bộ</h2>
+      <p class="pin-desc">Hệ thống điều hành Ban Truyền Thông — Trường THPT Mạc Đĩnh Chi</p>
       
       <form id="pinForm" onsubmit="handlePinSubmit(event)">
         <div class="form-group">
           <input type="password" id="pinInput" class="custom-input pin-input" 
-                 placeholder="Nhập mã PIN truy cập..." autofocus required>
+                 placeholder="Nhập mã PIN xác thực..." autofocus required>
         </div>
         <button type="submit" class="btn-primary" style="margin-top: 10px;">
-          ĐĂNG NHẬP VÀO HỆ THỐNG
+          XÁC THỰC TRUY CẬP HỆ THỐNG
         </button>
       </form>
-      <p id="pinError" class="pin-error" style="display: none;">Mã PIN không chính xác. Vui lòng thử lại!</p>
+      <p id="pinError" class="pin-error" style="display: none;">Mã PIN không chính xác. Vui lòng kiểm tra lại!</p>
     </div>
   </div>
 
@@ -81,16 +86,19 @@
 
       <nav class="admin-tab-nav" id="adminTabNav" aria-label="Các phân hệ quản trị">
         <button type="button" class="admin-tab-pill active" id="tabBtnTickets" onclick="switchAdminTab('tickets')">
-          📋 Quản Lý Duyệt Bài
+          Quản Lý Bài Viết
         </button>
         <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnAnalytics" onclick="switchAdminTab('analytics')" style="display: none;">
-          📊 Báo Cáo &amp; Thi Đua Tổ Bộ Môn
+          Báo Cáo &amp; Thi Đua
         </button>
         <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnTeam" onclick="switchAdminTab('team')" style="display: none;">
-          👥 Đội Ngũ BTT &amp; Phân Công
+          Đội Ngũ Kiểm Duyệt
+        </button>
+        <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnConfig" onclick="switchAdminTab('config')" style="display: none;">
+          Cấu Hình Hệ Thống
         </button>
         <button type="button" class="admin-tab-pill super-only-tab" id="tabBtnAudit" onclick="switchAdminTab('audit')" style="display: none;">
-          🛡️ Nhật Ký &amp; Sao Lưu Dữ Liệu
+          Nhật Ký &amp; Sao Lưu
         </button>
       </nav>
     </div>
@@ -100,7 +108,14 @@
       <!-- Header Thống Kê (Metric Cards) -->
       <section class="metrics-grid">
       <div class="metric-card">
-        <div class="metric-icon bg-blue">📥</div>
+        <div class="metric-icon bg-blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
         <div class="metric-data">
           <span class="metric-value" id="statTotal">0</span>
           <span class="metric-label">Tổng bài tiếp nhận</span>
@@ -108,7 +123,12 @@
       </div>
 
       <div class="metric-card">
-        <div class="metric-icon bg-amber">⏳</div>
+        <div class="metric-icon bg-amber">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
         <div class="metric-data">
           <span class="metric-value" id="statReceived">0</span>
           <span class="metric-label">Mới nhận / Chờ duyệt</span>
@@ -116,7 +136,13 @@
       </div>
 
       <div class="metric-card">
-        <div class="metric-icon bg-red">⚠️</div>
+        <div class="metric-icon bg-red">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
         <div class="metric-data">
           <span class="metric-value" id="statRevision">0</span>
           <span class="metric-label">Yêu cầu sửa đổi</span>
@@ -124,7 +150,12 @@
       </div>
 
       <div class="metric-card">
-        <div class="metric-icon bg-green">✅</div>
+        <div class="metric-icon bg-green">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
         <div class="metric-data">
           <span class="metric-value" id="statApproved">0</span>
           <span class="metric-label">Đã duyệt / Đã đăng</span>
@@ -213,15 +244,15 @@
     <section id="viewAnalytics" class="admin-tab-view" style="display: none;">
       <div class="view-header-bar">
         <div>
-          <h2 class="view-heading">📊 Thống Kê &amp; Xếp Hạng Thi Đua Truyền Thông Các Tổ Chuyên Môn</h2>
-          <p class="view-subheading">Tổng hợp thời gian thực phục vụ xếp loại thi đua tổ bộ môn và báo cáo Ban Giám Hiệu</p>
+          <h2 class="view-heading">Thống Kê Hoạt Động &amp; Xếp Hạng Thi Đua Tổ Bộ Môn</h2>
+          <p class="view-subheading">Dữ liệu tổng hợp thời gian thực phục vụ công tác đánh giá thi đua và báo cáo Ban Giám Hiệu</p>
         </div>
         <div class="view-actions-group">
           <button type="button" class="btn-action-primary" onclick="exportTicketsToCSV()">
-            📥 Xuất Báo Cáo Excel (CSV)
+            Xuất Báo Cáo Excel (CSV)
           </button>
           <button type="button" class="btn-action-outline" onclick="printAnalyticsReport()">
-            🖨️ In Báo Cáo / Xuất PDF
+            In Báo Cáo / Xuất PDF
           </button>
         </div>
       </div>
@@ -229,15 +260,13 @@
       <!-- KPI Summary Cards -->
       <div class="analytics-kpi-grid">
         <div class="kpi-card">
-          <span class="kpi-icon">🏆</span>
           <div class="kpi-body">
-            <span class="kpi-title">Đơn Vị Nộp Nhiều Nhất</span>
+            <span class="kpi-title">Đơn Vị Đóng Góp Nhiều Nhất</span>
             <span id="kpiTopDept" class="kpi-number">-</span>
             <span id="kpiTopDeptCount" class="kpi-sub">- bài viết</span>
           </div>
         </div>
         <div class="kpi-card">
-          <span class="kpi-icon">⚡</span>
           <div class="kpi-body">
             <span class="kpi-title">Tỷ Lệ Duyệt Thành Công</span>
             <span id="kpiApprovalRate" class="kpi-number">0%</span>
@@ -245,19 +274,17 @@
           </div>
         </div>
         <div class="kpi-card">
-          <span class="kpi-icon">⚠️</span>
           <div class="kpi-body">
-            <span class="kpi-title">Tỷ Lệ Cần Sửa Đổi</span>
+            <span class="kpi-title">Tỷ Lệ Yêu Cầu Sửa Đổi</span>
             <span id="kpiRevisionRate" class="kpi-number">0%</span>
-            <span class="kpi-sub">Yêu cầu hoàn thiện lại</span>
+            <span class="kpi-sub">Cần hoàn thiện bổ sung</span>
           </div>
         </div>
         <div class="kpi-card">
-          <span class="kpi-icon">🏫</span>
           <div class="kpi-body">
-            <span class="kpi-title">Đơn Vị Đã Tham Gia</span>
+            <span class="kpi-title">Số Đơn Vị Đã Tham Gia</span>
             <span id="kpiActiveDepts" class="kpi-number">0 / 27</span>
-            <span class="kpi-sub">Tổ bộ môn &amp; CLB</span>
+            <span class="kpi-sub">Tổ chuyên môn &amp; CLB</span>
           </div>
         </div>
       </div>
@@ -292,8 +319,13 @@
     <section id="viewTeam" class="admin-tab-view" style="display: none;">
       <div class="view-header-bar">
         <div>
-          <h2 class="view-heading">👥 Đội Ngũ Kiểm Duyệt &amp; Cân Bằng Tải Phân Công (BTT)</h2>
-          <p class="view-subheading">Theo dõi số lượng bài viết đang thụ lý của 12 thành viên trong Ban Truyền Thông MDC</p>
+          <h2 class="view-heading">Quản Lý Đội Ngũ Kiểm Duyệt &amp; Cân Bằng Tải Phân Công</h2>
+          <p class="view-subheading">Theo dõi số lượng bài viết đang thụ lý của các thành viên trong Ban Truyền Thông MDC</p>
+        </div>
+        <div class="view-actions-group">
+          <button type="button" class="btn-action-primary" onclick="promptAddReviewer()">
+            Thêm Thành Viên Mới
+          </button>
         </div>
       </div>
 
@@ -302,27 +334,104 @@
       </div>
     </section>
 
-    <!-- VIEW 4: NHẬT KÝ HỆ THỐNG & AN TOÀN DỮ LIỆU -->
+    <!-- VIEW 4: CẤU HÌNH VẬN HÀNH HỆ THỐNG -->
+    <section id="viewConfig" class="admin-tab-view" style="display: none;">
+      <div class="view-header-bar">
+        <div>
+          <h2 class="view-heading">Cấu Hình Vận Hành &amp; Điều Khiển Hệ Thống</h2>
+          <p class="view-subheading">Điều chỉnh trạng thái cổng tiếp nhận bài, thông báo tiêu điểm trang chủ và danh mục CLB</p>
+        </div>
+        <div class="view-actions-group">
+          <button type="button" class="btn-action-primary" onclick="saveSystemSettings()">
+            Lưu Thiết Lập Cấu Hình
+          </button>
+        </div>
+      </div>
+
+      <div class="config-grid">
+        <!-- Cấu hình 1: Trạng thái cổng -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <h3 class="config-card-title">1. Trạng Thái Cổng Tiếp Nhận Bài Viết</h3>
+            <span class="config-card-desc">Kiểm soát cho phép giáo viên và học sinh gửi bài mới</span>
+          </div>
+          <div class="config-card-body">
+            <div class="form-group">
+              <label class="config-toggle-label">
+                <input type="checkbox" id="cfgPortalOpen" checked onchange="togglePortalStateFields()">
+                <span class="toggle-slider"></span>
+                <span id="cfgPortalStateText" class="toggle-text status-open">Đang Mở Tiếp Nhận Bài</span>
+              </label>
+            </div>
+            <div id="cfgClosedReasonGroup" class="form-group" style="display: none; margin-top: 1rem;">
+              <label for="cfgClosedReason" class="input-label">Thông Báo Khi Tạm Đóng Cổng:</label>
+              <textarea id="cfgClosedReason" rows="2" class="custom-textarea" 
+                        placeholder="Ví dụ: Cổng tiếp nhận hiện đang tạm đóng để phục vụ công tác sơ kết học kỳ. Hệ thống sẽ mở lại vào ngày 05/01/2027."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cấu hình 2: Banner thông báo -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <h3 class="config-card-title">2. Thông Báo Tiêu Điểm Đầu Trang Chủ</h3>
+            <span class="config-card-desc">Hiển thị thông điệp chính thức của BTT lên đầu trang nộp bài</span>
+          </div>
+          <div class="config-card-body">
+            <div class="form-group">
+              <label class="config-toggle-label">
+                <input type="checkbox" id="cfgBannerActive" onchange="toggleBannerStateFields()">
+                <span class="toggle-slider"></span>
+                <span id="cfgBannerStateText" class="toggle-text">Tắt Thông Báo Ghim</span>
+              </label>
+            </div>
+            <div id="cfgBannerTextGroup" class="form-group" style="margin-top: 1rem;">
+              <label for="cfgBannerText" class="input-label">Nội Dung Thông Báo Tiêu Điểm:</label>
+              <textarea id="cfgBannerText" rows="2" class="custom-textarea" 
+                        placeholder="Ví dụ: Hạn chót nộp bài và hình ảnh hoạt động chào mừng Ngày 20/11 là 17h00 ngày 15/11/2026."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cấu hình 3: Quản lý CLB -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <h3 class="config-card-title">3. Quản Lý Danh Mục Câu Lạc Bộ &amp; Đơn Vị</h3>
+            <span class="config-card-desc">Thêm Câu lạc bộ mới vào danh sách lựa chọn của học sinh</span>
+          </div>
+          <div class="config-card-body">
+            <div class="inline-add-group">
+              <input type="text" id="cfgNewClubName" class="custom-input" placeholder="Nhập tên Câu lạc bộ mới cần thêm...">
+              <button type="button" class="btn-action-outline" onclick="handleAddClub()">
+                Thêm CLB
+              </button>
+            </div>
+            <div class="tags-container" id="cfgClubsTagList" style="margin-top: 1rem;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: NHẬT KÝ HỆ THỐNG & AN TOÀN DỮ LIỆU -->
     <section id="viewAudit" class="admin-tab-view" style="display: none;">
       <div class="view-header-bar">
         <div>
-          <h2 class="view-heading">🛡️ Trung Tâm Giám Sát Nhật Ký &amp; An Toàn Dữ Liệu</h2>
-          <p class="view-subheading">Ghi nhận lịch sử thao tác kiểm duyệt và công cụ sao lưu dự phòng toàn bộ cơ sở dữ liệu</p>
+          <h2 class="view-heading">Trung Tâm Giám Sát Nhật Ký &amp; An Toàn Dữ Liệu</h2>
+          <p class="view-subheading">Ghi nhận lịch sử thao tác kiểm duyệt và công cụ sao lưu dự phòng cơ sở dữ liệu</p>
         </div>
         <div class="view-actions-group">
           <button type="button" class="btn-action-primary" onclick="exportDatabaseJSON()">
-            💾 Tải Toàn Bộ Database (JSON Backup)
+            Tải Bản Sao Lưu Database (JSON)
           </button>
           <button type="button" class="btn-action-outline" onclick="clearAuditLogs()">
-            🗑️ Xóa Nhật Ký Cũ
+            Xóa Lịch Sử Cũ
           </button>
         </div>
       </div>
 
       <div class="audit-info-banner">
-        <span class="banner-icon">💡</span>
         <div class="banner-text">
-          <strong>An toàn dữ liệu 100%:</strong> Toàn bộ dữ liệu bài viết và tệp đính kèm được tự động lưu trữ trên Google Drive &amp; Google Sheets của nhà trường. Thầy Tín có thể bấm <strong>"Tải Toàn Bộ Database (JSON Backup)"</strong> bất kỳ lúc nào để lưu trữ bản snapshot ngoại tuyến về máy tính cá nhân.
+          <strong>An toàn dữ liệu:</strong> Toàn bộ dữ liệu bài viết và tệp đính kèm được tự động lưu trữ trên Google Drive &amp; Google Sheets của nhà trường. Quản trị viên có thể bấm <strong>"Tải Bản Sao Lưu Database (JSON)"</strong> bất kỳ lúc nào để lưu trữ bản snapshot ngoại tuyến về máy tính cá nhân.
         </div>
       </div>
 
@@ -441,7 +550,7 @@
 
             <!-- Cảnh báo sửa đổi nếu > 2 lần -->
             <div id="revisionAlert" class="revision-alert" style="display: none;">
-              ⚠️ <strong>Cảnh báo:</strong> Bài viết này đã sửa đổi <span id="revCountNum">0</span> lần. Theo quy chế BTT: nếu sửa quá 2 lần sẽ tính Không đảm bảo chất lượng!
+              <strong>Lưu ý:</strong> Bài viết này đã sửa đổi <span id="revCountNum">0</span> lần. Theo quy chế BTT: nếu sửa quá 2 lần sẽ tính Không đảm bảo chất lượng!
             </div>
 
             <!-- Lý do yêu cầu sửa / Ghi chú phản hồi -->
@@ -459,7 +568,11 @@
                   <span>Tự động gửi email thông báo khi lưu</span>
                 </label>
                 <button type="button" id="btnSendDirectEmail" class="btn-send-email-direct" onclick="handleSendDirectEmail()">
-                  ✉️ Gửi Email Ngay
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  <span>Gửi Email Ngay</span>
                 </button>
               </div>
               <div id="emailTargetInfo" class="email-target-info">

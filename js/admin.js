@@ -56,20 +56,20 @@ function checkAuth() {
     const btnUpgradeSuper = document.getElementById("btnUpgradeSuper");
 
     if (currentUserRole === "superadmin") {
-      // HIỂN THỊ CÁC TAB ĐẶC QUYỀN SUPER ADMIN
+      // HIỂN THỊ CÁC TAB ĐẶC QUYỀN QUẢN TRỊ VIÊN HỆ THỐNG
       document.querySelectorAll(".super-only-tab").forEach(tab => tab.style.display = "inline-flex");
       if (btnUpgradeSuper) btnUpgradeSuper.style.display = "none";
-      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-super">👑 TỔNG QUẢN TRỊ (SUPER ADMIN)</span>`;
-      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `👑 CHÀO MỪNG TỔNG QUẢN TRỊ — THẦY NGUYỄN HỒ TRỌNG TÍN`;
-      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Đặc quyền Quản trị tối cao: Xem Báo cáo KPI thi đua toàn trường, Theo dõi tải đội ngũ BTT, Sao lưu dữ liệu & Hủy bài viết.`;
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-admin">QUẢN TRỊ HỆ THỐNG</span>`;
+      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `QUẢN TRỊ VIÊN HỆ THỐNG — THẦY NGUYỄN HỒ TRỌNG TÍN`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Quyền hạn Quản trị viên: Điều phối phân công, giám sát thi đua các tổ bộ môn, cấu hình cổng tiếp nhận và sao lưu cơ sở dữ liệu.`;
     } else {
-      // ẨN HOÀN TOÀN CÁC TAB CỦA SUPER ADMIN (CHỈ GIỮ LẠI TAB DUYỆT BÀI)
+      // ẨN HOÀN TOÀN CÁC TAB CỦA QUẢN TRỊ VIÊN (CHỈ GIỮ LẠI TAB DUYỆT BÀI)
       document.querySelectorAll(".super-only-tab").forEach(tab => tab.style.display = "none");
       if (btnUpgradeSuper) btnUpgradeSuper.style.display = "inline-flex";
       switchAdminTab("tickets");
-      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-editor">🛡️ BIÊN TẬP VIÊN BTT</span>`;
-      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `CHÀO MỪNG BIÊN TẬP VIÊN BAN TRUYỀN THÔNG MDC`;
-      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Chế độ Biên tập viên: Tiếp nhận, xem tệp và kiểm duyệt bài viết. (Các phân hệ Báo cáo thi đua & Quản trị dữ liệu chỉ hiển thị với mã PIN Tổng Quản Trị).`;
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-editor">BAN KIỂM DUYỆT BTT</span>`;
+      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `BAN KIỂM DUYỆT TRUYỀN THÔNG — THPT MẠC ĐĨNH CHI`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Khu vực tiếp nhận và duyệt bài viết năm học ${CONFIG.ACADEMIC_YEAR || "2026 - 2027"}. Các phân hệ Cấu hình & Báo cáo thi đua thuộc quyền Quản trị viên.`;
     }
 
     initDashboard();
@@ -94,15 +94,15 @@ function handlePinSubmit(e) {
   if (inputPin === superPin) {
     isAuthenticated = true;
     currentUserRole = "superadmin";
-    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Super Admin)";
-    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Tổng Quản Trị Hệ Thống (Super Admin)", "-");
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";
+    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Quản Trị Viên Hệ Thống", "-");
     document.getElementById("pinError").style.display = "none";
     checkAuth();
   } else if (inputPin === validPin) {
     isAuthenticated = true;
     currentUserRole = "reviewer";
     currentUserTitle = "Thành viên Ban Truyền Thông (BTT)";
-    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Biên tập viên BTT", "-");
+    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Kiểm duyệt viên BTT", "-");
     document.getElementById("pinError").style.display = "none";
     checkAuth();
   } else {
@@ -130,13 +130,14 @@ function initDashboard() {
 
 function populateHandlerFilter() {
   const select = document.getElementById("filterHandler");
+  if (!select) return;
   select.innerHTML = '<option value="">Tất cả người duyệt</option>';
   
-  const reviewers = CONFIG.BTT_REVIEWERS || [];
-  reviewers.forEach(name => {
+  const reviewers = getReviewersList();
+  reviewers.forEach(r => {
     const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
+    opt.value = r.name;
+    opt.textContent = r.name;
     select.appendChild(opt);
   });
 }
@@ -255,7 +256,7 @@ function renderTable(tickets) {
     // Cảnh báo lần sửa
     let revBadge = `<span class="badge-rev">${t.revisionCount}</span>`;
     if (t.revisionCount > 2) {
-      revBadge = `<span class="badge-rev rev-warning" title="Cảnh báo: Sửa quá 2 lần!">${t.revisionCount} ⚠️</span>`;
+      revBadge = `<span class="badge-rev rev-warning" title="Cảnh báo: Sửa quá 2 lần!">${t.revisionCount}</span>`;
     }
 
     const hasDrive = t.driveFolder && t.driveFolder.startsWith("http");
@@ -276,17 +277,17 @@ function renderTable(tickets) {
       <td style="text-align: center;">${revBadge}</td>
       <td>
         <div class="table-actions-cell">
-          <button type="button" class="btn-action-review" onclick="openReviewModal('${t.code}')" title="Xem chi tiết & kiểm duyệt">
-            Kiểm duyệt ➔
+          <button type="button" class="btn-action-review" onclick="openReviewModal('${t.code}')" title="Xem chi tiết & kiểm duyệt bài">
+            Kiểm duyệt
           </button>
           ${hasDrive ? `
-            <a href="${t.driveFolder}" target="_blank" class="btn-action-drive" title="Mở nhanh thư mục Google Drive của bài này">
-              📁 Drive
+            <a href="${t.driveFolder}" target="_blank" class="btn-action-drive" title="Mở thư mục Google Drive chứa tư liệu">
+              Thư mục Drive
             </a>
           ` : ""}
           ${isSuper ? `
-            <button type="button" class="btn-action-delete" onclick="handleSuperAdminDelete('${t.code}')" title="Đặc quyền Super Admin: Xóa/Hủy bài">
-              🗑️
+            <button type="button" class="btn-action-delete" onclick="handleSuperAdminDelete('${t.code}')" title="Quyền Quản trị viên: Hủy bài viết">
+              Hủy bài
             </button>
           ` : ""}
         </div>
@@ -582,7 +583,7 @@ async function handleSendDirectEmail() {
 
 /**
  * ==========================================================================
- * PHÂN HỆ SUPER ADMIN: CHUYỂN TAB, BÁO CÁO THI ĐUA, TEAM WORKLOAD & AUDIT
+ * PHÂN HỆ QUẢN TRỊ VIÊN HỆ THỐNG: CẤU HÌNH, BÁO CÁO THI ĐUA, TEAM & AUDIT
  * ==========================================================================
  */
 
@@ -590,9 +591,9 @@ async function handleSendDirectEmail() {
  * 10. Chuyển đổi giữa các phân hệ quản trị
  */
 function switchAdminTab(tabName) {
-  // Kiểm tra quyền: nếu không phải Super Admin thì chặn các tab nâng cao
+  // Kiểm tra quyền: nếu không phải Quản trị viên thì chặn các tab nâng cao
   if (tabName !== "tickets" && currentUserRole !== "superadmin") {
-    alert("⛔ Quyền truy cập bị từ chối!\nPhân hệ này dành riêng cho TỔNG QUẢN TRỊ (SUPER ADMIN).\nVui lòng đăng nhập với mã PIN Super Admin hoặc bấm nút 'Mở khóa Super Admin' trên thanh điều hướng.");
+    alert("Quyền truy cập bị từ chối!\nPhân hệ này dành riêng cho QUẢN TRỊ VIÊN HỆ THỐNG.\nVui lòng xác thực với mã PIN Quản trị viên để mở khóa.");
     return;
   }
 
@@ -619,6 +620,12 @@ function switchAdminTab(tabName) {
     const view = document.getElementById("viewTeam");
     if (view) view.style.display = "block";
     renderTeamView();
+  } else if (tabName === "config") {
+    const btn = document.getElementById("tabBtnConfig");
+    if (btn) btn.classList.add("active");
+    const view = document.getElementById("viewConfig");
+    if (view) view.style.display = "block";
+    loadSystemSettings();
   } else if (tabName === "audit") {
     const btn = document.getElementById("tabBtnAudit");
     if (btn) btn.classList.add("active");
@@ -629,40 +636,40 @@ function switchAdminTab(tabName) {
 }
 
 /**
- * Nâng quyền Super Admin trực tiếp từ giao diện
+ * Chuyển quyền Quản trị viên trực tiếp từ giao diện
  */
 function promptUpgradeSuperAdmin() {
-  const pin = prompt("🔐 Vui lòng nhập mã PIN Tổng Quản Trị (Super Admin) để mở khóa toàn bộ phân hệ:");
+  const pin = prompt("Vui lòng nhập mã PIN Quản Trị Viên Hệ Thống:");
   if (!pin) return;
   const superPin = CONFIG.SUPER_ADMIN_PIN || "tinmdc2026";
   if (pin.trim() === superPin) {
     currentUserRole = "superadmin";
-    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Super Admin)";
-    logAudit("Nâng quyền Super Admin", "Đã xác thực mã PIN nâng quyền Tổng Quản Trị thành công", "-");
-    alert("🎉 Xác thực thành công! Đã kích hoạt chế độ TỔNG QUẢN TRỊ (SUPER ADMIN). Toàn bộ phân hệ đã được mở khóa!");
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";
+    logAudit("Xác thực quyền hạn", "Chuyển sang chế độ Quản Trị Viên Hệ Thống", "-");
+    alert("Xác thực thành công! Đã kích hoạt quyền QUẢN TRỊ VIÊN HỆ THỐNG.");
     checkAuth();
   } else {
-    alert("❌ Mã PIN Super Admin không chính xác. Quyền truy cập bị từ chối!");
+    alert("Mã PIN xác thực không chính xác. Quyền truy cập bị từ chối!");
   }
 }
 
 /**
- * Đặc quyền Super Admin: Xóa/Hủy bài viết
+ * Quyền Quản trị viên: Hủy bài viết
  */
 function handleSuperAdminDelete(ticketCode) {
   if (currentUserRole !== "superadmin") {
-    alert("Chỉ Tổng Quản Trị mới có quyền thực hiện thao tác này!");
+    alert("Chỉ Quản trị viên mới có quyền thực hiện thao tác này!");
     return;
   }
 
-  const confirmDel = confirm(`⚠️ CẢNH BÁO ĐẶC QUYỀN SUPER ADMIN:\nThầy có chắc chắn muốn hủy / xóa bài viết [${ticketCode}] khỏi danh sách hiển thị không?`);
+  const confirmDel = confirm(`Xác nhận hủy / xóa bài viết [${ticketCode}] khỏi danh sách tiếp nhận?`);
   if (!confirmDel) return;
 
   allTickets = allTickets.filter(t => t.code !== ticketCode);
   updateMetrics();
   filterTickets();
-  logAudit("Hủy bài viết (Super Admin)", `Đã xóa bài viết [${ticketCode}] khỏi hệ thống`, ticketCode);
-  alert(`✅ Đã xóa bài viết [${ticketCode}] thành công!`);
+  logAudit("Hủy bài viết", `Đã hủy bài viết [${ticketCode}] khỏi hệ thống`, ticketCode);
+  alert(`Đã hủy bài viết [${ticketCode}] thành công!`);
 }
 
 /**
@@ -747,21 +754,21 @@ function renderAnalyticsView() {
   sortedDepts.forEach((item, index) => {
     const tr = document.createElement("tr");
 
-    // Huy chương Top 3
+    // Xếp hạng Top 3 trang trọng
     let rankBadge = `<span class="rank-num">${index + 1}</span>`;
-    if (index === 0 && item.total > 0) rankBadge = `<span class="rank-medal gold">🥇 1</span>`;
-    else if (index === 1 && item.total > 0) rankBadge = `<span class="rank-medal silver">🥈 2</span>`;
-    else if (index === 2 && item.total > 0) rankBadge = `<span class="rank-medal bronze">🥉 3</span>`;
+    if (index === 0 && item.total > 0) rankBadge = `<span class="rank-badge rank-1">Hạng 1</span>`;
+    else if (index === 1 && item.total > 0) rankBadge = `<span class="rank-badge rank-2">Hạng 2</span>`;
+    else if (index === 2 && item.total > 0) rankBadge = `<span class="rank-badge rank-3">Hạng 3</span>`;
 
     // Thanh tỷ trọng %
     const percent = Math.round((item.total / maxTotal) * 100);
 
     // Đánh giá thi đua
-    let evalBadge = `<span class="badge-eval badge-gray">Chưa nộp bài</span>`;
+    let evalBadge = `<span class="badge-eval badge-gray">Chưa gửi bài</span>`;
     if (item.total >= 3) {
-      evalBadge = `<span class="badge-eval badge-green">🌟 Dẫn đầu thi đua</span>`;
+      evalBadge = `<span class="badge-eval badge-green">Dẫn đầu (Xuất sắc)</span>`;
     } else if (item.total >= 1) {
-      evalBadge = `<span class="badge-eval badge-blue">👍 Tích cực đóng góp</span>`;
+      evalBadge = `<span class="badge-eval badge-blue">Tích cực</span>`;
     }
 
     tr.innerHTML = `
@@ -830,22 +837,61 @@ function printAnalyticsReport() {
 }
 
 /**
- * 14. Quản lý Đội Ngũ Kiểm Duyệt & Cân Bằng Tải Phân Công (Workload)
+ * 14. Quản lý Đội Ngũ Kiểm Duyệt & Cân Bằng Tải Phân Công
  */
+function getReviewersList() {
+  try {
+    const raw = localStorage.getItem("btt_custom_reviewers");
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn("Lỗi đọc danh sách thành viên:", e);
+  }
+  return (CONFIG.BTT_REVIEWERS || []).map(name => ({
+    name: name,
+    active: true
+  }));
+}
+
+function promptAddReviewer() {
+  const name = prompt("Nhập họ tên Thầy/Cô thành viên mới kèm chức danh/tổ bộ môn:\n(Ví dụ: Thầy Lê Văn Hùng (Tổ Vật lí))");
+  if (!name || !name.trim()) return;
+  const list = getReviewersList();
+  if (list.some(r => r.name.toLowerCase() === name.trim().toLowerCase())) {
+    alert("Thành viên này đã có trong danh sách!");
+    return;
+  }
+  list.push({ name: name.trim(), active: true });
+  localStorage.setItem("btt_custom_reviewers", JSON.stringify(list));
+  renderTeamView();
+  populateHandlerFilter();
+  logAudit("Quản trị nhân sự", `Thêm thành viên BTT: [${name.trim()}]`, "-");
+  alert(`Đã thêm thành viên [${name.trim()}] vào danh sách kiểm duyệt thành công!`);
+}
+
+function handleDeleteReviewer(name) {
+  if (!confirm(`Xác nhận xóa Thầy/Cô [${name}] khỏi danh sách Ban Truyền Thông?`)) return;
+  let list = getReviewersList();
+  list = list.filter(r => r.name !== name);
+  localStorage.setItem("btt_custom_reviewers", JSON.stringify(list));
+  renderTeamView();
+  populateHandlerFilter();
+  logAudit("Quản trị nhân sự", `Xóa thành viên BTT: [${name}]`, "-");
+}
+
 function renderTeamView() {
   const container = document.getElementById("teamGrid");
   if (!container) return;
   container.innerHTML = "";
 
-  const reviewers = CONFIG.BTT_REVIEWERS || [];
+  const reviewers = getReviewersList();
+  const isSuper = currentUserRole === "superadmin";
 
-  reviewers.forEach(name => {
-    // Đếm số bài đang phụ trách
+  reviewers.forEach(r => {
+    const name = r.name;
     const assignedTickets = allTickets.filter(t => t.handler === name);
     const pendingTickets = assignedTickets.filter(t => !t.status.includes("ĐÃ ĐĂNG") && !t.status.includes("ĐÃ DUYỆT"));
     const doneTickets = assignedTickets.filter(t => t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ DUYỆT"));
 
-    // Tình trạng tải công việc
     let loadStatus = "Rảnh rỗi";
     let loadClass = "load-free";
     if (pendingTickets.length >= 3) {
@@ -856,11 +902,14 @@ function renderTeamView() {
       loadClass = "load-normal";
     }
 
+    // Monogram viết tắt tên
+    const initials = name.split(" ").slice(-2).map(w => w[0]).join("").toUpperCase();
+
     const card = document.createElement("div");
     card.className = "team-card";
     card.innerHTML = `
       <div class="team-card-header">
-        <div class="team-avatar">👨‍🏫</div>
+        <div class="team-monogram">${initials}</div>
         <div class="team-meta">
           <h4 class="team-name">${name}</h4>
           <span class="team-load-badge ${loadClass}">${loadStatus}</span>
@@ -872,7 +921,7 @@ function renderTeamView() {
           <strong>${pendingTickets.length} bài</strong>
         </div>
         <div class="team-stat-row">
-          <span>Đã hoàn tất kiểm duyệt:</span>
+          <span>Đã hoàn tất xuất bản:</span>
           <strong>${doneTickets.length} bài</strong>
         </div>
         <div class="team-stat-row">
@@ -882,8 +931,13 @@ function renderTeamView() {
       </div>
       <div class="team-card-footer">
         <button type="button" class="btn-filter-reviewer" onclick="filterByReviewer('${name}')">
-          🔍 Xem bài của Thầy/Cô này
+          Xem bài phụ trách
         </button>
+        ${isSuper ? `
+          <button type="button" class="btn-remove-reviewer" onclick="handleDeleteReviewer('${name}')" title="Xóa khỏi danh sách">
+            Xóa
+          </button>
+        ` : ""}
       </div>
     `;
     container.appendChild(card);
@@ -897,6 +951,140 @@ function filterByReviewer(reviewerName) {
     select.value = reviewerName;
     filterTickets();
   }
+}
+
+/**
+ * 15. Phân Hệ Cấu Hình Vận Hành & Điều Khiển Hệ Thống
+ */
+function getSystemSettings() {
+  try {
+    const raw = localStorage.getItem("btt_system_config");
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn("Lỗi đọc cấu hình hệ thống:", e);
+  }
+  return {
+    portalOpen: true,
+    closedReason: "Cổng tiếp nhận hiện đang tạm đóng để phục vụ công tác sơ kết học kỳ. Hệ thống sẽ mở lại theo kế hoạch của nhà trường.",
+    bannerActive: false,
+    bannerText: "Chào mừng năm học 2026 - 2027. Ban Truyền Thông tiếp nhận tư liệu các hoạt động phong trào và chuyên môn.",
+    clubsList: [
+      "CLB Khoa học – Khởi nghiệp", "CLB Truyền thông", "CLB Văn nghệ - Cổ động",
+      "CLB Tiếng Anh", "CLB Văn học – Diễn thuyết và Kịch", "CLB Kỹ năng sống", "CLB Hội họa"
+    ]
+  };
+}
+
+function loadSystemSettings() {
+  const cfg = getSystemSettings();
+  const chkOpen = document.getElementById("cfgPortalOpen");
+  const txtClosedReason = document.getElementById("cfgClosedReason");
+  const chkBanner = document.getElementById("cfgBannerActive");
+  const txtBanner = document.getElementById("cfgBannerText");
+
+  if (chkOpen) chkOpen.checked = cfg.portalOpen !== false;
+  if (txtClosedReason) txtClosedReason.value = cfg.closedReason || "";
+  if (chkBanner) chkBanner.checked = !!cfg.bannerActive;
+  if (txtBanner) txtBanner.value = cfg.bannerText || "";
+
+  togglePortalStateFields();
+  toggleBannerStateFields();
+  renderClubsTags();
+}
+
+function togglePortalStateFields() {
+  const chk = document.getElementById("cfgPortalOpen");
+  const stateText = document.getElementById("cfgPortalStateText");
+  const reasonGroup = document.getElementById("cfgClosedReasonGroup");
+  if (!chk) return;
+
+  if (chk.checked) {
+    stateText.textContent = "Đang Mở Tiếp Nhận Bài Viết";
+    stateText.className = "toggle-text status-open";
+    if (reasonGroup) reasonGroup.style.display = "none";
+  } else {
+    stateText.textContent = "Đang Tạm Dừng Tiếp Nhận";
+    stateText.className = "toggle-text status-closed";
+    if (reasonGroup) reasonGroup.style.display = "block";
+  }
+}
+
+function toggleBannerStateFields() {
+  const chk = document.getElementById("cfgBannerActive");
+  const stateText = document.getElementById("cfgBannerStateText");
+  if (!chk) return;
+
+  if (chk.checked) {
+    stateText.textContent = "Đang Bật Thông Báo Tiêu Điểm";
+    stateText.className = "toggle-text status-open";
+  } else {
+    stateText.textContent = "Tắt Thông Báo Ghim";
+    stateText.className = "toggle-text";
+  }
+}
+
+function renderClubsTags() {
+  const container = document.getElementById("cfgClubsTagList");
+  if (!container) return;
+  const cfg = getSystemSettings();
+  container.innerHTML = "";
+
+  (cfg.clubsList || []).forEach(club => {
+    const span = document.createElement("span");
+    span.className = "dept-tag-item";
+    span.innerHTML = `
+      <span>${club}</span>
+      <button type="button" class="btn-remove-tag" onclick="handleDeleteClub('${club}')" title="Xóa CLB này">&times;</button>
+    `;
+    container.appendChild(span);
+  });
+}
+
+function handleAddClub() {
+  const input = document.getElementById("cfgNewClubName");
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) {
+    alert("Vui lòng nhập tên Câu lạc bộ hoặc đơn vị cần thêm!");
+    return;
+  }
+  const cfg = getSystemSettings();
+  if (!cfg.clubsList) cfg.clubsList = [];
+  if (cfg.clubsList.includes(name)) {
+    alert("Câu lạc bộ này đã có trong danh mục!");
+    return;
+  }
+  cfg.clubsList.push(name);
+  localStorage.setItem("btt_system_config", JSON.stringify(cfg));
+  input.value = "";
+  renderClubsTags();
+  logAudit("Cấu hình hệ thống", `Thêm đơn vị mới: [${name}]`, "-");
+}
+
+function handleDeleteClub(clubName) {
+  if (!confirm(`Xác nhận xóa đơn vị [${clubName}] khỏi danh mục nộp bài?`)) return;
+  const cfg = getSystemSettings();
+  cfg.clubsList = (cfg.clubsList || []).filter(c => c !== clubName);
+  localStorage.setItem("btt_system_config", JSON.stringify(cfg));
+  renderClubsTags();
+  logAudit("Cấu hình hệ thống", `Xóa đơn vị khỏi danh mục: [${clubName}]`, "-");
+}
+
+function saveSystemSettings() {
+  const chkOpen = document.getElementById("cfgPortalOpen");
+  const txtClosedReason = document.getElementById("cfgClosedReason");
+  const chkBanner = document.getElementById("cfgBannerActive");
+  const txtBanner = document.getElementById("cfgBannerText");
+
+  const cfg = getSystemSettings();
+  cfg.portalOpen = chkOpen ? chkOpen.checked : true;
+  cfg.closedReason = txtClosedReason ? txtClosedReason.value.trim() : "";
+  cfg.bannerActive = chkBanner ? chkBanner.checked : false;
+  cfg.bannerText = txtBanner ? txtBanner.value.trim() : "";
+
+  localStorage.setItem("btt_system_config", JSON.stringify(cfg));
+  logAudit("Cấu hình hệ thống", `Cập nhật cổng: [${cfg.portalOpen ? "MỞ" : "TẠM ĐÓNG"}] - Tiêu điểm: [${cfg.bannerActive ? "BẬT" : "TẮT"}]`, "-");
+  alert("Đã lưu thiết lập cấu hình hệ thống thành công!\nCác thay đổi đã được áp dụng trực tiếp.");
 }
 
 /**
@@ -915,7 +1103,7 @@ function getAuditLogs() {
     {
       id: "LOG-001",
       time: "2026-09-24 16:30",
-      user: "Thầy Tín (Super Admin)",
+      user: "Thầy Tín (Quản trị viên)",
       action: "Khởi động hệ thống",
       ticketCode: "-",
       details: "Đồng bộ cơ sở dữ liệu Master Tracker thành công"
