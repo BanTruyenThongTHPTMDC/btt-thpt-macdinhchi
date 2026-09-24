@@ -30,6 +30,7 @@
       </div>
 
       <div class="nav-actions">
+        <div id="roleBadgeContainer" class="nav-role-badge"></div>
         <a href="index.html" class="nav-link-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -66,8 +67,35 @@
   <!-- MÀN HÌNH DASHBOARD QUẢN TRỊ (HIỆN KHI ĐÃ ĐĂNG NHẬP) -->
   <main id="adminDashboard" class="admin-main" style="display: none;">
     
-    <!-- Header Thống Kê (Metric Cards) -->
-    <section class="metrics-grid">
+    <!-- Thanh Chuyển Tab Phân Hệ Quản Trị (Super Admin Tabs) -->
+    <div class="admin-header-bar">
+      <div class="admin-welcome-box">
+        <div class="admin-user-info">
+          <span id="adminWelcomeTitle" class="admin-welcome-title">CHÀO MỪNG BAN QUẢN TRỊ BTT</span>
+          <span id="adminWelcomeDesc" class="admin-welcome-desc">Hệ thống điều hành truyền thông nội bộ trường THPT Mạc Đĩnh Chi</span>
+        </div>
+      </div>
+
+      <nav class="admin-tab-nav" aria-label="Các phân hệ quản trị">
+        <button type="button" class="admin-tab-pill active" id="tabBtnTickets" onclick="switchAdminTab('tickets')">
+          📋 Quản Lý Duyệt Bài
+        </button>
+        <button type="button" class="admin-tab-pill" id="tabBtnAnalytics" onclick="switchAdminTab('analytics')">
+          📊 Báo Cáo &amp; Thi Đua Tổ Bộ Môn
+        </button>
+        <button type="button" class="admin-tab-pill" id="tabBtnTeam" onclick="switchAdminTab('team')">
+          👥 Đội Ngũ BTT &amp; Phân Công
+        </button>
+        <button type="button" class="admin-tab-pill" id="tabBtnAudit" onclick="switchAdminTab('audit')">
+          🛡️ Nhật Ký &amp; Sao Lưu Dữ Liệu
+        </button>
+      </nav>
+    </div>
+
+    <!-- VIEW 1: QUẢN LÝ BÀI VIẾT (TICKETS) -->
+    <div id="viewTickets" class="admin-tab-view active">
+      <!-- Header Thống Kê (Metric Cards) -->
+      <section class="metrics-grid">
       <div class="metric-card">
         <div class="metric-icon bg-blue">📥</div>
         <div class="metric-data">
@@ -176,6 +204,147 @@
         </tbody>
       </table>
     </section>
+    </div><!-- Kết thúc #viewTickets -->
+
+    <!-- VIEW 2: BÁO CÁO & THI ĐUA TỔ CHUYÊN MÔN -->
+    <section id="viewAnalytics" class="admin-tab-view" style="display: none;">
+      <div class="view-header-bar">
+        <div>
+          <h2 class="view-heading">📊 Thống Kê &amp; Xếp Hạng Thi Đua Truyền Thông Các Tổ Chuyên Môn</h2>
+          <p class="view-subheading">Tổng hợp thời gian thực phục vụ xếp loại thi đua tổ bộ môn và báo cáo Ban Giám Hiệu</p>
+        </div>
+        <div class="view-actions-group">
+          <button type="button" class="btn-action-primary" onclick="exportTicketsToCSV()">
+            📥 Xuất Báo Cáo Excel (CSV)
+          </button>
+          <button type="button" class="btn-action-outline" onclick="printAnalyticsReport()">
+            🖨️ In Báo Cáo / Xuất PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="analytics-kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-icon">🏆</span>
+          <div class="kpi-body">
+            <span class="kpi-title">Đơn Vị Nộp Nhiều Nhất</span>
+            <span id="kpiTopDept" class="kpi-number">-</span>
+            <span id="kpiTopDeptCount" class="kpi-sub">- bài viết</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-icon">⚡</span>
+          <div class="kpi-body">
+            <span class="kpi-title">Tỷ Lệ Duyệt Thành Công</span>
+            <span id="kpiApprovalRate" class="kpi-number">0%</span>
+            <span class="kpi-sub">Đã duyệt &amp; Đã đăng</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-icon">⚠️</span>
+          <div class="kpi-body">
+            <span class="kpi-title">Tỷ Lệ Cần Sửa Đổi</span>
+            <span id="kpiRevisionRate" class="kpi-number">0%</span>
+            <span class="kpi-sub">Yêu cầu hoàn thiện lại</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-icon">🏫</span>
+          <div class="kpi-body">
+            <span class="kpi-title">Đơn Vị Đã Tham Gia</span>
+            <span id="kpiActiveDepts" class="kpi-number">0 / 27</span>
+            <span class="kpi-sub">Tổ bộ môn &amp; CLB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng Xếp Hạng Thi Đua Tổ Chuyên Môn -->
+      <div class="table-container" style="margin-top: 1.5rem;">
+        <div class="table-card-header">
+          <h3 class="table-card-title">Bảng Xếp Hạng Đóng Góp Bài Viết Theo Tổ Bộ Môn &amp; Câu Lạc Bộ</h3>
+          <span class="text-sm text-muted">Cập nhật tự động từ Master Tracker Google Sheets</span>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 70px; text-align: center;">HẠNG</th>
+              <th>TỔ CHUYÊN MÔN / ĐƠN VỊ / CLB</th>
+              <th style="text-align: center;">TỔNG BÀI</th>
+              <th style="text-align: center;">ĐÃ DUYỆT</th>
+              <th style="text-align: center;">ĐANG DUYỆT</th>
+              <th style="text-align: center;">CẦN SỬA</th>
+              <th style="width: 220px;">TỶ TRỌNG ĐÓNG GÓP</th>
+              <th style="text-align: center;">ĐÁNH GIÁ THI ĐUA</th>
+            </tr>
+          </thead>
+          <tbody id="rankingTbody">
+            <!-- Render động bằng JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 3: ĐỘI NGŨ BTT & CÂN BẰNG TẢI (WORKLOAD) -->
+    <section id="viewTeam" class="admin-tab-view" style="display: none;">
+      <div class="view-header-bar">
+        <div>
+          <h2 class="view-heading">👥 Đội Ngũ Kiểm Duyệt &amp; Cân Bằng Tải Phân Công (BTT)</h2>
+          <p class="view-subheading">Theo dõi số lượng bài viết đang thụ lý của 12 thành viên trong Ban Truyền Thông MDC</p>
+        </div>
+      </div>
+
+      <div id="teamGrid" class="team-cards-grid">
+        <!-- Render động bằng JavaScript -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: NHẬT KÝ HỆ THỐNG & AN TOÀN DỮ LIỆU -->
+    <section id="viewAudit" class="admin-tab-view" style="display: none;">
+      <div class="view-header-bar">
+        <div>
+          <h2 class="view-heading">🛡️ Trung Tâm Giám Sát Nhật Ký &amp; An Toàn Dữ Liệu</h2>
+          <p class="view-subheading">Ghi nhận lịch sử thao tác kiểm duyệt và công cụ sao lưu dự phòng toàn bộ cơ sở dữ liệu</p>
+        </div>
+        <div class="view-actions-group">
+          <button type="button" class="btn-action-primary" onclick="exportDatabaseJSON()">
+            💾 Tải Toàn Bộ Database (JSON Backup)
+          </button>
+          <button type="button" class="btn-action-outline" onclick="clearAuditLogs()">
+            🗑️ Xóa Nhật Ký Cũ
+          </button>
+        </div>
+      </div>
+
+      <div class="audit-info-banner">
+        <span class="banner-icon">💡</span>
+        <div class="banner-text">
+          <strong>An toàn dữ liệu 100%:</strong> Toàn bộ dữ liệu bài viết và tệp đính kèm được tự động lưu trữ trên Google Drive &amp; Google Sheets của nhà trường. Thầy Tín có thể bấm <strong>"Tải Toàn Bộ Database (JSON Backup)"</strong> bất kỳ lúc nào để lưu trữ bản snapshot ngoại tuyến về máy tính cá nhân.
+        </div>
+      </div>
+
+      <div class="table-container" style="margin-top: 1.5rem;">
+        <div class="table-card-header">
+          <h3 class="table-card-title">Nhật Ký Thao Tác Hệ Thống (Audit Trail)</h3>
+          <span class="text-sm text-muted">Lưu vết các hành động duyệt bài, phân công và gửi email phản hồi</span>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 170px;">THỜI GIAN</th>
+              <th style="width: 170px;">NGƯỜI THAO TÁC</th>
+              <th style="width: 190px;">HÀNH ĐỘNG</th>
+              <th style="width: 140px;">MÃ BÀI</th>
+              <th>CHI TIẾT THAO TÁC</th>
+            </tr>
+          </thead>
+          <tbody id="auditTbody">
+            <!-- Render động bằng JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
   <!-- MODAL / DRAWER CHI TIẾT & KIỂM DUYỆT BÀI -->

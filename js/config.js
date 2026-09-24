@@ -26,8 +26,11 @@ const CONFIG = {
   SCHOOL_NAME: "THPT Mạc Đĩnh Chi",
   ACADEMIC_YEAR: "2026 - 2027",
 
-  // Mật mã truy cập trang Quản trị Admin BTT (có thể đổi tùy ý)
+  // Mật mã truy cập trang Quản trị Admin BTT (dành cho Biên tập viên BTT)
   ADMIN_PIN: "mdc2026",
+
+  // Mật mã TỔNG QUẢN TRỊ (SUPER ADMIN) - Dành riêng cho Thầy Tín / Ban Giám Hiệu
+  SUPER_ADMIN_PIN: "tinmdc2026",
 
   // Danh sách Thành viên Ban Quản Trị & Kiểm Duyệt BTT (Theo Kế hoạch BTT)
   BTT_REVIEWERS: [

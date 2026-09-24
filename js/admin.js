@@ -7,6 +7,9 @@
 let allTickets = [];
 let activeTicket = null;
 let isAuthenticated = false; // Lưu trong bộ nhớ RAM trang hiện tại, reset khi F5/tải lại
+let currentUserRole = "reviewer"; // "superadmin" hoặc "reviewer"
+let currentUserTitle = "Ban Quản Trị BTT";
+let currentAdminTab = "tickets";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Xóa mọi dấu vết session cũ: đảm bảo mỗi lần tải lại trang đều phải nhập mã PIN
@@ -45,6 +48,22 @@ function checkAuth() {
     pinScreen.style.display = "none";
     dashboard.style.display = "block";
     btnLogout.style.display = "inline-block";
+
+    // Cập nhật huy hiệu vai trò trên Navbar và tiêu đề chào mừng
+    const roleBadgeContainer = document.getElementById("roleBadgeContainer");
+    const adminWelcomeTitle = document.getElementById("adminWelcomeTitle");
+    const adminWelcomeDesc = document.getElementById("adminWelcomeDesc");
+
+    if (currentUserRole === "superadmin") {
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-super">👑 SUPER ADMIN</span>`;
+      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `👑 CHÀO MỪNG TỔNG QUẢN TRỊ — THẦY NGUYỄN HỒ TRỌNG TÍN`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Quyền hạn tối cao: Toàn quyền quản trị, theo dõi thi đua tổ bộ môn, cân bằng tải đội ngũ BTT và sao lưu dữ liệu.`;
+    } else {
+      if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-editor">🛡️ BAN TRUYỀN THÔNG</span>`;
+      if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `CHÀO MỪNG BAN KIỂM DUYỆT TRUYỀN THÔNG MDC`;
+      if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Hệ thống tiếp nhận, xử lý và kiểm duyệt bài viết năm học ${CONFIG.ACADEMIC_YEAR || "2026 - 2027"}`;
+    }
+
     initDashboard();
   } else {
     pinScreen.style.display = "flex";
@@ -62,9 +81,20 @@ function handlePinSubmit(e) {
   e.preventDefault();
   const inputPin = document.getElementById("pinInput").value.trim();
   const validPin = CONFIG.ADMIN_PIN || "mdc2026";
+  const superPin = CONFIG.SUPER_ADMIN_PIN || "tinmdc2026";
 
-  if (inputPin === validPin) {
+  if (inputPin === superPin) {
     isAuthenticated = true;
+    currentUserRole = "superadmin";
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Super Admin)";
+    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Tổng Quản Trị Hệ Thống (Super Admin)", "-");
+    document.getElementById("pinError").style.display = "none";
+    checkAuth();
+  } else if (inputPin === validPin) {
+    isAuthenticated = true;
+    currentUserRole = "reviewer";
+    currentUserTitle = "Thành viên Ban Truyền Thông (BTT)";
+    logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Biên tập viên BTT", "-");
     document.getElementById("pinError").style.display = "none";
     checkAuth();
   } else {
@@ -76,6 +106,7 @@ function handlePinSubmit(e) {
 
 function logoutAdmin() {
   isAuthenticated = false;
+  currentUserRole = "reviewer";
   sessionStorage.removeItem("btt_admin_authenticated");
   localStorage.removeItem("btt_admin_authenticated");
   checkAuth();
@@ -450,6 +481,11 @@ async function handleUpdateTicket(e) {
       updateMetrics();
       filterTickets();
 
+      // Ghi nhận nhật ký kiểm toán & làm mới view nếu đang ở tab khác
+      logAudit("Cập nhật bài viết", `Đổi trạng thái sang [${newStatus}] - Phân công: [${newHandler || "Chưa phân công"}]`, updatedCode);
+      if (currentAdminTab === "analytics") renderAnalyticsView();
+      if (currentAdminTab === "team") renderTeamView();
+
       let msg = `✅ Đã cập nhật bài viết [${updatedCode}] thành công và đồng bộ về Google Sheets!`;
       if (result.data && result.data.emailSent) {
         msg += `\n\n📧 Đã tự động gửi email thông báo tới: ${result.data.recipientEmail}`;
@@ -517,6 +553,7 @@ async function handleSendDirectEmail() {
     btn.innerHTML = origText;
 
     if (result.success) {
+      logAudit("Gửi email trực tiếp", `Gửi email thông báo cho ${activeTicket.email} (${activeTicket.submitter})`, activeTicket.code);
       alert(`✅ Đã gửi email thông báo thành công tới:\n${activeTicket.email}!`);
     } else {
       alert(`❌ Không thể gửi email: ${result.message || "Lỗi không xác định"}`);
@@ -527,4 +564,398 @@ async function handleSendDirectEmail() {
     console.error("Lỗi gửi email trực tiếp:", err);
     alert("Không thể kết nối đến máy chủ: " + err.message);
   }
+}
+
+/**
+ * ==========================================================================
+ * PHÂN HỆ SUPER ADMIN: CHUYỂN TAB, BÁO CÁO THI ĐUA, TEAM WORKLOAD & AUDIT
+ * ==========================================================================
+ */
+
+/**
+ * 10. Chuyển đổi giữa các phân hệ quản trị
+ */
+function switchAdminTab(tabName) {
+  currentAdminTab = tabName;
+
+  // Cập nhật trạng thái nút tab
+  document.querySelectorAll(".admin-tab-pill").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".admin-tab-view").forEach(v => v.style.display = "none");
+
+  if (tabName === "tickets") {
+    const btn = document.getElementById("tabBtnTickets");
+    if (btn) btn.classList.add("active");
+    const view = document.getElementById("viewTickets");
+    if (view) view.style.display = "block";
+  } else if (tabName === "analytics") {
+    const btn = document.getElementById("tabBtnAnalytics");
+    if (btn) btn.classList.add("active");
+    const view = document.getElementById("viewAnalytics");
+    if (view) view.style.display = "block";
+    renderAnalyticsView();
+  } else if (tabName === "team") {
+    const btn = document.getElementById("tabBtnTeam");
+    if (btn) btn.classList.add("active");
+    const view = document.getElementById("viewTeam");
+    if (view) view.style.display = "block";
+    renderTeamView();
+  } else if (tabName === "audit") {
+    const btn = document.getElementById("tabBtnAudit");
+    if (btn) btn.classList.add("active");
+    const view = document.getElementById("viewAudit");
+    if (view) view.style.display = "block";
+    renderAuditView();
+  }
+}
+
+/**
+ * Danh sách đầy đủ các Tổ Chuyên Môn & CLB của THPT Mạc Đĩnh Chi
+ */
+const ALL_MDC_DEPTS = [
+  "Tổ Toán", "Tổ Vật lí", "Tổ Hóa học", "Tổ Ngữ Văn", "Tổ Tiếng Anh",
+  "Tổ Lịch Sử", "Tổ Địa lí", "Tổ GDKT&PL", "Tổ Công nghệ", "Tổ GDTC - GDQP&AN",
+  "Tổ Sinh học", "Tổ Tin học", "Nhóm HĐTNHN - GDĐP", "Chi bộ", "Công đoàn",
+  "Đoàn trường", "Chi đoàn Giáo viên", "GVCN", "Văn phòng", "Phòng Giám thị",
+  "CLB Khoa học – Khởi nghiệp", "CLB Truyền thông", "CLB Văn nghệ - Cổ động",
+  "CLB Tiếng Anh", "CLB Văn học – Diễn thuyết và Kịch", "CLB Kỹ năng sống", "CLB Hội họa"
+];
+
+/**
+ * 11. Báo Cáo & Xếp Hạng Thi Đua Tổ Bộ Môn
+ */
+function renderAnalyticsView() {
+  if (!allTickets) return;
+
+  const total = allTickets.length;
+  const deptStats = {};
+
+  // Khởi tạo tất cả tổ bộ môn
+  ALL_MDC_DEPTS.forEach(dept => {
+    deptStats[dept] = { total: 0, approved: 0, pending: 0, revision: 0 };
+  });
+
+  // Gom dữ liệu từ các bài nộp
+  allTickets.forEach(t => {
+    const dept = t.dept || "Khác";
+    if (!deptStats[dept]) {
+      deptStats[dept] = { total: 0, approved: 0, pending: 0, revision: 0 };
+    }
+    deptStats[dept].total++;
+
+    const status = (t.status || "").toUpperCase();
+    if (status.includes("ĐÃ DUYỆT") || status.includes("ĐÃ ĐĂNG") || status.includes("ĐÃ LÊN LỊCH")) {
+      deptStats[dept].approved++;
+    } else if (status.includes("YÊU CẦU")) {
+      deptStats[dept].revision++;
+    } else {
+      deptStats[dept].pending++;
+    }
+  });
+
+  // Chuyển sang mảng và sắp xếp giảm dần theo tổng bài nộp
+  const sortedDepts = Object.keys(deptStats).map(dept => ({
+    dept: dept,
+    ...deptStats[dept]
+  })).sort((a, b) => b.total - a.total);
+
+  // Tính các chỉ số KPI
+  const topDept = sortedDepts[0] && sortedDepts[0].total > 0 ? sortedDepts[0] : null;
+  const totalApproved = allTickets.filter(t => 
+    t.status.includes("ĐÃ DUYỆT") || t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ LÊN LỊCH")
+  ).length;
+  const totalRevision = allTickets.filter(t => t.status.includes("YÊU CẦU")).length;
+  const activeCount = sortedDepts.filter(d => d.total > 0).length;
+
+  const approvalRate = total > 0 ? Math.round((totalApproved / total) * 100) : 0;
+  const revisionRate = total > 0 ? Math.round((totalRevision / total) * 100) : 0;
+
+  // Cập nhật thẻ KPI
+  const topDeptEl = document.getElementById("kpiTopDept");
+  const topDeptCountEl = document.getElementById("kpiTopDeptCount");
+  if (topDeptEl && topDept) {
+    topDeptEl.textContent = topDept.dept;
+    topDeptCountEl.textContent = `${topDept.total} bài viết đã nộp`;
+  }
+  document.getElementById("kpiApprovalRate").textContent = `${approvalRate}%`;
+  document.getElementById("kpiRevisionRate").textContent = `${revisionRate}%`;
+  document.getElementById("kpiActiveDepts").textContent = `${activeCount} / ${ALL_MDC_DEPTS.length}`;
+
+  // Vẽ bảng xếp hạng
+  const tbody = document.getElementById("rankingTbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  const maxTotal = topDept && topDept.total > 0 ? topDept.total : 1;
+
+  sortedDepts.forEach((item, index) => {
+    const tr = document.createElement("tr");
+
+    // Huy chương Top 3
+    let rankBadge = `<span class="rank-num">${index + 1}</span>`;
+    if (index === 0 && item.total > 0) rankBadge = `<span class="rank-medal gold">🥇 1</span>`;
+    else if (index === 1 && item.total > 0) rankBadge = `<span class="rank-medal silver">🥈 2</span>`;
+    else if (index === 2 && item.total > 0) rankBadge = `<span class="rank-medal bronze">🥉 3</span>`;
+
+    // Thanh tỷ trọng %
+    const percent = Math.round((item.total / maxTotal) * 100);
+
+    // Đánh giá thi đua
+    let evalBadge = `<span class="badge-eval badge-gray">Chưa nộp bài</span>`;
+    if (item.total >= 3) {
+      evalBadge = `<span class="badge-eval badge-green">🌟 Dẫn đầu thi đua</span>`;
+    } else if (item.total >= 1) {
+      evalBadge = `<span class="badge-eval badge-blue">👍 Tích cực đóng góp</span>`;
+    }
+
+    tr.innerHTML = `
+      <td style="text-align: center;">${rankBadge}</td>
+      <td><strong>${item.dept}</strong></td>
+      <td style="text-align: center;"><span class="count-badge count-total">${item.total}</span></td>
+      <td style="text-align: center;"><span class="count-badge count-approved">${item.approved}</span></td>
+      <td style="text-align: center;"><span class="count-badge count-pending">${item.pending}</span></td>
+      <td style="text-align: center;"><span class="count-badge count-revision">${item.revision}</span></td>
+      <td>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-bar" style="width: ${percent}%;"></div>
+          <span class="progress-bar-text">${percent}%</span>
+        </div>
+      </td>
+      <td style="text-align: center;">${evalBadge}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/**
+ * 12. Xuất dữ liệu báo cáo ra file Excel (CSV chuẩn UTF-8)
+ */
+function exportTicketsToCSV() {
+  if (!allTickets || allTickets.length === 0) {
+    alert("Không có dữ liệu bài viết để xuất báo cáo!");
+    return;
+  }
+
+  const headers = ["Mã bài", "Ngày tiếp nhận", "Tổ / Đơn vị", "Người nộp", "SĐT", "Email", "Tên sự kiện", "Phân loại", "Người duyệt", "Trạng thái", "Lần sửa", "Link Drive"];
+  const rows = allTickets.map(t => [
+    `"${t.code || ""}"`,
+    `"${t.timestamp || ""}"`,
+    `"${(t.dept || "").replace(/"/g, '""')}"`,
+    `"${(t.submitter || "").replace(/"/g, '""')}"`,
+    `"${t.phone || ""}"`,
+    `"${t.email || ""}"`,
+    `"${(t.eventName || "").replace(/"/g, '""')}"`,
+    `"${(t.category || "").replace(/"/g, '""')}"`,
+    `"${(t.handler || "Chưa phân công").replace(/"/g, '""')}"`,
+    `"${(t.status || "").replace(/"/g, '""')}"`,
+    `"${t.revisionCount || 0}"`,
+    `"${t.driveFolder || ""}"`
+  ]);
+
+  const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  a.href = url;
+  a.download = `BaoCao_TruyenThong_THPT_MacDinhChi_${dateStr}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  logAudit("Xuất báo cáo", "Đã xuất file báo cáo Excel (CSV) toàn trường", "-");
+}
+
+/**
+ * 13. In Báo Cáo / Xuất PDF
+ */
+function printAnalyticsReport() {
+  window.print();
+}
+
+/**
+ * 14. Quản lý Đội Ngũ Kiểm Duyệt & Cân Bằng Tải Phân Công (Workload)
+ */
+function renderTeamView() {
+  const container = document.getElementById("teamGrid");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const reviewers = CONFIG.BTT_REVIEWERS || [];
+
+  reviewers.forEach(name => {
+    // Đếm số bài đang phụ trách
+    const assignedTickets = allTickets.filter(t => t.handler === name);
+    const pendingTickets = assignedTickets.filter(t => !t.status.includes("ĐÃ ĐĂNG") && !t.status.includes("ĐÃ DUYỆT"));
+    const doneTickets = assignedTickets.filter(t => t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ DUYỆT"));
+
+    // Tình trạng tải công việc
+    let loadStatus = "Rảnh rỗi";
+    let loadClass = "load-free";
+    if (pendingTickets.length >= 3) {
+      loadStatus = "Tải cao (Nhiều bài chờ)";
+      loadClass = "load-heavy";
+    } else if (pendingTickets.length > 0) {
+      loadStatus = "Đang thụ lý bài";
+      loadClass = "load-normal";
+    }
+
+    const card = document.createElement("div");
+    card.className = "team-card";
+    card.innerHTML = `
+      <div class="team-card-header">
+        <div class="team-avatar">👨‍🏫</div>
+        <div class="team-meta">
+          <h4 class="team-name">${name}</h4>
+          <span class="team-load-badge ${loadClass}">${loadStatus}</span>
+        </div>
+      </div>
+      <div class="team-card-body">
+        <div class="team-stat-row">
+          <span>Đang thụ lý / Chờ duyệt:</span>
+          <strong>${pendingTickets.length} bài</strong>
+        </div>
+        <div class="team-stat-row">
+          <span>Đã hoàn tất kiểm duyệt:</span>
+          <strong>${doneTickets.length} bài</strong>
+        </div>
+        <div class="team-stat-row">
+          <span>Tổng số bài tiếp nhận:</span>
+          <strong>${assignedTickets.length} bài</strong>
+        </div>
+      </div>
+      <div class="team-card-footer">
+        <button type="button" class="btn-filter-reviewer" onclick="filterByReviewer('${name}')">
+          🔍 Xem bài của Thầy/Cô này
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function filterByReviewer(reviewerName) {
+  switchAdminTab("tickets");
+  const select = document.getElementById("filterHandler");
+  if (select) {
+    select.value = reviewerName;
+    filterTickets();
+  }
+}
+
+/**
+ * 15. Hệ Thống Ghi Nhật Ký Thao Tác (Audit Log) & Sao Lưu Dữ Liệu (Backup)
+ */
+function getAuditLogs() {
+  try {
+    const raw = localStorage.getItem("btt_audit_logs");
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn("Lỗi đọc audit log:", e);
+  }
+
+  // Dữ liệu nhật ký mẫu ban đầu nếu chưa có
+  return [
+    {
+      id: "LOG-001",
+      time: "2026-09-24 16:30",
+      user: "Thầy Tín (Super Admin)",
+      action: "Khởi động hệ thống",
+      ticketCode: "-",
+      details: "Đồng bộ cơ sở dữ liệu Master Tracker thành công"
+    },
+    {
+      id: "LOG-002",
+      time: "2026-09-24 16:45",
+      user: "Thầy Đoàn Huỳnh Xuân Tưởng",
+      action: "Kiểm duyệt bài viết",
+      ticketCode: "TT-2026-0005",
+      details: "Chuyển trạng thái sang [ĐÃ LÊN LỊCH]"
+    }
+  ];
+}
+
+function logAudit(action, details, ticketCode = "-") {
+  const logs = getAuditLogs();
+  const now = new Date();
+  const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  const newLog = {
+    id: `LOG-${Date.now().toString().slice(-4)}`,
+    time: timeStr,
+    user: currentUserTitle || "Ban Quản Trị",
+    action: action,
+    ticketCode: ticketCode,
+    details: details
+  };
+
+  logs.unshift(newLog);
+  // Giữ tối đa 60 log gần nhất
+  if (logs.length > 60) logs.pop();
+
+  try {
+    localStorage.setItem("btt_audit_logs", JSON.stringify(logs));
+  } catch (e) {
+    console.warn("Lỗi lưu audit log:", e);
+  }
+}
+
+function renderAuditView() {
+  const tbody = document.getElementById("auditTbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  const logs = getAuditLogs();
+  logs.forEach(log => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="text-sm text-muted">${log.time}</td>
+      <td><strong>${log.user}</strong></td>
+      <td><span class="audit-action-tag">${log.action}</span></td>
+      <td><span class="table-ticket-code">${log.ticketCode}</span></td>
+      <td class="text-sm">${log.details}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function clearAuditLogs() {
+  if (confirm("Thầy có chắc chắn muốn xóa toàn bộ lịch sử nhật ký thao tác không?")) {
+    localStorage.removeItem("btt_audit_logs");
+    renderAuditView();
+  }
+}
+
+/**
+ * 16. Tải toàn bộ cơ sở dữ liệu dự phòng ra file JSON (1-Click Data Backup)
+ */
+function exportDatabaseJSON() {
+  if (!allTickets || allTickets.length === 0) {
+    alert("Không có dữ liệu bài viết để sao lưu!");
+    return;
+  }
+
+  const backupData = {
+    exportedAt: new Date().toISOString(),
+    school: CONFIG.SCHOOL_NAME || "THPT Mạc Đĩnh Chi",
+    academicYear: CONFIG.ACADEMIC_YEAR || "2026 - 2027",
+    superAdmin: "Thầy Nguyễn Hồ Trọng Tín",
+    totalTickets: allTickets.length,
+    tickets: allTickets,
+    auditLogs: getAuditLogs()
+  };
+
+  const jsonStr = JSON.stringify(backupData, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const dateStr = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  a.href = url;
+  a.download = `BTT_MDC_Master_Database_${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  logAudit("Sao lưu dữ liệu", "Đã tải snapshot cơ sở dữ liệu dự phòng (JSON)", "-");
+  alert("✅ Đã xuất và tải bản sao lưu cơ sở dữ liệu dự phòng (JSON) về máy tính thành công!");
 }
