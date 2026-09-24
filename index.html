@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cổng Tiếp Nhận Bài Truyền Thông | THPT Mạc Đĩnh Chi</title>
-  <meta name="description" content="Hệ thống tiếp nhận bài viết, hình ảnh và tư liệu truyền thông nội bộ trường THPT Mạc Đĩnh Chi năm học 2026 - 2027">
-  
+  <meta name="description"
+    content="Hệ thống tiếp nhận bài viết, hình ảnh và tư liệu truyền thông nội bộ trường THPT Mạc Đĩnh Chi năm học 2026 - 2027">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <!-- Navigation Bar -->
   <nav class="top-nav-bar">
@@ -44,20 +49,22 @@
   <!-- Main Container -->
   <main class="main-content">
     <div class="form-wrapper">
-      
+
       <!-- Role Switcher: Giáo viên vs Học sinh/CLB -->
       <section class="role-selector-card" aria-label="Chọn đối tượng nộp bài">
         <label class="section-label">BẠN ĐANG NỘP BÀI VỚI VAI TRÒ:</label>
         <div class="segmented-control" role="tablist">
-          <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true" onclick="switchRole('teacher')">
+          <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true"
+            onclick="switchRole('teacher')">
             <span class="tab-icon">👨‍🏫</span>
             <div class="tab-info">
               <span class="tab-title">Giáo Viên / Tổ Chuyên Môn</span>
               <span class="tab-desc">20 Tổ bộ môn &amp; Phòng ban</span>
             </div>
           </button>
-          
-          <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false" onclick="switchRole('student')">
+
+          <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false"
+            onclick="switchRole('student')">
             <span class="tab-icon">🎒</span>
             <div class="tab-info">
               <span class="tab-title">Học Sinh / CLB / Đoàn Đội</span>
@@ -69,7 +76,7 @@
 
       <!-- Main Submission Form -->
       <form id="submissionForm" class="submission-form" onsubmit="handleFormSubmit(event)">
-        
+
         <!-- Fieldset: Thông tin người gửi -->
         <fieldset class="form-section">
           <legend class="legend-title">
@@ -89,22 +96,22 @@
             <!-- Họ và tên -->
             <div class="form-group">
               <label for="submitterName" class="input-label required">Họ và Tên Người Đại Diện</label>
-              <input type="text" id="submitterName" name="submitter" required 
-                     placeholder="Ví dụ: Thầy Đoàn Minh Tâm / Nguyễn Văn A" class="custom-input">
+              <input type="text" id="submitterName" name="submitter" required
+                placeholder="Ví dụ: Thầy Đoàn Minh Tâm / Nguyễn Văn A" class="custom-input">
             </div>
 
             <!-- Số điện thoại / Zalo -->
             <div class="form-group">
               <label for="submitterPhone" class="input-label required">Số Điện Thoại / Zalo Liên Hệ</label>
-              <input type="tel" id="submitterPhone" name="phone" required 
-                     placeholder="Ví dụ: 090xxxxxxx" class="custom-input">
+              <input type="tel" id="submitterPhone" name="phone" required placeholder="Ví dụ: 090xxxxxxx"
+                class="custom-input">
             </div>
 
             <!-- Email nhận biên nhận -->
             <div class="form-group">
               <label for="submitterEmail" class="input-label required">Email Nhận Kết Quả Duyệt Bài</label>
-              <input type="email" id="submitterEmail" name="email" required 
-                     placeholder="Địa chỉ email để nhận mã Ticket tự động" class="custom-input">
+              <input type="email" id="submitterEmail" name="email" required
+                placeholder="Địa chỉ email để nhận mã Ticket tự động" class="custom-input">
             </div>
           </div>
         </fieldset>
@@ -134,24 +141,24 @@
             <!-- Tiêu đề sự kiện -->
             <div class="form-group">
               <label for="eventName" class="input-label required">Tên Sự Kiện / Tiêu Đề Bài Viết</label>
-              <input type="text" id="eventName" name="eventName" required 
-                     placeholder="Ví dụ: Chuyên đề dạy học STEM môn Vật lí..." class="custom-input">
+              <input type="text" id="eventName" name="eventName" required
+                placeholder="Ví dụ: Chuyên đề dạy học STEM môn Vật lí..." class="custom-input">
             </div>
           </div>
 
           <!-- Thời gian & Địa điểm -->
           <div class="form-group">
             <label for="timeLocation" class="input-label">Thời Gian &amp; Địa Điểm Diễn Ra (Nếu có)</label>
-            <input type="text" id="timeLocation" name="timeLocation" 
-                   placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
+            <input type="text" id="timeLocation" name="timeLocation"
+              placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
           </div>
 
           <!-- Caption đề xuất -->
           <div class="form-group">
             <label for="captionText" class="input-label required">Caption Đề Xuất Đăng Fanpage / Web</label>
-            <textarea id="captionText" name="caption" rows="5" required 
-                      placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt." 
-                      class="custom-textarea"></textarea>
+            <textarea id="captionText" name="caption" rows="5" required
+              placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt."
+              class="custom-textarea"></textarea>
           </div>
         </fieldset>
 
@@ -165,7 +172,8 @@
           <div class="upload-container">
             <div class="drop-zone" id="dropZone" onclick="triggerFileInput()">
               <div class="drop-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -174,7 +182,8 @@
               <h3 class="drop-title">Kéo &amp; thả hình ảnh hoặc video vào đây</h3>
               <p class="drop-subtitle">hoặc <span class="highlight-browse">bấm vào để chọn tệp từ máy</span></p>
               <p class="drop-note">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp (lên đến 50MB/tệp).</p>
-              <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;" onchange="handleFilesSelected(event)">
+              <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;"
+                onchange="handleFilesSelected(event)">
             </div>
 
             <!-- Danh sách file đã chọn -->
@@ -185,11 +194,8 @@
               <label for="hugeFileLink" class="input-label">
                 🔗 Link Google Drive / Cloud chứa Video dung lượng lớn (Không bắt buộc)
               </label>
-              <input type="url" id="hugeFileLink" name="hugeFileLink" class="custom-input" 
-                     placeholder="Nếu có video nặng hàng trăm MB hoặc nhiều GB, dán link Google Drive / OneDrive tại đây...">
-              <p class="field-hint" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-                💡 <strong>Kho Drive trường 5TB:</strong> Với video nặng hàng trăm MB đến vài GB, bạn có thể dán link tại đây hoặc kéo thả trực tiếp vào thư mục Drive sau khi gửi!
-              </p>
+              <input type="url" id="hugeFileLink" name="hugeFileLink" class="custom-input"
+                placeholder="Nếu có video nặng hàng trăm MB hoặc nhiều GB, dán link Google Drive / OneDrive tại đây...">
             </div>
           </div>
         </fieldset>
@@ -210,8 +216,8 @@
     <div class="modal-card">
       <div class="success-icon-wrap">
         <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
         </svg>
       </div>
 
@@ -249,14 +255,17 @@
       </div>
 
       <!-- Hộp hướng dẫn thả video lớn vào Drive -->
-      <div class="drive-extra-box" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.2rem; text-align: left;">
+      <div class="drive-extra-box"
+        style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.2rem; text-align: left;">
         <span style="font-size: 0.85rem; font-weight: 700; color: #166534; display: block; margin-bottom: 4px;">
           📁 Cần tải thêm Video gốc dung lượng lớn (vài GB)?
         </span>
         <p style="font-size: 0.8rem; color: #15803d; margin-bottom: 8px;">
-          Thư mục Google Drive của bài viết đã sẵn sàng trên kho 5TB. Bạn có thể mở thư mục bên dưới để thả thêm các video nặng hàng trăm MB đến hàng GB trực tiếp:
+          Thư mục Google Drive của bài viết đã sẵn sàng. Bạn có thể mở thư mục bên dưới để kéo thả thêm các
+          video nặng hàng trăm MB đến hàng GB trực tiếp:
         </p>
-        <a id="btnOpenDriveDirect" href="#" target="_blank" class="btn-drive-open" style="display: block; text-align: center; text-decoration: none; padding: 7px 12px;">
+        <a id="btnOpenDriveDirect" href="#" target="_blank" class="btn-drive-open"
+          style="display: block; text-align: center; text-decoration: none; padding: 7px 12px;">
           MỞ THƯ MỤC DRIVE ĐỂ KÉO THẢ THÊM VIDEO ↗
         </a>
       </div>
@@ -284,7 +293,7 @@
   <footer class="site-footer">
     <div class="footer-container">
       <p><strong>BAN TRUYỀN THÔNG — TRƯỜNG THPT MẠC ĐĨNH CHI</strong></p>
-      <p>Số 04 Tân Hòa Đông, Phường 14, Quận 6, TP. Hồ Chí Minh</p>
+      <p>Số 04 Tân Hòa Đông, Phường Phú Lâm, TP. Hồ Chí Minh</p>
       <p class="copyright">Hệ thống Quản lý Truyền thông Nội bộ v2.0 • 2026 - 2027</p>
     </div>
   </footer>
@@ -293,4 +302,5 @@
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>
