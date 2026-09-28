@@ -37,18 +37,18 @@ const CONFIG = {
 
   // Danh sách Thành viên Ban Quản Trị & Kiểm Duyệt BTT (Theo Kế hoạch BTT)
   BTT_REVIEWERS: [
-    "Thầy Đoàn Huỳnh Xuân Tưởng (PHT - Trưởng ban)",
-    "Cô Phạm Thị Thu Thùy (Chi ủy viên)",
-    "Thầy Du Quế Lộc (Trợ lý thanh niên)",
-    "Cô Phan Quỳnh Anh (Bí thư Chi đoàn GV)",
-    "Cô Trịnh Thị Hà Trang (Cố vấn CLB Truyền thông)",
-    "Thầy Nguyễn Hồ Trọng Tín (Tổ Tin học - Quản trị)",
-    "Thầy Nguyễn Huỳnh Trọng Phúc (Tổ Tin học)",
-    "Thầy Trần Quang Vĩ (Tổ Lịch sử)",
-    "Thầy Quách Trí Minh (Tổ Toán)",
-    "Cô Nguyễn Thị Hải Vân (Tổ GDKT&PL)",
-    "Cô Trần Nguyễn Thanh Mai (Tổ Hóa học)",
-    "Thầy Nguyễn Hoài Nam (Văn phòng - Học vụ)"
+    "Đoàn Huỳnh Xuân Tưởng (PHT - Trưởng ban)",
+    "Phạm Thị Thu Thùy (Chi ủy viên)",
+    "Du Quế Lộc (Trợ lý thanh niên)",
+    "Phan Quỳnh Anh (Bí thư Chi đoàn GV)",
+    "Trịnh Thị Hà Trang (Cố vấn CLB Truyền thông)",
+    "Nguyễn Hồ Trọng Tín (Tổ Tin học - Quản trị)",
+    "Nguyễn Huỳnh Trọng Phúc (Tổ Tin học)",
+    "Trần Quang Vĩ (Tổ Lịch sử)",
+    "Quách Trí Minh (Tổ Toán)",
+    "Nguyễn Thị Hải Vân (Tổ GDKT&PL)",
+    "Trần Nguyễn Thanh Mai (Tổ Hóa học)",
+    "Nguyễn Hoài Nam (Văn phòng - Học vụ)"
   ],
 
   // 8+1 Trạng thái chuẩn hóa (text thuần gọn đẹp)

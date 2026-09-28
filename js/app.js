@@ -36,93 +36,93 @@ const DEPARTMENTS = {
 // ==========================================================================
 const DEFAULT_TEACHER_DIRECTORY = {
   "Tổ Ngữ Văn": [
-    { name: "Nguyễn Khánh Ninh", phone: "0356730727", email: "thkhanhninh@gmail.com", title: "Cô Nguyễn Khánh Ninh", role: "Đại diện tổ" },
-    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" },
-    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+    { name: "Nguyễn Khánh Ninh", phone: "0356730727", email: "thkhanhninh@gmail.com", role: "Đại diện tổ" },
+    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", role: "Chi ủy viên" },
+    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", role: "Bí thư Chi đoàn GV" }
   ],
   "Tổ Hóa học": [
-    { name: "Nguyễn Lan Anh", phone: "0901604588", email: "pecoc0920@gmail.com", title: "Cô Nguyễn Lan Anh", role: "Đại diện tổ" },
-    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", title: "Cô Trần Nguyễn Thanh Mai", role: "Ban Truyền Thông" }
+    { name: "Nguyễn Lan Anh", phone: "0901604588", email: "pecoc0920@gmail.com", role: "Đại diện tổ" },
+    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", role: "Ban Truyền Thông" }
   ],
   "Tổ Lịch Sử": [
-    { name: "Ngô Phạm Gia Bảo", phone: "0392020257", email: "ngophamgiabao2002@gmail.com", title: "Thầy Ngô Phạm Gia Bảo", role: "Đại diện tổ" },
-    { name: "Trần Quang Vĩ", phone: "0938439868", email: "quangvi346@gmail.com", title: "Thầy Trần Quang Vĩ", role: "Ban Truyền Thông" }
+    { name: "Ngô Phạm Gia Bảo", phone: "0392020257", email: "ngophamgiabao2002@gmail.com", role: "Đại diện tổ" },
+    { name: "Trần Quang Vĩ", phone: "0938439868", email: "quangvi346@gmail.com", role: "Ban Truyền Thông" }
   ],
   "Tổ Toán": [
-    { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", title: "Thầy Quách Trí Minh", role: "Đại diện tổ" },
-    { name: "Đoàn Minh Tâm", phone: "", email: "", title: "Thầy Đoàn Minh Tâm", role: "Giáo viên" }
+    { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", role: "Đại diện tổ" },
+    { name: "Đoàn Minh Tâm", phone: "", email: "", role: "Giáo viên" }
   ],
   "Tổ Tiếng Anh": [
-    { name: "Nguyễn Lê Công Trường", phone: "0374862151", email: "nguyenlecongtruong@gmail.com", title: "Thầy Nguyễn Lê Công Trường", role: "Đại diện tổ" },
-    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", title: "Cô Phan Huỳnh Nhật Linh", role: "Cố vấn CLB Tiếng Anh" }
+    { name: "Nguyễn Lê Công Trường", phone: "0374862151", email: "nguyenlecongtruong@gmail.com", role: "Đại diện tổ" },
+    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", role: "Cố vấn CLB Tiếng Anh" }
   ],
   "Văn phòng": [
-    { name: "Nguyễn Hoài Nam", phone: "0333221235", email: "namnguyenz0602@gmail.com", title: "Thầy Nguyễn Hoài Nam", role: "Văn phòng - Học vụ" }
+    { name: "Nguyễn Hoài Nam", phone: "0333221235", email: "namnguyenz0602@gmail.com", role: "Văn phòng - Học vụ" }
   ],
   "Tổ GDKT&PL": [
-    { name: "Nguyễn Thị Mai", phone: "0778772160", email: "mainguyen09mdc@gmail.com", title: "Cô Nguyễn Thị Mai", role: "Đại diện tổ" }
+    { name: "Nguyễn Thị Mai", phone: "0778772160", email: "mainguyen09mdc@gmail.com", role: "Đại diện tổ" }
   ],
   "Tổ Địa lí": [
-    { name: "Lê Phương Trựt Nhân", phone: "0853382026", email: "lephuongtrutnhan@gmail.com", title: "Thầy Lê Phương Trựt Nhân", role: "Đại diện tổ" }
+    { name: "Lê Phương Trựt Nhân", phone: "0853382026", email: "lephuongtrutnhan@gmail.com", role: "Đại diện tổ" }
   ],
   "Tổ GDTC - GDQP&AN": [
-    { name: "Phan Xuân Anh", phone: "0908643438", email: "phanxuananh9@gmail.com", title: "Thầy Phan Xuân Anh", role: "Đại diện tổ" }
+    { name: "Phan Xuân Anh", phone: "0908643438", email: "phanxuananh9@gmail.com", role: "Đại diện tổ" }
   ],
   "Công đoàn": [
-    { name: "Đặng Thái Phong", phone: "0937137905", email: "Phong.wind.1112@gmail.com", title: "Thầy Đặng Thái Phong", role: "Chủ tịch Công đoàn" }
+    { name: "Đặng Thái Phong", phone: "0937137905", email: "Phong.wind.1112@gmail.com", role: "Chủ tịch Công đoàn" }
   ],
   "Phòng Giám thị": [
-    { name: "Phan Phi", phone: "0867012641", email: "phanphi429@gmail.com", title: "Thầy Phan Phi", role: "Giám thị" }
+    { name: "Phan Phi", phone: "0867012641", email: "phanphi429@gmail.com", role: "Giám thị" }
   ],
   "Tổ Công nghệ": [
-    { name: "Huỳnh Thị Hồng Cẩm", phone: "0906753836", email: "camhth88@gmail.com", title: "Cô Huỳnh Thị Hồng Cẩm", role: "Đại diện tổ" }
+    { name: "Huỳnh Thị Hồng Cẩm", phone: "0906753836", email: "camhth88@gmail.com", role: "Đại diện tổ" }
   ],
   "Nhóm HĐTNHN - GDĐP": [
-    { name: "Nguyễn Minh Tâm", phone: "0933939328", email: "nguyentam28@yahoo.com", title: "Thầy Nguyễn Minh Tâm", role: "Đại diện nhóm" }
+    { name: "Nguyễn Minh Tâm", phone: "0933939328", email: "nguyentam28@yahoo.com", role: "Đại diện nhóm" }
   ],
   "Đoàn trường": [
-    { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", title: "Cô Nguyễn Thị Hải Vân", role: "Đoàn trường" },
-    { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", title: "Thầy Du Quế Lộc", role: "Trợ lý thanh niên" }
+    { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", role: "Đoàn trường" },
+    { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", role: "Trợ lý thanh niên" }
   ],
   "Chi đoàn Giáo viên": [
-    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", role: "Bí thư Chi đoàn GV" }
   ],
   "Chi bộ": [
-    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" }
+    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", role: "Chi ủy viên" }
   ],
   "Tổ Tin học": [
-    { name: "Huỳnh Diệp Tân", phone: "0917755455", email: "dieptan@gmail.com", title: "Thầy Huỳnh Diệp Tân", role: "Đại diện tổ" },
-    { name: "Nguyễn Hồ Trọng Tín", phone: "0983034558", email: "tin.nguyenhotrong@gmail.com", title: "Thầy Nguyễn Hồ Trọng Tín", role: "Quản trị BTT" }
+    { name: "Huỳnh Diệp Tân", phone: "0917755455", email: "dieptan@gmail.com", role: "Đại diện tổ" },
+    { name: "Nguyễn Hồ Trọng Tín", phone: "0983034558", email: "tin.nguyenhotrong@gmail.com", role: "Quản trị BTT" }
   ],
   "GVCN": [
-    { name: "Lê Thị Thúy Hằng", phone: "0982355697", email: "thuyhang.toan.mdc@gmail.com", title: "Cô Lê Thị Thúy Hằng", role: "Đại diện GVCN" }
+    { name: "Lê Thị Thúy Hằng", phone: "0982355697", email: "thuyhang.toan.mdc@gmail.com", role: "Đại diện GVCN" }
   ],
   "Tổ Vật lí": [
-    { name: "Lương Tuấn Anh", phone: "", email: "", title: "Thầy Lương Tuấn Anh", role: "Đại diện tổ" }
+    { name: "Lương Tuấn Anh", phone: "", email: "", role: "Đại diện tổ" }
   ],
   "Tổ Sinh học": [
-    { name: "Nguyễn Mỹ Kim Ngân", phone: "", email: "", title: "Cô Nguyễn Mỹ Kim Ngân", role: "Đại diện tổ" }
+    { name: "Nguyễn Mỹ Kim Ngân", phone: "", email: "", role: "Đại diện tổ" }
   ],
   "CLB Hội họa": [
-    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", title: "Cô Nguyễn Hoàng Yến", role: "Cố vấn CLB" }
+    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", role: "Cố vấn CLB" }
   ],
   "CLB Thiết kế Hội hoạ": [
-    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", title: "Cô Nguyễn Hoàng Yến", role: "Cố vấn CLB" }
+    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", role: "Cố vấn CLB" }
   ],
   "CLB Truyền thông": [
-    { name: "Trịnh Thị Hà Trang", phone: "", email: "", title: "Cô Trịnh Thị Hà Trang", role: "Cố vấn CLB" }
+    { name: "Trịnh Thị Hà Trang", phone: "", email: "", role: "Cố vấn CLB" }
   ],
   "CLB Văn nghệ - Cổ động": [
-    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", title: "Cô Trần Nguyễn Thanh Mai", role: "Cố vấn CLB" }
+    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", role: "Cố vấn CLB" }
   ],
   "CLB Tiếng Anh": [
-    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", title: "Cô Phan Huỳnh Nhật Linh", role: "Cố vấn CLB" }
+    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", role: "Cố vấn CLB" }
   ],
   "CLB Văn học – Diễn thuyết và Kịch": [
-    { name: "Phan Quỳnh Anh", phone: "", email: "", title: "Cô Phan Quỳnh Anh", role: "Cố vấn CLB" }
+    { name: "Phan Quỳnh Anh", phone: "", email: "", role: "Cố vấn CLB" }
   ],
   "CLB Khoa học – Khởi nghiệp": [
-    { name: "Lương Tuấn Anh", phone: "", email: "", title: "Thầy Lương Tuấn Anh", role: "Cố vấn CLB" }
+    { name: "Lương Tuấn Anh", phone: "", email: "", role: "Cố vấn CLB" }
   ]
 };
 
@@ -235,7 +235,7 @@ function switchRole(role) {
     tabStudent.classList.remove("active");
     tabStudent.setAttribute("aria-selected", "false");
     
-    submitterNameInput.placeholder = "Ví dụ: Thầy Đoàn Minh Tâm / Cô Nguyễn Khánh Ninh";
+    submitterNameInput.placeholder = "Ví dụ: Đoàn Minh Tâm / Nguyễn Khánh Ninh";
     populateDeptDropdown("teacher");
   } else {
     tabStudent.classList.add("active");
@@ -341,12 +341,12 @@ function handleDeptChange() {
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </span>
-            <span>Giáo viên cố vấn / Phụ trách: <strong>${advisor.title || advisor.name}</strong>${advisor.phone ? ` (${advisor.phone})` : ""}</span>
+            <span>Cố vấn / Phụ trách: <strong>${advisor.name}</strong>${advisor.phone ? ` (${advisor.phone})` : ""}</span>
           </div>
           <div class="autofill-chips-wrap">
             <span class="autofill-chips-label">Tùy chọn:</span>
             <button type="button" class="autofill-chip-btn" onclick="applyAdvisorInfo('${selectedDept.replace(/'/g, "\\'")}')">
-              ⚡ Điền thông tin Thầy/Cô cố vấn vào form
+              ⚡ Điền thông tin cố vấn vào form
             </button>
           </div>
         `;
@@ -369,7 +369,7 @@ function fillTeacherInfo(member, dept, activeIndex = 0, allMembers = null) {
   const submitterEmailInput = document.getElementById("submitterEmail");
   const noticeEl = document.getElementById("deptAutoFillNotice");
 
-  const displayName = member.title || member.name;
+  const displayName = member.name;
   if (submitterNameInput) submitterNameInput.value = displayName;
   if (submitterPhoneInput) submitterPhoneInput.value = member.phone || "";
   if (submitterEmailInput) submitterEmailInput.value = member.email || "";
@@ -383,7 +383,7 @@ function fillTeacherInfo(member, dept, activeIndex = 0, allMembers = null) {
     }
   });
 
-  // Hiển thị thông báo và danh sách chip nếu tổ có nhiều Thầy/Cô
+  // Hiển thị thông báo và danh sách chip nếu tổ có nhiều đại diện
   if (noticeEl) {
     noticeEl.style.display = "flex";
     
@@ -395,18 +395,18 @@ function fillTeacherInfo(member, dept, activeIndex = 0, allMembers = null) {
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
         </span>
-        <span>Đã tự động điền: <strong>${displayName}</strong> ${member.phone ? `(${member.phone})` : ""} - Thầy/Cô vẫn có thể chỉnh sửa nếu cần.</span>
+        <span>Đã tự động điền: <strong>${displayName}</strong> ${member.phone ? `(${member.phone})` : ""} - Có thể chỉnh sửa nếu cần.</span>
       </div>
     `;
 
     if (allMembers && allMembers.length > 1) {
       html += `
         <div class="autofill-chips-wrap">
-          <span class="autofill-chips-label">Hoặc chọn Thầy/Cô khác cùng tổ:</span>
+          <span class="autofill-chips-label">Hoặc chọn đại diện khác cùng tổ:</span>
           ${allMembers.map((m, idx) => `
             <button type="button" class="autofill-chip-btn ${idx === activeIndex ? "active" : ""}" 
                     onclick="selectTeacherMember('${dept.replace(/'/g, "\\'")}', ${idx})">
-              <span>${m.title || m.name}</span>
+              <span>${m.name}</span>
               ${m.role ? `<span class="autofill-chip-badge">(${m.role})</span>` : ""}
             </button>
           `).join("")}
