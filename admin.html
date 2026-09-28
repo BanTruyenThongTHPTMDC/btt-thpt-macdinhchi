@@ -410,6 +410,25 @@
             <div class="tags-container" id="cfgClubsTagList" style="margin-top: 1rem;"></div>
           </div>
         </div>
+
+        <!-- Cấu hình 4: Danh bạ giáo viên đại diện truyền thông -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <h3 class="config-card-title">4. Danh Bạ Giáo Viên Đại Diện Các Tổ (Google Sheet)</h3>
+            <span class="config-card-desc">Tự động nạp thông tin để cổng nộp bài tự điền họ tên, số điện thoại &amp; email</span>
+          </div>
+          <div class="config-card-body">
+            <div style="display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span id="cfgTeacherCountText" class="text-sm text-muted">Đang tải danh bạ...</span>
+              <button type="button" class="btn-action-outline" onclick="syncTeacherDirectoryAdmin()">
+                🔄 Đồng Bộ Từ Google Sheet
+              </button>
+            </div>
+            <div id="cfgTeacherListWrap" class="table-container" style="margin-top: 1rem; max-height: 320px; overflow-y: auto;">
+              <!-- Bảng tóm tắt danh bạ giáo viên -->
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

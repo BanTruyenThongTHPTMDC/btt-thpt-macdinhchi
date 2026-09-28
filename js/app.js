@@ -31,15 +31,113 @@ const DEPARTMENTS = {
   ]
 };
 
+// ==========================================================================
+// DANH BẠ ĐẠI DIỆN TRUYỀN THÔNG CÁC TỔ & PHÒNG BAN (THEO GOOGLE SHEET & KẾ HOẠCH BTT)
+// ==========================================================================
+const DEFAULT_TEACHER_DIRECTORY = {
+  "Tổ Ngữ Văn": [
+    { name: "Nguyễn Khánh Ninh", phone: "0356730727", email: "thkhanhninh@gmail.com", title: "Cô Nguyễn Khánh Ninh", role: "Đại diện tổ" },
+    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" },
+    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+  ],
+  "Tổ Hóa học": [
+    { name: "Nguyễn Lan Anh", phone: "0901604588", email: "pecoc0920@gmail.com", title: "Cô Nguyễn Lan Anh", role: "Đại diện tổ" },
+    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", title: "Cô Trần Nguyễn Thanh Mai", role: "Ban Truyền Thông" }
+  ],
+  "Tổ Lịch Sử": [
+    { name: "Ngô Phạm Gia Bảo", phone: "0392020257", email: "ngophamgiabao2002@gmail.com", title: "Thầy Ngô Phạm Gia Bảo", role: "Đại diện tổ" },
+    { name: "Trần Quang Vĩ", phone: "0938439868", email: "quangvi346@gmail.com", title: "Thầy Trần Quang Vĩ", role: "Ban Truyền Thông" }
+  ],
+  "Tổ Toán": [
+    { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", title: "Thầy Quách Trí Minh", role: "Đại diện tổ" },
+    { name: "Đoàn Minh Tâm", phone: "", email: "", title: "Thầy Đoàn Minh Tâm", role: "Giáo viên" }
+  ],
+  "Tổ Tiếng Anh": [
+    { name: "Nguyễn Lê Công Trường", phone: "0374862151", email: "nguyenlecongtruong@gmail.com", title: "Thầy Nguyễn Lê Công Trường", role: "Đại diện tổ" },
+    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", title: "Cô Phan Huỳnh Nhật Linh", role: "Cố vấn CLB Tiếng Anh" }
+  ],
+  "Văn phòng": [
+    { name: "Nguyễn Hoài Nam", phone: "0333221235", email: "namnguyenz0602@gmail.com", title: "Thầy Nguyễn Hoài Nam", role: "Văn phòng - Học vụ" }
+  ],
+  "Tổ GDKT&PL": [
+    { name: "Nguyễn Thị Mai", phone: "0778772160", email: "mainguyen09mdc@gmail.com", title: "Cô Nguyễn Thị Mai", role: "Đại diện tổ" }
+  ],
+  "Tổ Địa lí": [
+    { name: "Lê Phương Trựt Nhân", phone: "0853382026", email: "lephuongtrutnhan@gmail.com", title: "Thầy Lê Phương Trựt Nhân", role: "Đại diện tổ" }
+  ],
+  "Tổ GDTC - GDQP&AN": [
+    { name: "Phan Xuân Anh", phone: "0908643438", email: "phanxuananh9@gmail.com", title: "Thầy Phan Xuân Anh", role: "Đại diện tổ" }
+  ],
+  "Công đoàn": [
+    { name: "Đặng Thái Phong", phone: "0937137905", email: "Phong.wind.1112@gmail.com", title: "Thầy Đặng Thái Phong", role: "Chủ tịch Công đoàn" }
+  ],
+  "Phòng Giám thị": [
+    { name: "Phan Phi", phone: "0867012641", email: "phanphi429@gmail.com", title: "Thầy Phan Phi", role: "Giám thị" }
+  ],
+  "Tổ Công nghệ": [
+    { name: "Huỳnh Thị Hồng Cẩm", phone: "0906753836", email: "camhth88@gmail.com", title: "Cô Huỳnh Thị Hồng Cẩm", role: "Đại diện tổ" }
+  ],
+  "Nhóm HĐTNHN - GDĐP": [
+    { name: "Nguyễn Minh Tâm", phone: "0933939328", email: "nguyentam28@yahoo.com", title: "Thầy Nguyễn Minh Tâm", role: "Đại diện nhóm" }
+  ],
+  "Đoàn trường": [
+    { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", title: "Cô Nguyễn Thị Hải Vân", role: "Đoàn trường" },
+    { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", title: "Thầy Du Quế Lộc", role: "Trợ lý thanh niên" }
+  ],
+  "Chi đoàn Giáo viên": [
+    { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+  ],
+  "Chi bộ": [
+    { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" }
+  ],
+  "Tổ Tin học": [
+    { name: "Huỳnh Diệp Tân", phone: "0917755455", email: "dieptan@gmail.com", title: "Thầy Huỳnh Diệp Tân", role: "Đại diện tổ" },
+    { name: "Nguyễn Hồ Trọng Tín", phone: "0983034558", email: "tin.nguyenhotrong@gmail.com", title: "Thầy Nguyễn Hồ Trọng Tín", role: "Quản trị BTT" }
+  ],
+  "GVCN": [
+    { name: "Lê Thị Thúy Hằng", phone: "0982355697", email: "thuyhang.toan.mdc@gmail.com", title: "Cô Lê Thị Thúy Hằng", role: "Đại diện GVCN" }
+  ],
+  "Tổ Vật lí": [
+    { name: "Lương Tuấn Anh", phone: "", email: "", title: "Thầy Lương Tuấn Anh", role: "Đại diện tổ" }
+  ],
+  "Tổ Sinh học": [
+    { name: "Nguyễn Mỹ Kim Ngân", phone: "", email: "", title: "Cô Nguyễn Mỹ Kim Ngân", role: "Đại diện tổ" }
+  ],
+  "CLB Hội họa": [
+    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", title: "Cô Nguyễn Hoàng Yến", role: "Cố vấn CLB" }
+  ],
+  "CLB Thiết kế Hội hoạ": [
+    { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", title: "Cô Nguyễn Hoàng Yến", role: "Cố vấn CLB" }
+  ],
+  "CLB Truyền thông": [
+    { name: "Trịnh Thị Hà Trang", phone: "", email: "", title: "Cô Trịnh Thị Hà Trang", role: "Cố vấn CLB" }
+  ],
+  "CLB Văn nghệ - Cổ động": [
+    { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", title: "Cô Trần Nguyễn Thanh Mai", role: "Cố vấn CLB" }
+  ],
+  "CLB Tiếng Anh": [
+    { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", title: "Cô Phan Huỳnh Nhật Linh", role: "Cố vấn CLB" }
+  ],
+  "CLB Văn học – Diễn thuyết và Kịch": [
+    { name: "Phan Quỳnh Anh", phone: "", email: "", title: "Cô Phan Quỳnh Anh", role: "Cố vấn CLB" }
+  ],
+  "CLB Khoa học – Khởi nghiệp": [
+    { name: "Lương Tuấn Anh", phone: "", email: "", title: "Thầy Lương Tuấn Anh", role: "Cố vấn CLB" }
+  ]
+};
+
 // State
 let currentRole = "teacher"; // "teacher" hoặc "student"
 let selectedFiles = []; // Mảng chứa các File object
+let currentTeacherDirectory = { ...DEFAULT_TEACHER_DIRECTORY };
 
 // Khởi chạy khi DOM sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
   applySystemConfig();
+  initTeacherDirectory();
   populateDeptDropdown("teacher");
   setupDragAndDrop();
+  setupDeptAutoFillListener();
 });
 
 /**
@@ -147,6 +245,196 @@ function switchRole(role) {
     
     submitterNameInput.placeholder = "Ví dụ: Nguyễn Văn A (Chủ nhiệm CLB / Lớp 12A1)";
     populateDeptDropdown("student");
+  }
+
+  // Xóa thông báo tự động điền khi chuyển vai trò
+  const notice = document.getElementById("deptAutoFillNotice");
+  if (notice) {
+    notice.style.display = "none";
+    notice.innerHTML = "";
+  }
+}
+
+/**
+ * Khởi tạo danh bạ giáo viên và đồng bộ từ Google Apps Script API nếu có mạng
+ */
+async function initTeacherDirectory() {
+  try {
+    const cached = localStorage.getItem("btt_teacher_directory_v2");
+    if (cached) {
+      currentTeacherDirectory = { ...DEFAULT_TEACHER_DIRECTORY, ...JSON.parse(cached) };
+    }
+  } catch (e) {
+    console.warn("Không đọc được cache danh bạ:", e);
+  }
+
+  // Tải ngầm từ Google Apps Script API nếu có cấu hình
+  if (CONFIG.API_ENDPOINT) {
+    fetch(`${CONFIG.API_ENDPOINT}?action=getTeachers`, { method: "GET" })
+      .then(res => res.json())
+      .then(json => {
+        if (json && json.success && json.data && json.data.directory) {
+          const liveDir = json.data.directory;
+          for (const [dept, members] of Object.entries(liveDir)) {
+            if (Array.isArray(members) && members.length > 0) {
+              currentTeacherDirectory[dept] = members;
+            }
+          }
+          localStorage.setItem("btt_teacher_directory_v2", JSON.stringify(currentTeacherDirectory));
+          console.log("✓ Đã đồng bộ danh bạ giáo viên từ Google Sheet thành công.");
+        }
+      })
+      .catch(err => {
+        console.log("Sử dụng danh bạ giáo viên cục bộ (offline):", err);
+      });
+  }
+}
+
+/**
+ * Lắng nghe sự kiện chọn Tổ chuyên môn để tự động điền thông tin giáo viên
+ */
+function setupDeptAutoFillListener() {
+  const deptSelect = document.getElementById("deptSelect");
+  if (!deptSelect) return;
+
+  deptSelect.addEventListener("change", handleDeptChange);
+}
+
+function handleDeptChange() {
+  const deptSelect = document.getElementById("deptSelect");
+  const selectedDept = deptSelect ? deptSelect.value : "";
+  const noticeEl = document.getElementById("deptAutoFillNotice");
+
+  if (!selectedDept || selectedDept === "Khác") {
+    if (noticeEl) {
+      noticeEl.style.display = "none";
+      noticeEl.innerHTML = "";
+    }
+    return;
+  }
+
+  // Tra cứu trong danh bạ
+  const members = currentTeacherDirectory[selectedDept] || null;
+
+  if (currentRole === "teacher") {
+    if (members && members.length > 0) {
+      // Tự động điền thành viên đầu tiên
+      fillTeacherInfo(members[0], selectedDept, 0, members);
+    } else {
+      if (noticeEl) {
+        noticeEl.style.display = "none";
+        noticeEl.innerHTML = "";
+      }
+    }
+  } else {
+    // Role Học sinh / CLB
+    if (members && members.length > 0) {
+      const advisor = members[0];
+      if (noticeEl) {
+        noticeEl.style.display = "flex";
+        noticeEl.innerHTML = `
+          <div class="autofill-header">
+            <span class="autofill-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </span>
+            <span>Giáo viên cố vấn / Phụ trách: <strong>${advisor.title || advisor.name}</strong>${advisor.phone ? ` (${advisor.phone})` : ""}</span>
+          </div>
+          <div class="autofill-chips-wrap">
+            <span class="autofill-chips-label">Tùy chọn:</span>
+            <button type="button" class="autofill-chip-btn" onclick="applyAdvisorInfo('${selectedDept.replace(/'/g, "\\'")}')">
+              ⚡ Điền thông tin Thầy/Cô cố vấn vào form
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (noticeEl) {
+        noticeEl.style.display = "none";
+        noticeEl.innerHTML = "";
+      }
+    }
+  }
+}
+
+/**
+ * Điền thông tin giáo viên vào form và tạo hiệu ứng phản hồi
+ */
+function fillTeacherInfo(member, dept, activeIndex = 0, allMembers = null) {
+  const submitterNameInput = document.getElementById("submitterName");
+  const submitterPhoneInput = document.getElementById("submitterPhone");
+  const submitterEmailInput = document.getElementById("submitterEmail");
+  const noticeEl = document.getElementById("deptAutoFillNotice");
+
+  const displayName = member.title || member.name;
+  if (submitterNameInput) submitterNameInput.value = displayName;
+  if (submitterPhoneInput) submitterPhoneInput.value = member.phone || "";
+  if (submitterEmailInput) submitterEmailInput.value = member.email || "";
+
+  // Hiệu ứng highlight phát sáng nhẹ cho các trường input
+  [submitterNameInput, submitterPhoneInput, submitterEmailInput].forEach(el => {
+    if (el) {
+      el.classList.remove("autofill-highlight");
+      void el.offsetWidth; // trigger reflow
+      el.classList.add("autofill-highlight");
+    }
+  });
+
+  // Hiển thị thông báo và danh sách chip nếu tổ có nhiều Thầy/Cô
+  if (noticeEl) {
+    noticeEl.style.display = "flex";
+    
+    let html = `
+      <div class="autofill-header">
+        <span class="autofill-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </span>
+        <span>Đã tự động điền: <strong>${displayName}</strong> ${member.phone ? `(${member.phone})` : ""} - Thầy/Cô vẫn có thể chỉnh sửa nếu cần.</span>
+      </div>
+    `;
+
+    if (allMembers && allMembers.length > 1) {
+      html += `
+        <div class="autofill-chips-wrap">
+          <span class="autofill-chips-label">Hoặc chọn Thầy/Cô khác cùng tổ:</span>
+          ${allMembers.map((m, idx) => `
+            <button type="button" class="autofill-chip-btn ${idx === activeIndex ? "active" : ""}" 
+                    onclick="selectTeacherMember('${dept.replace(/'/g, "\\'")}', ${idx})">
+              <span>${m.title || m.name}</span>
+              ${m.role ? `<span class="autofill-chip-badge">(${m.role})</span>` : ""}
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    noticeEl.innerHTML = html;
+  }
+}
+
+/**
+ * Chọn nhanh giáo viên khác trong cùng tổ từ chip
+ */
+function selectTeacherMember(dept, memberIndex) {
+  const members = currentTeacherDirectory[dept];
+  if (members && members[memberIndex]) {
+    fillTeacherInfo(members[memberIndex], dept, memberIndex, members);
+  }
+}
+
+/**
+ * Áp dụng thông tin cố vấn CLB vào form cho học sinh
+ */
+function applyAdvisorInfo(dept) {
+  const members = currentTeacherDirectory[dept];
+  if (members && members.length > 0) {
+    fillTeacherInfo(members[0], dept, 0, members);
   }
 }
 
@@ -509,5 +797,10 @@ function resetFormAndCloseModal() {
   document.getElementById("submissionForm").reset();
   selectedFiles = [];
   renderFileList();
+  const notice = document.getElementById("deptAutoFillNotice");
+  if (notice) {
+    notice.style.display = "none";
+    notice.innerHTML = "";
+  }
   switchRole("teacher");
 }

@@ -18,6 +18,9 @@ const CONFIG = {
   // Dán URL Web App của bạn vào đây:
   API_ENDPOINT: "https://script.google.com/macros/s/AKfycbxjxkgs9mIdOqxcfbZoypQrRj7ZMefRRPXqJGiOSWxFIr3-xVrQn3ZU80qwG-JGtbS_jA/exec",
 
+  // ID Google Sheet "Thông tin cá nhân Ban truyền thông (Responses)"
+  TEACHER_SHEET_ID: "1QbzexEM7mn0rh0JhCxKchkFOucVeb94SaM8jYxQ_4rE",
+
   // Giới hạn tệp tải lên
   MAX_FILES: 20,
   MAX_FILE_SIZE_MB: 50, // MB mỗi file (Hỗ trợ video clip ngắn trực tiếp)

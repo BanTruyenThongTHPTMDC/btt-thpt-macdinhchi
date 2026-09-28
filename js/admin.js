@@ -1054,6 +1054,7 @@ function loadSystemSettings() {
   togglePortalStateFields();
   toggleBannerStateFields();
   renderClubsTags();
+  renderAdminTeacherDirectory();
 }
 
 function togglePortalStateFields() {
@@ -1149,6 +1150,159 @@ function saveSystemSettings() {
   localStorage.setItem("btt_system_config", JSON.stringify(cfg));
   logAudit("Cấu hình hệ thống", `Cập nhật cổng: [${cfg.portalOpen ? "MỞ" : "TẠM ĐÓNG"}] - Tiêu điểm: [${cfg.bannerActive ? "BẬT" : "TẮT"}]`, "-");
   alert("Đã lưu thiết lập cấu hình hệ thống thành công!\nCác thay đổi đã được áp dụng trực tiếp.");
+}
+
+/**
+ * Hiển thị danh bạ giáo viên trong phần Cấu hình hệ thống (Admin)
+ */
+function renderAdminTeacherDirectory() {
+  const container = document.getElementById("cfgTeacherListWrap");
+  const countText = document.getElementById("cfgTeacherCountText");
+  if (!container) return;
+
+  // Lấy danh bạ từ cache
+  let dir = null;
+  try {
+    const raw = localStorage.getItem("btt_teacher_directory_v2");
+    if (raw) dir = JSON.parse(raw);
+  } catch (e) {
+    console.warn("Lỗi đọc cache danh bạ:", e);
+  }
+
+  // Fallback danh mục mặc định nếu chưa có cache
+  if (!dir) {
+    dir = {
+      "Tổ Ngữ Văn": [
+        { name: "Nguyễn Khánh Ninh", phone: "0356730727", email: "thkhanhninh@gmail.com", title: "Cô Nguyễn Khánh Ninh", role: "Đại diện tổ" },
+        { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" },
+        { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+      ],
+      "Tổ Hóa học": [
+        { name: "Nguyễn Lan Anh", phone: "0901604588", email: "pecoc0920@gmail.com", title: "Cô Nguyễn Lan Anh", role: "Đại diện tổ" },
+        { name: "Trần Nguyễn Thanh Mai", phone: "0915358430", email: "trannguyenthanhmai0987@gmail.com", title: "Cô Trần Nguyễn Thanh Mai", role: "Ban Truyền Thông" }
+      ],
+      "Tổ Lịch Sử": [
+        { name: "Ngô Phạm Gia Bảo", phone: "0392020257", email: "ngophamgiabao2002@gmail.com", title: "Thầy Ngô Phạm Gia Bảo", role: "Đại diện tổ" },
+        { name: "Trần Quang Vĩ", phone: "0938439868", email: "quangvi346@gmail.com", title: "Thầy Trần Quang Vĩ", role: "Ban Truyền Thông" }
+      ],
+      "Tổ Toán": [
+        { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", title: "Thầy Quách Trí Minh", role: "Đại diện tổ" }
+      ],
+      "Tổ Tiếng Anh": [
+        { name: "Nguyễn Lê Công Trường", phone: "0374862151", email: "nguyenlecongtruong@gmail.com", title: "Thầy Nguyễn Lê Công Trường", role: "Đại diện tổ" },
+        { name: "Phan Huỳnh Nhật Linh", phone: "0365427274", email: "nhatlinhphanhuynh@gmail.com", title: "Cô Phan Huỳnh Nhật Linh", role: "Cố vấn CLB Tiếng Anh" }
+      ],
+      "Văn phòng": [
+        { name: "Nguyễn Hoài Nam", phone: "0333221235", email: "namnguyenz0602@gmail.com", title: "Thầy Nguyễn Hoài Nam", role: "Văn phòng - Học vụ" }
+      ],
+      "Tổ GDKT&PL": [
+        { name: "Nguyễn Thị Mai", phone: "0778772160", email: "mainguyen09mdc@gmail.com", title: "Cô Nguyễn Thị Mai", role: "Đại diện tổ" }
+      ],
+      "Tổ Địa lí": [
+        { name: "Lê Phương Trựt Nhân", phone: "0853382026", email: "lephuongtrutnhan@gmail.com", title: "Thầy Lê Phương Trựt Nhân", role: "Đại diện tổ" }
+      ],
+      "Tổ GDTC - GDQP&AN": [
+        { name: "Phan Xuân Anh", phone: "0908643438", email: "phanxuananh9@gmail.com", title: "Thầy Phan Xuân Anh", role: "Đại diện tổ" }
+      ],
+      "Công đoàn": [
+        { name: "Đặng Thái Phong", phone: "0937137905", email: "Phong.wind.1112@gmail.com", title: "Thầy Đặng Thái Phong", role: "Chủ tịch Công đoàn" }
+      ],
+      "Phòng Giám thị": [
+        { name: "Phan Phi", phone: "0867012641", email: "phanphi429@gmail.com", title: "Thầy Phan Phi", role: "Giám thị" }
+      ],
+      "Tổ Công nghệ": [
+        { name: "Huỳnh Thị Hồng Cẩm", phone: "0906753836", email: "camhth88@gmail.com", title: "Cô Huỳnh Thị Hồng Cẩm", role: "Đại diện tổ" }
+      ],
+      "Nhóm HĐTNHN - GDĐP": [
+        { name: "Nguyễn Minh Tâm", phone: "0933939328", email: "nguyentam28@yahoo.com", title: "Thầy Nguyễn Minh Tâm", role: "Đại diện nhóm" }
+      ],
+      "Đoàn trường": [
+        { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", title: "Cô Nguyễn Thị Hải Vân", role: "Đoàn trường" },
+        { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", title: "Thầy Du Quế Lộc", role: "Trợ lý thanh niên" }
+      ],
+      "Chi đoàn Giáo viên": [
+        { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", title: "Thầy Lê Phát Tài", role: "Bí thư Chi đoàn GV" }
+      ],
+      "Chi bộ": [
+        { name: "Phạm Thị Thu Thuỳ", phone: "0348429135", email: "Thuthuy03051979@gmail.com", title: "Cô Phạm Thị Thu Thuỳ", role: "Chi ủy viên" }
+      ],
+      "Tổ Tin học": [
+        { name: "Huỳnh Diệp Tân", phone: "0917755455", email: "dieptan@gmail.com", title: "Thầy Huỳnh Diệp Tân", role: "Đại diện tổ" }
+      ],
+      "GVCN": [
+        { name: "Lê Thị Thúy Hằng", phone: "0982355697", email: "thuyhang.toan.mdc@gmail.com", title: "Cô Lê Thị Thúy Hằng", role: "Đại diện GVCN" }
+      ]
+    };
+  }
+
+  const depts = Object.keys(dir);
+  let totalTeachers = 0;
+  depts.forEach(d => totalTeachers += (dir[d] || []).length);
+
+  if (countText) {
+    countText.innerHTML = `<strong>${depts.length}</strong> đơn vị • <strong>${totalTeachers}</strong> Thầy/Cô liên kết`;
+  }
+
+  let html = `
+    <table class="admin-table" style="font-size: 0.85rem;">
+      <thead>
+        <tr>
+          <th>TỔ / ĐƠN VỊ</th>
+          <th>GIÁO VIÊN ĐẠI DIỆN</th>
+          <th>SỐ ĐIỆN THOẠI / ZALO</th>
+          <th>EMAIL LIÊN HỆ</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  depts.forEach(dept => {
+    const members = dir[dept] || [];
+    members.forEach((m, idx) => {
+      html += `
+        <tr>
+          <td><strong>${idx === 0 ? dept : ""}</strong></td>
+          <td>
+            <span style="font-weight: 500;">${m.title || m.name}</span>
+            ${m.role ? `<span class="badge badge-gray" style="margin-left: 6px; font-size: 0.72rem;">${m.role}</span>` : ""}
+          </td>
+          <td>${m.phone ? `<span style="font-family: monospace;">${m.phone}</span>` : '<span class="text-muted">—</span>'}</td>
+          <td>${m.email ? `<span style="font-family: monospace; font-size: 0.82rem;">${m.email}</span>` : '<span class="text-muted">—</span>'}</td>
+        </tr>
+      `;
+    });
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML = html;
+}
+
+/**
+ * Đồng bộ danh bạ giáo viên từ Google Apps Script API (Admin click)
+ */
+async function syncTeacherDirectoryAdmin() {
+  const countText = document.getElementById("cfgTeacherCountText");
+  if (countText) countText.textContent = "Đang đồng bộ từ Google Sheet...";
+
+  try {
+    const res = await fetch(`${CONFIG.API_ENDPOINT}?action=getTeachers`, { method: "GET" });
+    const json = await res.json();
+    if (json && json.success && json.data && json.data.directory) {
+      localStorage.setItem("btt_teacher_directory_v2", JSON.stringify(json.data.directory));
+      renderAdminTeacherDirectory();
+      alert("✓ Đồng bộ danh bạ giáo viên từ Google Sheet thành công!");
+      logAudit("Cấu hình hệ thống", "Đồng bộ danh bạ giáo viên từ Google Sheet thành công", "-");
+    } else {
+      throw new Error(json.message || "Không có dữ liệu trả về");
+    }
+  } catch (err) {
+    alert("Không thể kết nối API Google Sheet: " + err.message + "\nHệ thống đang dùng danh bạ tích hợp sẵn.");
+    renderAdminTeacherDirectory();
+  }
 }
 
 /**
