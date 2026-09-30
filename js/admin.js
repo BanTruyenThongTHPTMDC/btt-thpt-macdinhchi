@@ -156,10 +156,18 @@ async function fetchTickets(isManualRefresh = false) {
     emptyState.style.display = "none";
   }
 
-  try {
-    const url = `${CONFIG.API_ENDPOINT}?action=getTickets&_t=${Date.now()}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${CONFIG.API_ENDPOINT}?action=getTickets`;
+    const response = await fetch(url, { credentials: "omit" });
+    const rawText = await response.text();
+    let data = null;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      if (rawText && rawText.trim().startsWith("<")) {
+        throw new Error("Dịch vụ Google Apps Script đang bận hoặc phản hồi HTML. Thầy/Cô vui lòng bấm 'Làm mới' lại.");
+      }
+      throw parseErr;
+    }
 
     loading.style.display = "none";
 

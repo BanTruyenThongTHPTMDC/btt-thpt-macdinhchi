@@ -8,12 +8,12 @@
 // Danh sách danh mục theo Kế hoạch Ban Truyền Thông MDC 2026 - 2027
 const DEPARTMENTS = {
   teacher: [
+    // 20 Tổ chuyên môn & Phòng ban
     "Tổ Toán", "Tổ Vật lí", "Tổ Hóa học", "Tổ Ngữ Văn", "Tổ Tiếng Anh",
     "Tổ Lịch Sử", "Tổ Địa lí", "Tổ GDKT&PL", "Tổ Công nghệ", "Tổ GDTC - GDQP&AN",
     "Tổ Sinh học", "Tổ Tin học", "Nhóm HĐTNHN - GDĐP", "Chi bộ", "Công đoàn",
-    "Đoàn trường", "Chi đoàn Giáo viên", "GVCN", "Văn phòng", "Phòng Giám thị", "Khác"
-  ],
-  student: [
+    "Đoàn trường", "Chi đoàn Giáo viên", "GVCN", "Văn phòng", "Phòng Giám thị",
+    // Các Câu Lạc Bộ do Thầy/Cô đại diện nộp
     "CLB Khoa học – Khởi nghiệp",
     "CLB Nhiếp ảnh - Báo chí",
     "CLB Văn nghệ - Cổ động",
@@ -21,7 +21,10 @@ const DEPARTMENTS = {
     "CLB Văn học – Diễn thuyết và Kịch",
     "CLB Kỹ năng sống",
     "CLB Hội họa",
-    "Đoàn Thanh niên - Đội Tình nguyện",
+    "Khác"
+  ],
+  student: [
+    "Đoàn Thanh niên – Đội Tình nguyện",
     "Ban Chỉ huy Liên chi Đoàn",
     "Đại diện Khối 10",
     "Đại diện Khối 11",
@@ -130,16 +133,21 @@ const DEFAULT_TEACHER_DIRECTORY = {
 };
 
 // State
-let currentRole = "teacher"; // "teacher" hoặc "student"
-let selectedFiles = []; // Mảng chứa các File object
+let currentRole = "teacher"; // "teacher"
+let selectedFiles = []; // Mảng chứa các File object nộp mới
+let selectedRevFiles = []; // Mảng chứa các File object chỉnh sửa bổ sung
 let currentTeacherDirectory = { ...DEFAULT_TEACHER_DIRECTORY };
+let currentActiveRevisionTicket = null; // Ticket đang được mở để sửa
+let cachedRevisionTickets = null; // Bộ nhớ đệm danh sách bài viết
+let lastRevisionFetchTime = 0; // Mốc thời gian tải danh sách gần nhất
 
 // Khởi chạy khi DOM sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
   applySystemConfig();
   initTeacherDirectory();
-  populateDeptDropdown("teacher");
+  populateDeptDropdown();
   setupDragAndDrop();
+  setupRevisionDragAndDrop();
   setupDeptAutoFillListener();
 });
 
@@ -223,30 +231,95 @@ function applySystemConfig() {
 }
 
 /**
- * 1. Chuyển đổi giữa vai trò Giáo viên và Học sinh
+ * 1. Chuyển đổi giữa 2 chế độ tác vụ: Nộp bài mới VS Bổ sung / Chỉnh sửa theo yêu cầu
+ */
+function switchPortalMode(mode) {
+  const tabSubmit = document.getElementById("tabModeSubmit");
+  const tabRevise = document.getElementById("tabModeRevise");
+  const submissionForm = document.getElementById("submissionForm");
+  const revisionSection = document.getElementById("revisionSection");
+
+  if (mode === "submit") {
+    if (tabSubmit) {
+      tabSubmit.classList.add("active");
+      tabSubmit.setAttribute("aria-selected", "true");
+    }
+    if (tabRevise) {
+      tabRevise.classList.remove("active");
+      tabRevise.setAttribute("aria-selected", "false");
+    }
+    if (submissionForm) submissionForm.style.display = "block";
+    if (revisionSection) revisionSection.style.display = "none";
+  } else {
+    if (tabRevise) {
+      tabRevise.classList.add("active");
+      tabRevise.setAttribute("aria-selected", "true");
+    }
+    if (tabSubmit) {
+      tabSubmit.classList.remove("active");
+      tabSubmit.setAttribute("aria-selected", "false");
+    }
+    if (submissionForm) submissionForm.style.display = "none";
+    if (revisionSection) revisionSection.style.display = "block";
+
+    // Tự động tải trước danh sách bài viết trong nền nếu chưa có cache
+    if (CONFIG.API_ENDPOINT && (!cachedRevisionTickets || Date.now() - lastRevisionFetchTime > 60000)) {
+      fetch(`${CONFIG.API_ENDPOINT}?action=getTickets`, { method: "GET", credentials: "omit" })
+        .then(r => r.json())
+        .then(data => {
+          const list = Array.isArray(data.tickets) ? data.tickets : (data.data?.tickets || []);
+          if (list.length > 0) {
+            cachedRevisionTickets = list;
+            lastRevisionFetchTime = Date.now();
+          }
+        })
+        .catch(e => console.warn("Tải trước danh sách bài viết:", e));
+    }
+
+    // Tự động focus vào ô tìm kiếm bài viết
+    setTimeout(() => {
+      const searchInput = document.getElementById("revisionSearchInput");
+      if (searchInput) searchInput.focus();
+    }, 120);
+  }
+}
+
+/**
+ * 1b. Chuyển đổi đối tượng nộp bài: Giáo viên & CLB vs Học sinh (Đoàn Đội & Khối lớp)
  */
 function switchRole(role) {
   currentRole = role;
-  
   const tabTeacher = document.getElementById("tabTeacher");
   const tabStudent = document.getElementById("tabStudent");
   const submitterNameInput = document.getElementById("submitterName");
-  
+  const deptLabel = document.getElementById("deptLabel");
+  const submitterLabel = document.getElementById("submitterLabel");
+
   if (role === "teacher") {
-    tabTeacher.classList.add("active");
-    tabTeacher.setAttribute("aria-selected", "true");
-    tabStudent.classList.remove("active");
-    tabStudent.setAttribute("aria-selected", "false");
-    
-    submitterNameInput.placeholder = "Ví dụ: Đoàn Minh Tâm / Nguyễn Khánh Ninh";
+    if (tabTeacher) {
+      tabTeacher.classList.add("active");
+      tabTeacher.setAttribute("aria-selected", "true");
+    }
+    if (tabStudent) {
+      tabStudent.classList.remove("active");
+      tabStudent.setAttribute("aria-selected", "false");
+    }
+    if (deptLabel) deptLabel.textContent = "Tổ Chuyên Môn / Đơn Vị / Câu Lạc Bộ";
+    if (submitterLabel) submitterLabel.textContent = "Họ và Tên Thầy/Cô Đại Diện";
+    if (submitterNameInput) submitterNameInput.placeholder = "Họ và tên Thầy/Cô phụ trách hoặc cố vấn CLB";
     populateDeptDropdown("teacher");
   } else {
-    tabStudent.classList.add("active");
-    tabStudent.setAttribute("aria-selected", "true");
-    tabTeacher.classList.remove("active");
-    tabTeacher.setAttribute("aria-selected", "false");
-    
-    submitterNameInput.placeholder = "Ví dụ: Nguyễn Văn A (Chủ nhiệm CLB / Lớp 12A1)";
+    if (tabStudent) {
+      tabStudent.classList.add("active");
+      tabStudent.setAttribute("aria-selected", "true");
+    }
+    if (tabTeacher) {
+      tabTeacher.classList.remove("active");
+      tabTeacher.setAttribute("aria-selected", "false");
+    }
+    if (deptLabel) deptLabel.textContent = "Đoàn Thể / Đại Diện Khối Lớp";
+    if (submitterLabel) submitterLabel.textContent = "Họ và Tên Học Sinh Đại Diện";
+    if (submitterNameInput) submitterNameInput.placeholder = "Ví dụ: Nguyễn Văn A (Đại diện Khối 12 / BCH Liên chi Đoàn)";
     populateDeptDropdown("student");
   }
 
@@ -316,49 +389,16 @@ function handleDeptChange() {
     return;
   }
 
-  // Tra cứu trong danh bạ
+  // Tra cứu trong danh bạ đại diện tổ / cố vấn CLB
   const members = currentTeacherDirectory[selectedDept] || null;
 
-  if (currentRole === "teacher") {
-    if (members && members.length > 0) {
-      // Tự động điền thành viên đầu tiên
-      fillTeacherInfo(members[0], selectedDept, 0, members);
-    } else {
-      if (noticeEl) {
-        noticeEl.style.display = "none";
-        noticeEl.innerHTML = "";
-      }
-    }
+  if (members && members.length > 0) {
+    // Tự động điền thông tin Thầy/Cô đại diện đầu tiên
+    fillTeacherInfo(members[0], selectedDept, 0, members);
   } else {
-    // Role Học sinh / CLB
-    if (members && members.length > 0) {
-      const advisor = members[0];
-      if (noticeEl) {
-        noticeEl.style.display = "flex";
-        noticeEl.innerHTML = `
-          <div class="autofill-header">
-            <span class="autofill-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </span>
-            <span>Cố vấn / Phụ trách: <strong>${advisor.name}</strong>${advisor.phone ? ` (${advisor.phone})` : ""}</span>
-          </div>
-          <div class="autofill-chips-wrap">
-            <span class="autofill-chips-label">Tùy chọn:</span>
-            <button type="button" class="autofill-chip-btn" onclick="applyAdvisorInfo('${selectedDept.replace(/'/g, "\\'")}')">
-              ⚡ Điền thông tin cố vấn vào form
-            </button>
-          </div>
-        `;
-      }
-    } else {
-      if (noticeEl) {
-        noticeEl.style.display = "none";
-        noticeEl.innerHTML = "";
-      }
+    if (noticeEl) {
+      noticeEl.style.display = "none";
+      noticeEl.innerHTML = "";
     }
   }
 }
@@ -442,20 +482,64 @@ function applyAdvisorInfo(dept) {
 }
 
 /**
- * Điền danh sách đơn vị vào dropdown
+ * Điền danh sách đơn vị vào dropdown theo đối tượng nộp bài
  */
-function populateDeptDropdown(role) {
+function populateDeptDropdown(role = currentRole) {
   const select = document.getElementById("deptSelect");
   if (!select) return;
-  select.innerHTML = '<option value="" disabled selected>-- Vui lòng chọn tổ / bộ phận / CLB --</option>';
-  
-  const list = role === "student" ? getStudentDepartments() : (DEPARTMENTS.teacher || []);
-  list.forEach(item => {
+
+  if (role === "student") {
+    select.innerHTML = '<option value="" disabled selected>-- Chọn Đoàn Thể / Khối Lớp Nộp Bài --</option>';
+    const studentList = DEPARTMENTS.student || [];
+    studentList.forEach(item => {
+      const opt = document.createElement("option");
+      opt.value = item;
+      opt.textContent = item;
+      select.appendChild(opt);
+    });
+    return;
+  }
+
+  // Mặc định: Giáo viên (Gồm cả Tổ Chuyên Môn và các Câu Lạc Bộ)
+  select.innerHTML = '<option value="" disabled selected>-- Vui lòng chọn Tổ Chuyên Môn / Đơn Vị / CLB --</option>';
+
+  // 1. Nhóm Tổ Chuyên Môn & Phòng Ban (20 đơn vị)
+  const groupTeacher = document.createElement("optgroup");
+  groupTeacher.label = "── TỔ CHUYÊN MÔN & PHÒNG BAN ──";
+  const teacherList = [
+    "Tổ Toán", "Tổ Vật lí", "Tổ Hóa học", "Tổ Ngữ Văn", "Tổ Tiếng Anh",
+    "Tổ Lịch Sử", "Tổ Địa lí", "Tổ GDKT&PL", "Tổ Công nghệ", "Tổ GDTC - GDQP&AN",
+    "Tổ Sinh học", "Tổ Tin học", "Nhóm HĐTNHN - GDĐP", "Chi bộ", "Công đoàn",
+    "Đoàn trường", "Chi đoàn Giáo viên", "GVCN", "Văn phòng", "Phòng Giám thị"
+  ];
+  teacherList.forEach(item => {
     const opt = document.createElement("option");
     opt.value = item;
     opt.textContent = item;
-    select.appendChild(opt);
+    groupTeacher.appendChild(opt);
   });
+  select.appendChild(groupTeacher);
+
+  // 2. Nhóm Câu Lạc Bộ (do Thầy/Cô cố vấn / phụ trách đại diện)
+  const groupClubs = document.createElement("optgroup");
+  groupClubs.label = "── CÂU LẠC BỘ (Thầy/Cô Phụ Trách / Cố Vấn) ──";
+  const clubList = [
+    "CLB Khoa học – Khởi nghiệp",
+    "CLB Nhiếp ảnh - Báo chí",
+    "CLB Văn nghệ - Cổ động",
+    "CLB Tiếng Anh",
+    "CLB Văn học – Diễn thuyết và Kịch",
+    "CLB Kỹ năng sống",
+    "CLB Hội họa",
+    "Khác"
+  ];
+  clubList.forEach(item => {
+    const opt = document.createElement("option");
+    opt.value = item;
+    opt.textContent = item;
+    groupClubs.appendChild(opt);
+  });
+  select.appendChild(groupClubs);
 }
 
 /**
@@ -870,7 +954,7 @@ Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/
       alert("Khung caption đã có sẵn khối thông tin Footer liên hệ.");
       return;
     }
-    captionEl.value = (captionEl.value.trim() ? captionEl.value.trim() : "[Nhập nội dung bài viết theo quy tắc 5W+1H tại đây...]") + footerText;
+    captionEl.value = (captionEl.value.trim() ? captionEl.value.trim() : "[Nhập nội dung bài viết chi tiết tại đây...]") + footerText;
     captionEl.focus();
     alert("Đã chèn mẫu Footer chuẩn vào khung Caption đề xuất!");
   }
@@ -896,9 +980,593 @@ Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/
   });
 }
 
-// Bắt sự kiện bàn phím phím Escape để đóng Modal
+// ==========================================================================
+// MODULE CHỈNH SỬA & BỔ SUNG BÀI VIẾT THEO YÊU CẦU (CHO THẦY/CÔ)
+// ==========================================================================
+
+/**
+ * Cấu hình Kéo & Thả file cho khu vực chỉnh sửa
+ */
+function setupRevisionDragAndDrop() {
+  const revDropZone = document.getElementById("revDropZone");
+  if (!revDropZone) return;
+
+  ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+    revDropZone.addEventListener(eventName, preventDefaults, false);
+  });
+
+  ["dragenter", "dragover"].forEach(eventName => {
+    revDropZone.addEventListener(eventName, () => revDropZone.classList.add("dragover"), false);
+  });
+
+  ["dragleave", "drop"].forEach(eventName => {
+    revDropZone.addEventListener(eventName, () => revDropZone.classList.remove("dragover"), false);
+  });
+
+  revDropZone.addEventListener("drop", (e) => {
+    const dt = e.dataTransfer;
+    if (dt && dt.files) {
+      addRevFiles(dt.files);
+    }
+  }, false);
+}
+
+function triggerRevFileInput() {
+  const input = document.getElementById("revFileInput");
+  if (input) input.click();
+}
+
+function handleRevFilesSelected(e) {
+  if (e && e.target && e.target.files) {
+    addRevFiles(e.target.files);
+    e.target.value = "";
+  }
+}
+
+function addRevFiles(fileList) {
+  const maxLimit = CONFIG.MAX_FILES || 20;
+  const maxMb = CONFIG.MAX_FILE_SIZE_MB || 50;
+
+  for (let i = 0; i < fileList.length; i++) {
+    const file = fileList[i];
+    if (selectedRevFiles.length >= maxLimit) {
+      alert(`Chỉ được tải lên tối đa ${maxLimit} tệp bổ sung.`);
+      break;
+    }
+    if (file.size > maxMb * 1024 * 1024) {
+      alert(`Tệp "${file.name}" vượt quá kích thước cho phép (${maxMb}MB).`);
+      continue;
+    }
+    if (!selectedRevFiles.some(f => f.name === file.name && f.size === file.size)) {
+      selectedRevFiles.push(file);
+    }
+  }
+  renderRevFileList();
+}
+
+function removeRevFile(index) {
+  selectedRevFiles.splice(index, 1);
+  renderRevFileList();
+}
+
+function renderRevFileList() {
+  const container = document.getElementById("revFileListContainer");
+  if (!container) return;
+
+  if (selectedRevFiles.length === 0) {
+    container.style.display = "none";
+    container.innerHTML = "";
+    return;
+  }
+
+  container.style.display = "grid";
+  container.innerHTML = "";
+
+  selectedRevFiles.forEach((file, idx) => {
+    const card = document.createElement("div");
+    card.className = "file-preview-card";
+
+    const btnRemove = document.createElement("button");
+    btnRemove.className = "btn-remove-file";
+    btnRemove.innerHTML = "&times;";
+    btnRemove.type = "button";
+    btnRemove.onclick = (e) => {
+      e.stopPropagation();
+      removeRevFile(idx);
+    };
+    card.appendChild(btnRemove);
+
+    if (file.type.startsWith("image/")) {
+      const img = document.createElement("img");
+      img.className = "file-thumbnail";
+      img.alt = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => img.src = e.target.result;
+      reader.readAsDataURL(file);
+      card.appendChild(img);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "file-icon-placeholder";
+      placeholder.textContent = file.type.startsWith("video/") ? "🎬" : "📄";
+      card.appendChild(placeholder);
+    }
+
+    const nameLabel = document.createElement("span");
+    nameLabel.className = "file-name-truncate";
+    nameLabel.title = file.name;
+    nameLabel.textContent = file.name;
+    card.appendChild(nameLabel);
+
+    const sizeLabel = document.createElement("span");
+    sizeLabel.className = "file-size-tag";
+    sizeLabel.textContent = formatBytes(file.size);
+    card.appendChild(sizeLabel);
+
+    container.appendChild(card);
+  });
+}
+
+function insertFooterToRevision() {
+  const captionEl = document.getElementById("revFormCaption");
+  if (!captionEl) return;
+  const footerText = 
+`\n\nChịu trách nhiệm nội dung: [Họ tên Thầy/Cô] - [Tổ / Đơn vị]
+Chịu trách nhiệm hình ảnh: [Họ tên Thầy/Cô hoặc Bộ phận chụp ảnh]
+---------------------------------------
+Mọi thông tin chi tiết xin liên hệ:
+TRƯỜNG THPT MẠC ĐĨNH CHI - PHƯỜNG PHÚ LÂM - THÀNH PHỐ HỒ CHÍ MINH
+Địa chỉ: Số 4 Tân Hòa Đông, Phường Phú Lâm, Thành phố Hồ Chí Minh
+Website: https://thptmacdinhchi.hcm.edu.vn/homemb2  
+Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/  
+#THPTMacDinhChi`;
+
+  if (captionEl.value.includes("#THPTMacDinhChi")) {
+    alert("Khung caption đã có sẵn khối Footer liên hệ.");
+    return;
+  }
+  captionEl.value = captionEl.value.trim() + footerText;
+  captionEl.focus();
+}
+
+/**
+ * Tra cứu bài viết cần chỉnh sửa theo Mã Ticket, Tên Thầy/Cô hoặc SĐT
+ */
+async function searchTicketForRevision() {
+  const searchInput = document.getElementById("revisionSearchInput");
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+  const noticeEl = document.getElementById("revisionSearchNotice");
+  const resultsContainer = document.getElementById("revisionSearchResults");
+  const detailCard = document.getElementById("revisionDetailCard");
+  const btnSearchText = document.getElementById("btnSearchTicketText");
+  const spinner = document.getElementById("searchSpinner");
+
+  if (!query) {
+    if (noticeEl) {
+      noticeEl.style.display = "flex";
+      noticeEl.style.background = "#fff7ed";
+      noticeEl.style.color = "#c2410c";
+      noticeEl.innerHTML = "⚠️ Vui lòng nhập Mã bài viết (ví dụ: TT-2026-0001) hoặc Họ tên Thầy/Cô / Số điện thoại để tra cứu.";
+    }
+    return;
+  }
+
+  // Hiển thị trạng thái đang tìm kiếm
+  if (btnSearchText) btnSearchText.style.display = "none";
+  if (spinner) spinner.style.display = "inline-block";
+  if (noticeEl) noticeEl.style.display = "none";
+  if (resultsContainer) {
+    resultsContainer.style.display = "none";
+    resultsContainer.innerHTML = "";
+  }
+  if (detailCard) detailCard.style.display = "none";
+
+  try {
+    let allTickets = [];
+    const now = Date.now();
+
+    // 1. Tận dụng cache nếu vừa tải trong vòng 60 giây để tra cứu tức thì
+    if (cachedRevisionTickets && cachedRevisionTickets.length > 0 && (now - lastRevisionFetchTime < 60000)) {
+      allTickets = cachedRevisionTickets;
+    } else {
+      const url = `${CONFIG.API_ENDPOINT}?action=getTickets`;
+      const res = await fetch(url, { 
+        method: "GET",
+        credentials: "omit"
+      });
+      const rawText = await res.text();
+      let json = null;
+      try {
+        json = JSON.parse(rawText);
+      } catch (parseErr) {
+        console.warn("Máy chủ Google Apps Script trả về văn bản không phải JSON:", rawText);
+        if (rawText && rawText.trim().startsWith("<")) {
+          throw new Error("Dịch vụ Google Apps Script phản hồi chậm hoặc đang chuyển tiếp HTML. Thầy/Cô vui lòng bấm 'Tìm bài viết' lại sau giây lát.");
+        }
+        throw new Error("Không thể phân tích dữ liệu bài viết từ máy chủ (" + parseErr.message + ").");
+      }
+
+      allTickets = Array.isArray(json.tickets) ? json.tickets : (json.data && Array.isArray(json.data.tickets) ? json.data.tickets : []);
+
+      if (!json.success && allTickets.length === 0) {
+        throw new Error(json.message || "Không thể tải danh sách bài viết từ máy chủ.");
+      }
+
+      if (allTickets.length > 0) {
+        cachedRevisionTickets = allTickets;
+        lastRevisionFetchTime = Date.now();
+      }
+    }
+
+    if (btnSearchText) btnSearchText.style.display = "inline";
+    if (spinner) spinner.style.display = "none";
+
+    function removeVietnameseTones(str) {
+      if (!str) return "";
+      str = String(str).toLowerCase().trim();
+      str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+      str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+      str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+      str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+      str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+      str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+      str = str.replace(/đ/g, "d");
+      return str;
+    }
+
+    const qClean = removeVietnameseTones(query);
+    const qDigits = query.replace(/\D/g, "");
+
+    // Lọc bài viết theo truy vấn
+    const matched = allTickets.filter(t => {
+      const code = String(t.code || "").toLowerCase();
+      const codeDigits = code.replace(/\D/g, "");
+      const name = removeVietnameseTones(t.submitter || "");
+      const rawName = String(t.submitter || "").toLowerCase();
+      const phoneDigits = String(t.phone || "").replace(/\D/g, "");
+      const eventName = removeVietnameseTones(t.eventName || "");
+      const rawEvent = String(t.eventName || "").toLowerCase();
+      const dept = removeVietnameseTones(t.dept || "");
+
+      // 1. Khớp mã ticket (VD: "TT-2026-0002", "0002", "2")
+      const matchCode = code.includes(query) || (qDigits && (codeDigits.endsWith(qDigits) || Number(codeDigits) === Number(qDigits)));
+      // 2. Khớp tên người nộp (có dấu hoặc không dấu)
+      const matchName = name.includes(qClean) || rawName.includes(query);
+      // 3. Khớp số điện thoại (chấp nhận cả 0795337935 lẫn 795337935)
+      const matchPhone = qDigits && (
+        phoneDigits.includes(qDigits) || 
+        (qDigits.startsWith("0") && phoneDigits.includes(qDigits.substring(1))) || 
+        ("0" + phoneDigits).includes(qDigits)
+      );
+      // 4. Khớp tên sự kiện hoặc tổ
+      const matchEvent = eventName.includes(qClean) || rawEvent.includes(query) || dept.includes(qClean);
+
+      return matchCode || matchName || matchPhone || matchEvent;
+    });
+
+    if (matched.length === 0) {
+      if (noticeEl) {
+        noticeEl.style.display = "flex";
+        noticeEl.style.background = "#fef2f2";
+        noticeEl.style.color = "#991b1b";
+        noticeEl.innerHTML = `❌ Không tìm thấy bài viết nào khớp với từ khóa "<strong>${searchInput.value.trim()}</strong>". Thầy/Cô vui lòng kiểm tra lại mã bài hoặc số điện thoại.`;
+      }
+      return;
+    }
+
+    // Nếu chỉ khớp đúng 1 bài: hiển thị trực tiếp chi tiết để sửa
+    if (matched.length === 1) {
+      displayRevisionDetail(matched[0]);
+    } else {
+      // Nếu có nhiều bài: hiển thị danh sách thẻ để Thầy/Cô chọn
+      // Ưu tiên hiển thị bài đang ở trạng thái YÊU CẦU CHỈNH SỬA lên trên
+      matched.sort((a, b) => {
+        const isRevA = (a.status || "").includes("YÊU CẦU") ? 1 : 0;
+        const isRevB = (b.status || "").includes("YÊU CẦU") ? 1 : 0;
+        return isRevB - isRevA;
+      });
+
+      renderRevisionSearchResults(matched);
+    }
+
+  } catch (err) {
+    if (btnSearchText) btnSearchText.style.display = "inline";
+    if (spinner) spinner.style.display = "none";
+    if (noticeEl) {
+      noticeEl.style.display = "flex";
+      noticeEl.style.background = "#fef2f2";
+      noticeEl.style.color = "#991b1b";
+      noticeEl.innerHTML = `⚠️ Lỗi tra cứu: ${err.message}`;
+    }
+  }
+}
+
+/**
+ * Hiển thị danh sách kết quả tìm kiếm khi có nhiều bài viết
+ */
+function renderRevisionSearchResults(tickets) {
+  const container = document.getElementById("revisionSearchResults");
+  if (!container) return;
+
+  container.style.display = "flex";
+  container.innerHTML = `
+    <div style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 4px;">
+      Tìm thấy ${tickets.length} bài viết phù hợp. Thầy/Cô vui lòng bấm chọn bài cần chỉnh sửa:
+    </div>
+  `;
+
+  tickets.forEach(ticket => {
+    const isNeedsRev = (ticket.status || "").includes("YÊU CẦU");
+    const item = document.createElement("div");
+    item.className = `result-item-card ${isNeedsRev ? "needs-revision" : ""}`;
+    item.onclick = () => displayRevisionDetail(ticket);
+
+    item.innerHTML = `
+      <div class="result-item-info">
+        <h4>[${ticket.code}] ${ticket.eventName || "Bài viết truyền thông"}</h4>
+        <div class="result-item-meta">
+          <span>🏛️ ${ticket.dept || "Chưa rõ tổ"}</span>
+          <span>👤 ${ticket.submitter || "Thầy/Cô"}</span>
+          <span style="color: ${isNeedsRev ? '#c2410c' : '#0369a1'}; font-weight: 700;">
+            ${isNeedsRev ? '⚠️ ' + ticket.status : '📌 ' + ticket.status}
+          </span>
+          ${ticket.revisionCount ? `<span>(Sửa: ${ticket.revisionCount})</span>` : ""}
+        </div>
+      </div>
+      <button type="button" class="btn-select-result">
+        ${isNeedsRev ? "Chỉnh sửa bài này ↗" : "Xem & Bổ sung ↗"}
+      </button>
+    `;
+
+    container.appendChild(item);
+  });
+}
+
+/**
+ * Hiển thị chi tiết bài viết và mở Form chỉnh sửa bổ sung
+ */
+function displayRevisionDetail(ticket) {
+  currentActiveRevisionTicket = ticket;
+
+  const resultsContainer = document.getElementById("revisionSearchResults");
+  if (resultsContainer) resultsContainer.style.display = "none";
+
+  const detailCard = document.getElementById("revisionDetailCard");
+  if (!detailCard) return;
+
+  // 1. Điền thông tin meta
+  const codeEl = document.getElementById("revDetailCode");
+  const eventNameEl = document.getElementById("revDetailEventName");
+  const deptSubmitterEl = document.getElementById("revDetailDeptSubmitter");
+  const statusEl = document.getElementById("revDetailStatus");
+  const countEl = document.getElementById("revDetailCount");
+  const handlerEl = document.getElementById("revDetailHandler");
+  const feedbackEl = document.getElementById("revDetailFeedback");
+  const directLinkEl = document.getElementById("revDirectDriveLink");
+  const rootLabelEl = document.getElementById("revTreeRootLabel");
+
+  if (codeEl) codeEl.textContent = ticket.code;
+  if (eventNameEl) eventNameEl.textContent = ticket.eventName || "Bài viết truyền thông";
+  if (deptSubmitterEl) {
+    deptSubmitterEl.textContent = `${ticket.dept || "Tổ chuyên môn"} • Người nộp: ${ticket.submitter || "Thầy/Cô"} ${ticket.phone ? "(" + ticket.phone + ")" : ""}`;
+  }
+
+  // Trạng thái badge
+  const isNeedsRev = (ticket.status || "").includes("YÊU CẦU");
+  if (statusEl) {
+    statusEl.textContent = ticket.status || "MỚI NHẬN";
+    statusEl.style.background = isNeedsRev ? "#fef3c7" : "#ecfdf5";
+    statusEl.style.color = isNeedsRev ? "#b45309" : "#047857";
+    statusEl.style.borderColor = isNeedsRev ? "#fde68a" : "#a7f3d0";
+  }
+
+  if (countEl) {
+    countEl.textContent = `Lần sửa: ${ticket.revisionCount || 0}`;
+  }
+
+  // Lời nhắn / Nhận xét của Ban Biên Tập
+  if (handlerEl) {
+    handlerEl.textContent = `Người duyệt: ${ticket.handler || "Ban Quản Trị BTT"}`;
+  }
+  if (feedbackEl) {
+    if (ticket.feedback && ticket.feedback.trim()) {
+      feedbackEl.textContent = `"${ticket.feedback.trim()}"`;
+    } else {
+      feedbackEl.textContent = `"Thầy/Cô vui lòng rà soát lại thông tin bài viết và bổ sung thêm ảnh/video gốc nếu cần."`;
+    }
+  }
+
+  // Link Drive & Cây thư mục
+  const folderUrl = ticket.driveFolder || "#";
+  if (directLinkEl) {
+    directLinkEl.href = folderUrl;
+    if (folderUrl === "#") {
+      directLinkEl.style.display = "none";
+    } else {
+      directLinkEl.style.display = "inline-flex";
+    }
+  }
+
+  const cleanEvent = (ticket.eventName || "").replace(/[\\/:*?"<>|#%&{}]/g, "_").trim().substring(0, 30);
+  if (rootLabelEl) {
+    rootLabelEl.textContent = `${ticket.code}_${cleanEvent}`;
+  }
+
+  // 2. Điền form chỉnh sửa
+  const formTicketCode = document.getElementById("revFormTicketCode");
+  const formSubmitter = document.getElementById("revFormSubmitter");
+  const formCaption = document.getElementById("revFormCaption");
+  const formTeacherNotes = document.getElementById("revTeacherNotes");
+  const formHugeLink = document.getElementById("revHugeFileLink");
+
+  if (formTicketCode) formTicketCode.value = ticket.code;
+  if (formSubmitter) formSubmitter.value = ticket.submitter || "";
+  if (formCaption) formCaption.value = ticket.caption || "";
+  if (formTeacherNotes) formTeacherNotes.value = "";
+  if (formHugeLink) formHugeLink.value = "";
+
+  // Reset danh sách file đính kèm mới
+  selectedRevFiles = [];
+  renderRevFileList();
+
+  // Hiển thị khung chi tiết
+  detailCard.style.display = "block";
+  detailCard.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/**
+ * Đóng khung chi tiết bài viết và quay lại danh sách
+ */
+function closeRevisionDetail() {
+  const detailCard = document.getElementById("revisionDetailCard");
+  if (detailCard) detailCard.style.display = "none";
+
+  const resultsContainer = document.getElementById("revisionSearchResults");
+  if (resultsContainer && resultsContainer.children.length > 1) {
+    resultsContainer.style.display = "flex";
+  }
+}
+
+/**
+ * Xử lý Gửi bản chỉnh sửa / bổ sung bài viết lên Apps Script
+ */
+async function handleRevisionSubmit(event) {
+  event.preventDefault();
+
+  const ticketCode = (document.getElementById("revFormTicketCode")?.value || "").trim();
+  const submitter = (document.getElementById("revFormSubmitter")?.value || "").trim();
+  const revisedCaption = (document.getElementById("revFormCaption")?.value || "").trim();
+  const teacherNotes = (document.getElementById("revTeacherNotes")?.value || "").trim();
+  const hugeFileLink = (document.getElementById("revHugeFileLink")?.value || "").trim();
+
+  if (!ticketCode) {
+    alert("Không tìm thấy mã bài viết hợp lệ.");
+    return;
+  }
+
+  if (!revisedCaption) {
+    alert("Vui lòng nhập nội dung bài viết / caption đã chỉnh sửa.");
+    return;
+  }
+
+  const btnSubmit = document.getElementById("btnSubmitRevision");
+  const btnText = document.getElementById("btnSubmitRevText");
+  const spinner = document.getElementById("btnRevSpinner");
+
+  if (btnSubmit) btnSubmit.disabled = true;
+  if (btnText) btnText.style.display = "none";
+  if (spinner) spinner.style.display = "inline-block";
+
+  showProgressModal("Đang tải các tệp chỉnh sửa lên Google Drive...", 20);
+
+  try {
+    // Chuyển đổi các file mới sang Base64
+    const filePayloads = [];
+    const totalFiles = selectedRevFiles.length;
+
+    for (let i = 0; i < totalFiles; i++) {
+      const file = selectedRevFiles[i];
+      const percent = Math.round(20 + ((i + 1) / (totalFiles || 1)) * 50);
+      showProgressModal(`Đang xử lý tệp bổ sung (${i + 1}/${totalFiles}): ${file.name}...`, percent);
+
+      const base64Data = await compressAndReadAsBase64(file);
+      filePayloads.push({
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        base64: base64Data
+      });
+    }
+
+    showProgressModal("Đang cập nhật trạng thái bài viết sang [ĐÃ SỬA – CHỜ DUYỆT]...", 85);
+
+    const payload = {
+      action: "submitRevision",
+      ticketCode: ticketCode,
+      folderUrl: (currentActiveRevisionTicket && currentActiveRevisionTicket.driveFolder) || "",
+      submitter: submitter,
+      revisedCaption: revisedCaption,
+      teacherNotes: teacherNotes,
+      hugeFileLink: hugeFileLink,
+      files: filePayloads
+    };
+
+    const response = await fetch(CONFIG.API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    showProgressModal("Hoàn tất xử lý!", 100);
+    const result = await response.json();
+    hideProgressModal();
+
+    if (btnSubmit) btnSubmit.disabled = false;
+    if (btnText) btnText.style.display = "inline";
+    if (spinner) spinner.style.display = "none";
+
+    if (result.success) {
+      showRevisionSuccessModal(result.ticketCode, result.folderUrl, filePayloads.length);
+    } else {
+      alert("Lỗi từ máy chủ: " + (result.message || "Không thể lưu bản chỉnh sửa."));
+    }
+
+  } catch (err) {
+    hideProgressModal();
+    if (btnSubmit) btnSubmit.disabled = false;
+    if (btnText) btnText.style.display = "inline";
+    if (spinner) spinner.style.display = "none";
+
+    console.error("Lỗi gửi bản chỉnh sửa:", err);
+    alert("Không thể gửi bản chỉnh sửa: " + err.message + "\nVui lòng thử lại hoặc liên hệ Thầy Tín (Ban Truyền Thông).");
+  }
+}
+
+/**
+ * Hiển thị Modal thành công sau khi gửi bản chỉnh sửa
+ */
+function showRevisionSuccessModal(ticketCode, folderUrl, fileCount) {
+  const modal = document.getElementById("revisionSuccessModal");
+  const codeEl = document.getElementById("revSuccessTicketCode");
+  const countEl = document.getElementById("revSuccessFileCount");
+  const linkEl = document.getElementById("revSuccessFolderLink");
+
+  if (codeEl) codeEl.textContent = ticketCode;
+  if (countEl) countEl.textContent = `${fileCount} tệp bổ sung`;
+  if (linkEl) {
+    linkEl.href = folderUrl || "#";
+    if (!folderUrl || folderUrl === "#") {
+      linkEl.style.display = "none";
+    } else {
+      linkEl.style.display = "inline-block";
+    }
+  }
+
+  if (modal) modal.style.display = "flex";
+}
+
+function closeRevisionSuccessModal() {
+  const modal = document.getElementById("revisionSuccessModal");
+  if (modal) modal.style.display = "none";
+
+  // Reset form và đóng detail
+  closeRevisionDetail();
+  const searchInput = document.getElementById("revisionSearchInput");
+  if (searchInput) searchInput.value = "";
+  const resultsContainer = document.getElementById("revisionSearchResults");
+  if (resultsContainer) resultsContainer.style.display = "none";
+
+  // Quay lại tab nộp bài mới
+  switchPortalMode("submit");
+}
+
+// Bắt sự kiện bàn phím Escape để đóng Modal
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeGuidelinesModal();
+    const revModal = document.getElementById("revisionSuccessModal");
+    if (revModal && revModal.style.display === "flex") {
+      closeRevisionSuccessModal();
+    }
   }
 });
+

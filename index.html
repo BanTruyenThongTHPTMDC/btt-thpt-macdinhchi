@@ -65,7 +65,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
           </svg>
-          <span>Xem Yêu Cầu Về Nội Dung (5W + 1H)</span>
+          <span>Xem Yêu Cầu Về Nội Dung Bài Đăng</span>
         </button>
         <button type="button" class="btn-hero-guide outline" onclick="openGuidelinesModal('plan')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -87,37 +87,36 @@
       <!-- Vùng hiển thị thông báo tiêu điểm ghim từ Quản Trị Viên (nếu có) -->
       <div id="portalNoticeContainer"></div>
 
-      <!-- Role Switcher: Giáo viên vs Học sinh/CLB -->
-      <section class="role-selector-card" aria-label="Chọn đối tượng nộp bài">
-        <label class="section-label">BẠN ĐANG NỘP BÀI VỚI VAI TRÒ:</label>
+      <!-- Bộ điều hướng tác vụ: Nộp bài mới VS Bổ sung / Chỉnh sửa theo yêu cầu -->
+      <section class="role-selector-card portal-mode-card" aria-label="Chọn tác vụ">
+        <label class="section-label">CHỌN TÁC VỤ THỰC HIỆN:</label>
         <div class="segmented-control" role="tablist">
-          <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true"
-            onclick="switchRole('teacher')">
+          <button type="button" class="tab-btn active" id="tabModeSubmit" role="tab" aria-selected="true"
+            onclick="switchPortalMode('submit')">
             <span class="tab-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
               </svg>
             </span>
             <div class="tab-info">
-              <span class="tab-title">Giáo Viên / Tổ Chuyên Môn</span>
-              <span class="tab-desc">20 Tổ bộ môn &amp; Phòng ban</span>
+              <span class="tab-title">1. Nộp Bài Viết Mới</span>
+              <span class="tab-desc">Đại diện Tổ chuyên môn &amp; Câu lạc bộ</span>
             </div>
           </button>
 
-          <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false"
-            onclick="switchRole('student')">
+          <button type="button" class="tab-btn" id="tabModeRevise" role="tab" aria-selected="false"
+            onclick="switchPortalMode('revise')">
             <span class="tab-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
               </svg>
             </span>
             <div class="tab-info">
-              <span class="tab-title">Học Sinh / CLB / Đoàn Đội</span>
-              <span class="tab-desc">Câu lạc bộ &amp; Các khối lớp</span>
+              <span class="tab-title">2. Bổ Sung / Sửa Bài Viết</span>
+              <span class="tab-desc">Chỉnh sửa theo phản hồi của BTT</span>
             </div>
           </button>
         </div>
@@ -126,17 +125,53 @@
       <!-- Main Submission Form -->
       <form id="submissionForm" class="submission-form" onsubmit="handleFormSubmit(event)">
 
+        <!-- Phân loại đối tượng nộp bài: Giáo viên & CLB vs Học sinh / Đoàn Đội & Khối lớp -->
+        <section class="role-selector-card" style="margin-bottom: 1.5rem; background: #ffffff;" aria-label="Chọn đối tượng nộp bài">
+          <label class="section-label">ĐỐI TƯỢNG NỘP BÀI:</label>
+          <div class="segmented-control" role="tablist">
+            <button type="button" class="tab-btn active" id="tabTeacher" role="tab" aria-selected="true"
+              onclick="switchRole('teacher')">
+              <span class="tab-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+              </span>
+              <div class="tab-info">
+                <span class="tab-title">Giáo Viên / Tổ Chuyên Môn &amp; CLB</span>
+                <span class="tab-desc">20 Tổ bộ môn &amp; Các Câu Lạc Bộ</span>
+              </div>
+            </button>
+
+            <button type="button" class="tab-btn" id="tabStudent" role="tab" aria-selected="false"
+              onclick="switchRole('student')">
+              <span class="tab-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </span>
+              <div class="tab-info">
+                <span class="tab-title">Học Sinh / Đoàn Đội &amp; Khối Lớp</span>
+                <span class="tab-desc">Đoàn Đội &amp; Đại diện các Khối lớp</span>
+              </div>
+            </button>
+          </div>
+        </section>
+
         <!-- Fieldset: Thông tin người gửi -->
         <fieldset class="form-section">
           <legend class="legend-title">
             <span class="step-num">1</span>
-            <span>Thông Tin Đại Diện Nộp Bài</span>
+            <span id="step1Title">Thông Tin Đại Diện Nộp Bài</span>
           </legend>
 
           <div class="form-grid grid-2">
             <!-- Đơn vị / Bộ phận -->
             <div class="form-group">
-              <label for="deptSelect" class="input-label required">Tổ Chuyên Môn / Đơn Vị / CLB</label>
+              <label for="deptSelect" id="deptLabel" class="input-label required">Tổ Chuyên Môn / Đơn Vị / Câu Lạc Bộ</label>
               <select id="deptSelect" name="dept" required class="custom-select">
                 <!-- Sẽ được điền tự động qua JavaScript theo Role -->
               </select>
@@ -144,9 +179,9 @@
 
             <!-- Họ và tên -->
             <div class="form-group">
-              <label for="submitterName" class="input-label required">Họ và Tên Người Đại Diện</label>
+              <label for="submitterName" id="submitterLabel" class="input-label required">Họ và Tên Thầy/Cô Đại Diện</label>
               <input type="text" id="submitterName" name="submitter" required
-                placeholder="Ví dụ: Đoàn Minh Tâm / Nguyễn Khánh Ninh" class="custom-input">
+                placeholder="Họ và tên Thầy/Cô phụ trách hoặc cố vấn CLB" class="custom-input">
             </div>
 
             <!-- Số điện thoại / Zalo -->
@@ -205,7 +240,7 @@
               placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
           </div>
 
-          <!-- Card nhắc nhở Quy chuẩn nội dung bài đăng (5W+1H & Footer mẫu) -->
+          <!-- Card nhắc nhở Quy chuẩn nội dung bài đăng & Footer mẫu -->
           <div class="guidelines-callout-card">
             <div class="callout-header-row">
               <div class="callout-title-wrap">
@@ -231,7 +266,7 @@
               </div>
               <div class="callout-summary-item">
                 <span class="summary-check">✓</span>
-                <span><strong>Nội dung 5W + 1H:</strong> What, When, Where, Who, Why (tính giáo dục), How.</span>
+                <span><strong>Nội dung cốt lõi:</strong> Hoạt động gì, Khi nào, Ở đâu, Thành phần tham dự, Ý nghĩa giáo dục &amp; Diễn biến nổi bật.</span>
               </div>
               <div class="callout-summary-item">
                 <span class="summary-check">✓</span>
@@ -317,8 +352,231 @@
           </button>
         </div>
       </form>
+
+      <!-- ===================================================================== -->
+      <!-- KHU VỰC BỔ SUNG & CHỈNH SỬA BÀI VIẾT THEO YÊU CẦU DUYỆT (CHO THẦY/CÔ) -->
+      <!-- ===================================================================== -->
+      <section id="revisionSection" class="revision-wrapper" style="display: none;">
+        <!-- Card tìm kiếm bài viết -->
+        <div class="revision-search-card">
+          <div class="search-header-row">
+            <div class="search-header-title">
+              <span class="search-icon-badge">🔍</span>
+              <div>
+                <h3 class="search-heading">Tra Cứu &amp; Chỉnh Sửa Bài Viết Theo Yêu Cầu</h3>
+                <p class="search-sub">Nhập Mã bài viết (Ticket ID) hoặc Họ tên Thầy/Cô / Số điện thoại để mở bài viết cần điều chỉnh</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="search-input-group">
+            <div class="search-input-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="revisionSearchInput" class="revision-search-input"
+                placeholder="Ví dụ: TT-2026-0001 hoặc Nguyễn Khánh Ninh / 090xxxxxxx..."
+                onkeydown="if(event.key==='Enter'){ searchTicketForRevision(); }">
+            </div>
+            <button type="button" class="btn-search-ticket" onclick="searchTicketForRevision()">
+              <span id="btnSearchTicketText">Tìm bài viết</span>
+              <div id="searchSpinner" class="spinner small" style="display: none;"></div>
+            </button>
+          </div>
+
+          <!-- Trạng thái gợi ý hoặc thông báo nhanh -->
+          <div id="revisionSearchNotice" class="search-notice-wrap" style="display: none;"></div>
+        </div>
+
+        <!-- Vùng hiển thị kết quả tìm kiếm nếu có nhiều bài -->
+        <div id="revisionSearchResults" class="search-results-list" style="display: none;"></div>
+
+        <!-- Khung chi tiết bài viết & Form gửi bản chỉnh sửa bổ sung -->
+        <div id="revisionDetailCard" class="revision-detail-card" style="display: none;">
+          <!-- 1. Header thông tin bài viết & Badge trạng thái -->
+          <div class="detail-top-bar">
+            <div class="ticket-meta-info">
+              <div class="meta-code-row">
+                <span class="ticket-id-tag" id="revDetailCode">TT-2026-XXXX</span>
+                <span class="badge-status-pill" id="revDetailStatus">YÊU CẦU CHỈNH SỬA</span>
+                <span class="rev-count-pill" id="revDetailCount">Lần sửa: 1</span>
+              </div>
+              <h2 class="ticket-title-heading" id="revDetailEventName">Tên sự kiện / hoạt động</h2>
+              <p class="ticket-dept-text" id="revDetailDeptSubmitter">Tổ Chuyên Môn • Người nộp: Thầy/Cô</p>
+            </div>
+            <button type="button" class="btn-close-detail" onclick="closeRevisionDetail()" title="Quay lại danh sách tìm kiếm">
+              ✕ Đóng
+            </button>
+          </div>
+
+          <!-- 2. Hộp Lời dặn / Yêu cầu chỉnh sửa của Ban Biên Tập -->
+          <div class="btt-feedback-callout" id="bttFeedbackContainer">
+            <div class="feedback-badge-row">
+              <span class="feedback-badge-tag">📢 NỘI DUNG CẦN ĐIỀU CHỈNH / BỔ SUNG TỪ BAN BIÊN TẬP:</span>
+              <span class="reviewer-name-tag" id="revDetailHandler">Người duyệt: Ban Quản Trị BTT</span>
+            </div>
+            <div class="feedback-body-content" id="revDetailFeedback">
+              "Thầy/Cô vui lòng bổ sung thêm hình ảnh gốc rõ nét và rà soát lại chức danh đại biểu tham dự."
+            </div>
+          </div>
+
+          <!-- 3. Cây thư mục Drive của bài viết & Liên kết mở Drive -->
+          <div class="drive-tree-view-card">
+            <div class="tree-header-row">
+              <div class="tree-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>CÂY THƯ MỤC LƯU TRỮ GOOGLE DRIVE CỦA BÀI VIẾT</span>
+              </div>
+              <a id="revDirectDriveLink" href="#" target="_blank" class="btn-open-drive-tab">
+                <span>Mở thư mục Drive trên tab mới ↗</span>
+              </a>
+            </div>
+
+            <!-- Cây thư mục trực quan -->
+            <div class="folder-tree-container">
+              <div class="tree-node root">
+                <span class="tree-icon">📁</span>
+                <strong class="tree-label-root" id="revTreeRootLabel">TT-2026-XXXX_Ten_Su_Kien</strong>
+                <span class="tree-tag-cloud">Google Drive 5TB</span>
+              </div>
+              <div class="tree-children">
+                <div class="tree-node">
+                  <span class="tree-branch">├──</span>
+                  <span class="tree-icon">📁</span>
+                  <span class="tree-name">01_Source</span>
+                  <span class="tree-desc">— Hình ảnh &amp; Video gốc ban đầu</span>
+                </div>
+                <div class="tree-node">
+                  <span class="tree-branch">├──</span>
+                  <span class="tree-icon">📁</span>
+                  <span class="tree-name">02_Caption</span>
+                  <span class="tree-desc">— Nội dung bài viết đề xuất</span>
+                </div>
+                <div class="tree-node">
+                  <span class="tree-branch">├──</span>
+                  <span class="tree-icon">📁</span>
+                  <span class="tree-name">03_Final</span>
+                  <span class="tree-desc">— Bản thiết kế &amp; Xuất bản chính thức</span>
+                </div>
+                <div class="tree-node highlight-new">
+                  <span class="tree-branch">└──</span>
+                  <span class="tree-icon">📂</span>
+                  <span class="tree-name">04_ChinhSua_BoSung</span>
+                  <span class="tree-badge-new">✨ Thư mục hệ thống sẽ tự động tạo để lưu các tệp Thầy/Cô chỉnh sửa &amp; bổ sung mới</span>
+                </div>
+              </div>
+            </div>
+            <p class="tree-hint-text">
+              💡 <em>Lưu ý:</em> Khi Thầy/Cô bấm gửi bản chỉnh sửa bên dưới, hệ thống sẽ tự động tạo thư mục <strong>04_ChinhSua_BoSung</strong> trong Drive của bài viết và cập nhật trạng thái sang <strong>ĐÃ SỬA – CHỜ DUYỆT</strong>.
+            </p>
+          </div>
+
+          <!-- 4. Form nộp chỉnh sửa bổ sung -->
+          <form id="revisionSubmitForm" class="revision-submit-form" onsubmit="handleRevisionSubmit(event)">
+            <input type="hidden" id="revFormTicketCode" value="">
+            <input type="hidden" id="revFormSubmitter" value="">
+
+            <!-- Chỉnh sửa Caption -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <div class="label-with-action">
+                <label for="revFormCaption" class="input-label required">Nội Dung Bài Viết / Caption Đã Chỉnh Sửa</label>
+                <button type="button" class="btn-text-action" onclick="insertFooterToRevision()">
+                  + Chèn mẫu Footer chuẩn
+                </button>
+              </div>
+              <textarea id="revFormCaption" rows="6" required class="custom-textarea"
+                placeholder="Chỉnh sửa câu từ, bổ sung thông tin chi tiết tại đây..."></textarea>
+            </div>
+
+            <!-- Tải lên hình ảnh / video bổ sung hoặc thay thế -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="input-label">Tải Thêm Hình Ảnh / Video / Tài Liệu Bổ Sung Hoặc Thay Thế (Nếu có)</label>
+              <div class="drop-zone revision-drop" id="revDropZone" onclick="triggerRevFileInput()">
+                <div class="drop-icon">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </div>
+                <h4 class="drop-title" style="font-size: 0.95rem;">Kéo &amp; thả ảnh/video bổ sung vào đây</h4>
+                <p class="drop-subtitle" style="font-size: 0.82rem;">hoặc <span class="highlight-browse">bấm để chọn từ máy</span></p>
+                <input type="file" id="revFileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;"
+                  onchange="handleRevFilesSelected(event)">
+              </div>
+              <div id="revFileListContainer" class="file-list-grid" style="display: none; margin-top: 10px;"></div>
+            </div>
+
+            <!-- Link Video lớn nếu có -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label for="revHugeFileLink" class="input-label">Link Google Drive / Video Dung Lượng Lớn Bổ Sung (Nếu có)</label>
+              <input type="url" id="revHugeFileLink" class="custom-input"
+                placeholder="Dán link Google Drive bổ sung nếu có video nặng hàng trăm MB / GB...">
+            </div>
+
+            <!-- Ghi chú của Thầy Cô gửi lại cho BTT -->
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="revTeacherNotes" class="input-label">Lời Nhắn / Ghi Chú Gửi Lại Ban Biên Tập</label>
+              <input type="text" id="revTeacherNotes" class="custom-input"
+                placeholder="Ví dụ: Đã thay 3 ảnh tập thể nét hơn, đã sửa chức danh đại biểu...">
+            </div>
+
+            <!-- Nút gửi bản chỉnh sửa -->
+            <div class="submit-wrapper">
+              <button type="submit" id="btnSubmitRevision" class="btn-primary btn-revision-submit">
+                <span id="btnSubmitRevText">🚀 GỬI BẢN CHỈNH SỬA CHO BAN BIÊN TẬP</span>
+                <div id="btnRevSpinner" class="spinner" style="display: none;"></div>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
     </div>
   </main>
+
+  <!-- Modal Kết Quả Chỉnh Sửa Thành Công -->
+  <div id="revisionSuccessModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="success-icon-wrap" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" style="stroke: #10b981;" />
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" style="stroke: #10b981;" />
+        </svg>
+      </div>
+
+      <h2 class="modal-title" style="color: #065f46;">ĐÃ GỬI BẢN CHỈNH SỬA!</h2>
+      <p class="modal-desc">Ban Truyền Thông đã nhận được nội dung điều chỉnh và sẽ kiểm duyệt lại trong thời gian sớm nhất.</p>
+
+      <div class="ticket-badge-card">
+        <span class="ticket-label">MÃ BÀI VIẾT (TICKET ID)</span>
+        <div class="ticket-code-row">
+          <span id="revSuccessTicketCode" class="ticket-code">TT-2026-XXXX</span>
+        </div>
+      </div>
+
+      <div class="summary-details">
+        <div class="detail-row">
+          <span class="detail-key">Trạng thái mới:</span>
+          <span class="detail-val badge-status" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;">ĐÃ SỬA – CHỜ DUYỆT</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Tư liệu nộp thêm:</span>
+          <span id="revSuccessFileCount" class="detail-val">0 tệp</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Thư mục Drive:</span>
+          <a id="revSuccessFolderLink" href="#" target="_blank" class="detail-val link-drive">Mở trên Google Drive ↗</a>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="closeRevisionSuccessModal()" style="margin-top: 1rem; width: 100%;">
+        Hoàn tất &amp; Quay lại
+      </button>
+    </div>
+  </div>
 
   <!-- Modal Kết Quả Nộp Bài Thành Công -->
   <div id="successModal" class="modal-overlay" style="display: none;">
@@ -425,7 +683,7 @@
       <!-- Tab Navigation -->
       <div class="guidelines-tab-nav">
         <button type="button" class="guidelines-tab-btn active" data-tab="content" onclick="switchGuidelinesTab('content')">
-          📋 1. Yêu Cầu Về Nội Dung (5W + 1H)
+          📋 1. Yêu Cầu Về Nội Dung Bài Viết
         </button>
         <button type="button" class="guidelines-tab-btn" data-tab="plan" onclick="switchGuidelinesTab('plan')">
           ⚖️ 2. Kế Hoạch &amp; Quy Chế BTT 2026 - 2027
@@ -469,40 +727,40 @@
           </div>
 
           <div style="background: #f8fafc; border-left: 4px solid #0077ed; padding: 10px 14px; margin-bottom: 12px; border-radius: 4px;">
-            <strong style="color: #0b3c61; font-size: 0.9rem;">b. Nội dung chính (Quy tắc 5W + 1H):</strong>
+            <strong style="color: #0b3c61; font-size: 0.9rem;">b. Nội dung chính (Đảm bảo 6 nội dung cơ bản):</strong>
             <p style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
-              Diễn giải chi tiết sự kiện theo trình tự thời gian hoặc mức độ quan trọng. Lồng ghép phát biểu, cảm nghĩ. Trả lời đầy đủ 6 câu hỏi:
+              Diễn giải chi tiết sự kiện theo trình tự thời gian hoặc mức độ quan trọng. Lồng ghép phát biểu, cảm nghĩ. Nêu rõ 6 thông tin cốt lõi:
             </p>
 
             <div class="five-w-grid">
               <div class="five-w-card">
-                <span class="five-w-tag">WHAT</span>
-                <div class="five-w-title">Sự kiện gì?</div>
+                <span class="five-w-tag">1. HOẠT ĐỘNG GÌ?</span>
+                <div class="five-w-title">Tên sự kiện / hoạt động</div>
                 <div class="five-w-desc">Tên chính xác của hoạt động, chuyên đề, hội thi, lễ hội.</div>
               </div>
               <div class="five-w-card">
-                <span class="five-w-tag">WHEN</span>
-                <div class="five-w-title">Khi nào?</div>
+                <span class="five-w-tag">2. THỜI GIAN</span>
+                <div class="five-w-title">Thời gian diễn ra</div>
                 <div class="five-w-desc">Thời gian diễn ra cụ thể (ngày, giờ, buổi sáng/chiều).</div>
               </div>
               <div class="five-w-card">
-                <span class="five-w-tag">WHERE</span>
-                <div class="five-w-title">Ở đâu?</div>
-                <div class="five-w-desc">Địa điểm tổ chức (Sân trường, Hội trường, phòng chuyên môn hay đi thực tế).</div>
+                <span class="five-w-tag">3. ĐỊA ĐIỂM</span>
+                <div class="five-w-title">Địa điểm tổ chức</div>
+                <div class="five-w-desc">Sân trường, Hội trường, phòng chuyên môn hay đi thực tế.</div>
               </div>
               <div class="five-w-card">
-                <span class="five-w-tag">WHO</span>
-                <div class="five-w-title">Ai tham gia?</div>
+                <span class="five-w-tag">4. THÀNH PHẦN</span>
+                <div class="five-w-title">Thành phần tham dự</div>
                 <div class="five-w-desc">BGH, khách mời (nêu rõ chức danh), Thầy/Cô, học sinh các khối lớp.</div>
               </div>
               <div class="five-w-card">
-                <span class="five-w-tag why">WHY (QUAN TRỌNG NHẤT)</span>
-                <div class="five-w-title">Mục đích là gì?</div>
-                <div class="five-w-desc">Thể hiện tính giáo dục: Hoạt động hướng đến giá trị, lợi ích gì cho học sinh &amp; giáo viên.</div>
+                <span class="five-w-tag why">5. MỤC ĐÍCH &amp; Ý NGHĨA (TRỌNG TÂM)</span>
+                <div class="five-w-title">Ý nghĩa giáo dục</div>
+                <div class="five-w-desc">Thể hiện tính giáo dục: Hoạt động hướng đến giá trị, lợi ích gì cho học sinh &amp; nhà trường.</div>
               </div>
               <div class="five-w-card">
-                <span class="five-w-tag">HOW</span>
-                <div class="five-w-title">Diễn ra như thế nào?</div>
+                <span class="five-w-tag">6. DIỄN BIẾN</span>
+                <div class="five-w-title">Điểm nhấn nổi bật</div>
                 <div class="five-w-desc">Mô tả không khí (sôi nổi, trang nghiêm, xúc động) và hoạt động điểm nhấn (tiết mục văn nghệ, phát biểu...).</div>
               </div>
             </div>
@@ -641,7 +899,7 @@ Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/
               <span class="pdf-icon">📄</span>
               <div>
                 <div class="pdf-title">Yêu Cầu Về Nội Dung Các Bài Đăng Truyền Thông</div>
-                <div class="pdf-meta">Quy chuẩn 5W+1H, Header IN HOA, Mẫu Footer bắt buộc, Nguyên tắc sư phạm • File PDF</div>
+                <div class="pdf-meta">Quy chuẩn nội dung bài viết, Header IN HOA, Mẫu Footer bắt buộc, Nguyên tắc sư phạm • File PDF</div>
               </div>
             </div>
             <a href="docs/Yeu_cau_ve_noi_dung_cac_bai_dang.pdf" target="_blank" download="Yeu_cau_ve_noi_dung_cac_bai_dang_THPT_MDC.pdf" class="btn-pdf-download">
