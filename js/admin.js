@@ -132,7 +132,7 @@ function populateHandlerFilter() {
   const select = document.getElementById("filterHandler");
   if (!select) return;
   select.innerHTML = '<option value="">Tất cả người duyệt</option>';
-  
+
   const reviewers = getReviewersList();
   reviewers.forEach(r => {
     const opt = document.createElement("option");
@@ -186,11 +186,11 @@ async function fetchTickets(isManualRefresh = false) {
  */
 function updateMetrics() {
   const total = allTickets.length;
-  const received = allTickets.filter(t => 
+  const received = allTickets.filter(t =>
     t.status.includes("MỚI NHẬN") || t.status.includes("PHÂN CÔNG") || t.status.includes("ĐANG DUYỆT")
   ).length;
   const revision = allTickets.filter(t => t.status.includes("YÊU CẦU")).length;
-  const approved = allTickets.filter(t => 
+  const approved = allTickets.filter(t =>
     t.status.includes("ĐÃ DUYỆT") || t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ LÊN LỊCH")
   ).length;
 
@@ -210,7 +210,7 @@ function filterTickets() {
 
   const filtered = allTickets.filter(item => {
     // Tìm kiếm text
-    const matchQuery = !query || 
+    const matchQuery = !query ||
       item.code.toLowerCase().includes(query) ||
       item.eventName.toLowerCase().includes(query) ||
       item.submitter.toLowerCase().includes(query) ||
@@ -351,7 +351,7 @@ function openReviewModal(ticketCode) {
   const statusSelect = document.getElementById("updateStatus");
   const rawStatus = activeTicket.status || "";
   const cleanStatus = rawStatus.replace(/^[①②③④⑤⑥⑦⑧⑨\s\d.-]+/, "").trim();
-  const matchedOpt = Array.from(statusSelect.options).find(opt => 
+  const matchedOpt = Array.from(statusSelect.options).find(opt =>
     opt.value === rawStatus || opt.value === cleanStatus || rawStatus.includes(opt.value) || opt.value.includes(cleanStatus)
   );
   if (matchedOpt) {
@@ -788,7 +788,7 @@ function renderAnalyticsView() {
 
   // Tính các chỉ số KPI
   const topDept = sortedDepts[0] && sortedDepts[0].total > 0 ? sortedDepts[0] : null;
-  const totalApproved = allTickets.filter(t => 
+  const totalApproved = allTickets.filter(t =>
     t.status.includes("ĐÃ DUYỆT") || t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ LÊN LỊCH")
   ).length;
   const totalRevision = allTickets.filter(t => t.status.includes("YÊU CẦU")).length;
@@ -956,13 +956,13 @@ function renderTeamView() {
     const pendingTickets = assignedTickets.filter(t => !t.status.includes("ĐÃ ĐĂNG") && !t.status.includes("ĐÃ DUYỆT"));
     const doneTickets = assignedTickets.filter(t => t.status.includes("ĐÃ ĐĂNG") || t.status.includes("ĐÃ DUYỆT"));
 
-    let loadStatus = "Rảnh rỗi";
+    let loadStatus = "Trống";
     let loadClass = "load-free";
     if (pendingTickets.length >= 3) {
       loadStatus = "Tải cao (Nhiều bài chờ)";
       loadClass = "load-heavy";
     } else if (pendingTickets.length > 0) {
-      loadStatus = "Đang thụ lý bài";
+      loadStatus = "Đang xử lý bài";
       loadClass = "load-normal";
     }
 
