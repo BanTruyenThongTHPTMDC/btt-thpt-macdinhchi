@@ -9,12 +9,13 @@ let activeTicket = null;
 let isAuthenticated = false; // Lưu trong bộ nhớ RAM trang hiện tại, reset khi F5/tải lại
 let currentUserRole = "reviewer"; // "superadmin" hoặc "reviewer"
 let currentUserTitle = "Ban Quản Trị BTT";
-let currentAdminTab = "tickets";
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Xóa mọi dấu vết session cũ: đảm bảo mỗi lần tải lại trang đều phải nhập mã PIN
+  // Kiểm tra nếu đã xác thực trong phiên làm việc hiện tại (hoặc được chuyển hướng từ index.html)
+  // Luôn bắt buộc nhập mã PIN xác thực mỗi lần vào trang Quản trị (bảo mật tuyệt đối)
   sessionStorage.removeItem("btt_admin_authenticated");
+  sessionStorage.removeItem("btt_admin_role");
   localStorage.removeItem("btt_admin_authenticated");
+  isAuthenticated = false;
   checkAuth();
 
   // Bắt sự kiện bấm ra ngoài modal hoặc bấm Esc để đóng modal
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 1. Kiểm tra xác thực mã PIN (Bắt buộc nhập mỗi lần vào hoặc F5 lại trang)
+ * 1. Kiểm tra xác thực mã PIN
  */
 function checkAuth() {
   const pinScreen = document.getElementById("pinScreen");
@@ -62,6 +63,7 @@ function checkAuth() {
       if (roleBadgeContainer) roleBadgeContainer.innerHTML = `<span class="badge-role-admin">QUẢN TRỊ HỆ THỐNG</span>`;
       if (adminWelcomeTitle) adminWelcomeTitle.innerHTML = `QUẢN TRỊ VIÊN HỆ THỐNG — THẦY NGUYỄN HỒ TRỌNG TÍN`;
       if (adminWelcomeDesc) adminWelcomeDesc.textContent = `Quyền hạn Quản trị viên: Điều phối phân công, giám sát thi đua các tổ bộ môn, cấu hình cổng tiếp nhận và sao lưu cơ sở dữ liệu.`;
+      switchAdminTab("tickets");
     } else {
       // ẨN HOÀN TOÀN CÁC TAB CỦA QUẢN TRỊ VIÊN (CHỈ GIỮ LẠI TAB DUYỆT BÀI)
       document.querySelectorAll(".super-only-tab").forEach(tab => tab.style.display = "none");
@@ -86,36 +88,44 @@ function checkAuth() {
 }
 
 function handlePinSubmit(e) {
-  e.preventDefault();
-  const inputPin = document.getElementById("pinInput").value.trim();
-  const validPin = CONFIG.ADMIN_PIN || "mdc2026";
-  const superPin = CONFIG.SUPER_ADMIN_PIN || "tinmdc2026";
+  if (e && e.preventDefault) e.preventDefault();
+  const pinInput = document.getElementById("pinInput");
+  const inputPin = pinInput ? pinInput.value.trim() : "";
+  const validPin = (CONFIG.ADMIN_PIN || "mdc2026").trim();
+  const superPin = (CONFIG.SUPER_ADMIN_PIN || "tinmdc2026").trim();
 
   if (inputPin === superPin) {
     isAuthenticated = true;
     currentUserRole = "superadmin";
     currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";
     logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Quản Trị Viên Hệ Thống", "-");
-    document.getElementById("pinError").style.display = "none";
+    const pinErr = document.getElementById("pinError");
+    if (pinErr) pinErr.style.display = "none";
     checkAuth();
   } else if (inputPin === validPin) {
     isAuthenticated = true;
     currentUserRole = "reviewer";
     currentUserTitle = "Thành viên Ban Truyền Thông (BTT)";
     logAudit("Đăng nhập hệ thống", "Đăng nhập với quyền Kiểm duyệt viên BTT", "-");
-    document.getElementById("pinError").style.display = "none";
+    const pinErr = document.getElementById("pinError");
+    if (pinErr) pinErr.style.display = "none";
     checkAuth();
   } else {
-    document.getElementById("pinError").style.display = "block";
-    document.getElementById("pinInput").value = "";
-    document.getElementById("pinInput").focus();
+    const pinErr = document.getElementById("pinError");
+    if (pinErr) pinErr.style.display = "block";
+    if (pinInput) {
+      pinInput.value = "";
+      pinInput.focus();
+    }
   }
+  return false;
 }
 
 function logoutAdmin() {
   isAuthenticated = false;
   currentUserRole = "reviewer";
   sessionStorage.removeItem("btt_admin_authenticated");
+  sessionStorage.removeItem("btt_admin_role");
   localStorage.removeItem("btt_admin_authenticated");
   checkAuth();
 }
@@ -652,7 +662,7 @@ function switchAdminTab(tabName) {
 function promptUpgradeSuperAdmin() {
   const pin = prompt("Vui lòng nhập mã PIN Quản Trị Viên Hệ Thống:");
   if (!pin) return;
-  const superPin = CONFIG.SUPER_ADMIN_PIN || "tinmdc2026";
+  const superPin = (CONFIG.SUPER_ADMIN_PIN || "tinmdc2026").trim();
   if (pin.trim() === superPin) {
     currentUserRole = "superadmin";
     currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";

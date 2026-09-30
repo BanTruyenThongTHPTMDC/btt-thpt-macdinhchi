@@ -59,7 +59,7 @@
       <h2 class="pin-title">Cổng Quản Trị Nội Bộ</h2>
       <p class="pin-desc">Hệ thống điều hành Ban Truyền Thông — Trường THPT Mạc Đĩnh Chi</p>
       
-      <form id="pinForm" onsubmit="handlePinSubmit(event)">
+      <form id="pinForm" onsubmit="handlePinSubmit(event); return false;">
         <div class="form-group">
           <input type="password" id="pinInput" class="custom-input pin-input" 
                  placeholder="Nhập mã PIN xác thực..." autofocus required>
