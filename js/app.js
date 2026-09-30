@@ -49,8 +49,8 @@ const DEFAULT_TEACHER_DIRECTORY = {
     { name: "Trần Quang Vĩ", phone: "0938439868", email: "quangvi346@gmail.com", role: "Ban Truyền Thông" }
   ],
   "Tổ Toán": [
-    { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", role: "Đại diện tổ" },
-    { name: "Đoàn Minh Tâm", phone: "", email: "", role: "Giáo viên" }
+    { name: "Đoàn Minh Tâm", phone: "", email: "", role: "Đại diện tổ" },
+    { name: "Quách Trí Minh", phone: "0768002000", email: "tm3011.qtm@gmail.com", role: "Ban Truyền Thông" }
   ],
   "Tổ Tiếng Anh": [
     { name: "Nguyễn Lê Công Trường", phone: "0374862151", email: "nguyenlecongtruong@gmail.com", role: "Đại diện tổ" },
@@ -81,8 +81,8 @@ const DEFAULT_TEACHER_DIRECTORY = {
     { name: "Nguyễn Minh Tâm", phone: "0933939328", email: "nguyentam28@yahoo.com", role: "Đại diện nhóm" }
   ],
   "Đoàn trường": [
-    { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", role: "Đoàn trường" },
-    { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", role: "Trợ lý thanh niên" }
+    { name: "Du Quế Lộc", phone: "0938830617", email: "locdu1994@gmail.com", role: "Đại diện tổ" },
+    { name: "Nguyễn Thị Hải Vân", phone: "0368577068", email: "haivannguyen2472@gmail.com", role: "Ban Truyền Thông" }
   ],
   "Chi đoàn Giáo viên": [
     { name: "Lê Phát Tài", phone: "0373079550", email: "4501601104.tailp@gmail.com", role: "Bí thư Chi đoàn GV" }
@@ -120,6 +120,9 @@ const DEFAULT_TEACHER_DIRECTORY = {
   ],
   "CLB Văn học – Diễn thuyết và Kịch": [
     { name: "Phan Quỳnh Anh", phone: "", email: "", role: "Cố vấn CLB" }
+  ],
+  "CLB Kỹ năng sống": [
+    { name: "Nguyễn Thị Mỹ Thu", phone: "", email: "", role: "Cố vấn CLB" }
   ],
   "CLB Khoa học – Khởi nghiệp": [
     { name: "Lương Tuấn Anh", phone: "", email: "", role: "Cố vấn CLB" }
@@ -804,3 +807,98 @@ function resetFormAndCloseModal() {
   }
   switchRole("teacher");
 }
+
+/**
+ * ==========================================================================
+ * QUẢN LÝ MODAL QUY CHUẨN & YÊU CẦU NỘI DUNG BÀI ĐĂNG (THEO KẾ HOẠCH & QUY CHUẨN MĐC)
+ * ==========================================================================
+ */
+function openGuidelinesModal(tab = 'content') {
+  const modal = document.getElementById("guidelinesModal");
+  if (modal) {
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    switchGuidelinesTab(tab);
+  }
+}
+
+function closeGuidelinesModal() {
+  const modal = document.getElementById("guidelinesModal");
+  if (modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+  }
+}
+
+function switchGuidelinesTab(tabName) {
+  const tabBtns = document.querySelectorAll(".guidelines-tab-btn");
+  tabBtns.forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-tab") === tabName);
+  });
+
+  const panels = document.querySelectorAll(".guidelines-tab-panel");
+  panels.forEach(panel => {
+    panel.classList.toggle("active", panel.id === `tabGuidelines_${tabName}`);
+  });
+}
+
+/**
+ * Chèn mẫu Footer chuẩn quy định vào ô Caption đề xuất
+ */
+function insertFooterTemplate() {
+  const captionEl = document.getElementById("captionText");
+  const deptEl = document.getElementById("deptSelect");
+  const submitterEl = document.getElementById("submitterName");
+
+  const deptName = deptEl && deptEl.value ? deptEl.value : "[Tên Tổ / CLB]";
+  const submitterName = submitterEl && submitterEl.value ? submitterEl.value : "[Họ tên Thầy/Cô]";
+
+  const footerText = 
+`\n\n---------------------------------------
+Chịu trách nhiệm nội dung: ${submitterName} - ${deptName}
+Chịu trách nhiệm hình ảnh: ${deptName} / Ban Truyền Thông
+---------------------------------------
+Mọi thông tin chi tiết xin liên hệ:
+TRƯỜNG THPT MẠC ĐĨNH CHI - PHƯỜNG PHÚ LÂM - THÀNH PHỐ HỒ CHÍ MINH
+Địa chỉ: Số 4 Tân Hòa Đông, Phường Phú Lâm, Thành phố Hồ Chí Minh
+Website: https://thptmacdinhchi.hcm.edu.vn/homemb2  
+Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/  
+#THPTMacDinhChi`;
+
+  if (captionEl) {
+    if (captionEl.value.includes("#THPTMacDinhChi")) {
+      alert("Khung caption đã có sẵn khối thông tin Footer liên hệ.");
+      return;
+    }
+    captionEl.value = (captionEl.value.trim() ? captionEl.value.trim() : "[Nhập nội dung bài viết theo quy tắc 5W+1H tại đây...]") + footerText;
+    captionEl.focus();
+    alert("Đã chèn mẫu Footer chuẩn vào khung Caption đề xuất!");
+  }
+}
+
+/**
+ * Sao chép mẫu Footer chuẩn vào bộ nhớ đệm
+ */
+function copyFooterTemplate() {
+  const footerText = 
+`Chịu trách nhiệm nội dung: [Họ tên Thầy/Cô] - [Tổ / Đơn vị]
+Chịu trách nhiệm hình ảnh: [Họ tên Thầy/Cô hoặc Bộ phận chụp ảnh]
+---------------------------------------
+Mọi thông tin chi tiết xin liên hệ:
+TRƯỜNG THPT MẠC ĐĨNH CHI - PHƯỜNG PHÚ LÂM - THÀNH PHỐ HỒ CHÍ MINH
+Địa chỉ: Số 4 Tân Hòa Đông, Phường Phú Lâm, Thành phố Hồ Chí Minh
+Website: https://thptmacdinhchi.hcm.edu.vn/homemb2  
+Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/  
+#THPTMacDinhChi`;
+
+  navigator.clipboard.writeText(footerText).then(() => {
+    alert("Đã sao chép mẫu Footer chuẩn vào bộ nhớ tạm!");
+  });
+}
+
+// Bắt sự kiện bàn phím phím Escape để đóng Modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeGuidelinesModal();
+  }
+});

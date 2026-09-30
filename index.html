@@ -30,13 +30,22 @@
         <img src="LOGO.png" alt="Logo THPT Mạc Đĩnh Chi" class="nav-logo">
         <span class="nav-school">TRƯỜNG THPT MẠC ĐĨNH CHI</span>
       </div>
-      <a href="admin.html" class="nav-admin-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        <span>Nội Bộ BTT (Admin)</span>
-      </a>
+      <div class="nav-actions-wrap">
+        <button type="button" class="nav-guidelines-btn" onclick="openGuidelinesModal('content')" title="Xem yêu cầu và quy chuẩn bài viết">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Quy Chuẩn &amp; Yêu Cầu Bài Đăng</span>
+        </button>
+        <a href="admin.html" class="nav-admin-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Nội Bộ BTT (Admin)</span>
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -49,6 +58,26 @@
       </div>
       <h1 class="school-title">CỔNG TIẾP NHẬN BÀI TRUYỀN THÔNG</h1>
       <p class="portal-subtitle">Tiếp nhận bài viết, hình ảnh &amp; tư liệu sự kiện</p>
+
+      <!-- Các nút mở nhanh Yêu cầu nội dung & Kế hoạch -->
+      <div class="hero-quick-actions">
+        <button type="button" class="btn-hero-guide" onclick="openGuidelinesModal('content')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+          <span>Xem Yêu Cầu Về Nội Dung (5W + 1H)</span>
+        </button>
+        <button type="button" class="btn-hero-guide outline" onclick="openGuidelinesModal('plan')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Kế Hoạch &amp; Định Mức Nộp Bài (NH 2026-2027)</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -176,11 +205,68 @@
               placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
           </div>
 
+          <!-- Card nhắc nhở Quy chuẩn nội dung bài đăng (5W+1H & Footer mẫu) -->
+          <div class="guidelines-callout-card">
+            <div class="callout-header-row">
+              <div class="callout-title-wrap">
+                <span class="callout-badge-icon">📖</span>
+                <div>
+                  <h4 class="callout-heading">Yêu Cầu Về Nội Dung Bài Đăng (Theo Quy Chuẩn MĐC)</h4>
+                  <p class="callout-sub">Áp dụng cho mọi bài đăng Fanpage &amp; Website trường năm học 2026 - 2027</p>
+                </div>
+              </div>
+              <button type="button" class="btn-callout-view" onclick="openGuidelinesModal('content')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Xem chi tiết quy chuẩn</span>
+              </button>
+            </div>
+
+            <div class="callout-summary-grid">
+              <div class="callout-summary-item">
+                <span class="summary-check">✓</span>
+                <span><strong>Tiêu đề (Header):</strong> Viết IN HOA để bật trọng tâm sự kiện.</span>
+              </div>
+              <div class="callout-summary-item">
+                <span class="summary-check">✓</span>
+                <span><strong>Nội dung 5W + 1H:</strong> What, When, Where, Who, Why (tính giáo dục), How.</span>
+              </div>
+              <div class="callout-summary-item">
+                <span class="summary-check">✓</span>
+                <span><strong>Văn phong:</strong> Chuẩn mực sư phạm, không dùng tiếng lóng, <em>không lạm dụng AI</em>.</span>
+              </div>
+              <div class="callout-summary-item">
+                <span class="summary-check">✓</span>
+                <span><strong>Khối cố định (Footer):</strong> Chịu trách nhiệm nội dung, hình ảnh &amp; liên hệ.</span>
+              </div>
+            </div>
+
+            <div class="callout-footer-actions">
+              <span class="callout-hint">💡 Thầy/Cô bấm để xem lại chi tiết hoặc tự động chèn nhanh Footer chuẩn:</span>
+              <div class="callout-btn-group">
+                <button type="button" class="btn-insert-footer" onclick="insertFooterTemplate()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="4 14 10 14 10 20"></polyline>
+                    <polyline points="20 10 14 10 14 4"></polyline>
+                    <line x1="14" y1="10" x2="21" y2="3"></line>
+                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                  </svg>
+                  <span>Chèn mẫu Footer chuẩn vào Caption</span>
+                </button>
+                <button type="button" class="btn-copy-footer" onclick="copyFooterTemplate()">
+                  <span>Sao chép mẫu Footer</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Caption đề xuất -->
           <div class="form-group">
             <label for="captionText" class="input-label required">Caption Đề Xuất Đăng Fanpage / Web</label>
-            <textarea id="captionText" name="caption" rows="5" required
-              placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt."
+            <textarea id="captionText" name="caption" rows="6" required
+              placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt. Bấm nút phía trên để chèn nhanh mẫu Footer chuẩn."
               class="custom-textarea"></textarea>
           </div>
         </fieldset>
@@ -320,6 +406,286 @@
       <p class="copyright">Hệ thống Quản lý Truyền thông Nội bộ v2.0 • 2026 - 2027</p>
     </div>
   </footer>
+
+  <!-- Modal Tra Cứu Quy Chuẩn & Yêu Cầu Bài Đăng (Theo Kế Hoạch 2026-2027) -->
+  <div id="guidelinesModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card guidelines-modal-card">
+      <!-- Modal Header -->
+      <div class="guidelines-modal-header">
+        <div class="guidelines-modal-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fce7b2" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>QUY CHUẨN &amp; YÊU CẦU BÀI ĐĂNG TRUYỀN THÔNG MĐC</span>
+        </div>
+        <button type="button" class="guidelines-modal-close" onclick="closeGuidelinesModal()" title="Đóng cửa sổ">✕</button>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="guidelines-tab-nav">
+        <button type="button" class="guidelines-tab-btn active" data-tab="content" onclick="switchGuidelinesTab('content')">
+          📋 1. Yêu Cầu Về Nội Dung (5W + 1H)
+        </button>
+        <button type="button" class="guidelines-tab-btn" data-tab="plan" onclick="switchGuidelinesTab('plan')">
+          ⚖️ 2. Kế Hoạch &amp; Quy Chế BTT 2026 - 2027
+        </button>
+        <button type="button" class="guidelines-tab-btn" data-tab="docs" onclick="switchGuidelinesTab('docs')">
+          📁 3. Tải Văn Bản Gốc (PDF)
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="guidelines-modal-body">
+        <!-- TAB 1: YÊU CẦU VỀ NỘI DUNG BÀI ĐĂNG -->
+        <div id="tabGuidelines_content" class="guidelines-tab-panel active">
+          <h3 class="guide-section-title">
+            <span>I. NGUYÊN TẮC CỐT LÕI CỦA SẢN PHẨM TRUYỀN THÔNG</span>
+          </h3>
+          <ul class="guide-rule-list">
+            <li><strong>Chuẩn hoá về mặt sư phạm &amp; thẩm mỹ:</strong> Không sử dụng tiếng lóng phản cảm, từ viết tắt vô nghĩa, hoặc ngôn từ gây tranh cãi, nhạy cảm về chính trị, tôn giáo, giới tính.</li>
+            <li><strong>Tính chính danh và xác thực:</strong> Mọi mốc thời gian, số liệu, tên cá nhân, danh hiệu thi đua đều phải được đối chiếu từ văn bản chính thức của nhà trường trước khi xuất bản.</li>
+            <li><strong>Bảo đảm bản quyền:</strong> Tuyệt đối không vi phạm bản quyền về nội dung văn bản, hình ảnh tư liệu, video và âm nhạc sử dụng.</li>
+            <li><strong>Tinh thần và phong cách:</strong> Thể hiện tinh thần trẻ trung, năng động, truyền cảm hứng tích cực nhưng luôn giữ vững sự tôn trọng và tính mô phạm của môi trường giáo dục. Không lạm dụng từ ngữ theo trào lưu thiếu chọn lọc trên mạng xã hội.</li>
+          </ul>
+
+          <div class="guide-alert-ai">
+            <strong>⚠️ LƯU Ý ĐẶC BIỆT VỀ CÔNG NGHỆ:</strong> Tuyệt đối <u>không lạm dụng AI</u> trong các sản phẩm truyền thông. Tránh lối diễn đạt máy móc, câu từ sáo rỗng, khoa trương cường điệu hóa.
+          </div>
+
+          <h3 class="guide-section-title">
+            <span>II. CẤU TRÚC BÀI ĐĂNG TIÊU CHUẨN (4 PHẦN)</span>
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 0.75rem;">
+            Mỗi bài viết hoàn chỉnh trên Fanpage và Website trường cần tuân thủ cấu trúc 4 phần tiêu chuẩn:
+          </p>
+
+          <div style="background: #f8fafc; border-left: 4px solid #0077ed; padding: 10px 14px; margin-bottom: 12px; border-radius: 4px;">
+            <strong style="color: #0b3c61; font-size: 0.9rem;">a. Tiêu đề (Header):</strong>
+            <p style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
+              <strong>Viết IN HOA</strong> để làm bật trọng tâm sự kiện.<br>
+              <em>Ví dụ: TRƯỜNG THPT MẠC ĐĨNH CHI TỔ CHỨC LỄ KHAI GIẢNG NĂM HỌC 2026 – 2027</em>
+            </p>
+          </div>
+
+          <div style="background: #f8fafc; border-left: 4px solid #0077ed; padding: 10px 14px; margin-bottom: 12px; border-radius: 4px;">
+            <strong style="color: #0b3c61; font-size: 0.9rem;">b. Nội dung chính (Quy tắc 5W + 1H):</strong>
+            <p style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
+              Diễn giải chi tiết sự kiện theo trình tự thời gian hoặc mức độ quan trọng. Lồng ghép phát biểu, cảm nghĩ. Trả lời đầy đủ 6 câu hỏi:
+            </p>
+
+            <div class="five-w-grid">
+              <div class="five-w-card">
+                <span class="five-w-tag">WHAT</span>
+                <div class="five-w-title">Sự kiện gì?</div>
+                <div class="five-w-desc">Tên chính xác của hoạt động, chuyên đề, hội thi, lễ hội.</div>
+              </div>
+              <div class="five-w-card">
+                <span class="five-w-tag">WHEN</span>
+                <div class="five-w-title">Khi nào?</div>
+                <div class="five-w-desc">Thời gian diễn ra cụ thể (ngày, giờ, buổi sáng/chiều).</div>
+              </div>
+              <div class="five-w-card">
+                <span class="five-w-tag">WHERE</span>
+                <div class="five-w-title">Ở đâu?</div>
+                <div class="five-w-desc">Địa điểm tổ chức (Sân trường, Hội trường, phòng chuyên môn hay đi thực tế).</div>
+              </div>
+              <div class="five-w-card">
+                <span class="five-w-tag">WHO</span>
+                <div class="five-w-title">Ai tham gia?</div>
+                <div class="five-w-desc">BGH, khách mời (nêu rõ chức danh), Thầy/Cô, học sinh các khối lớp.</div>
+              </div>
+              <div class="five-w-card">
+                <span class="five-w-tag why">WHY (QUAN TRỌNG NHẤT)</span>
+                <div class="five-w-title">Mục đích là gì?</div>
+                <div class="five-w-desc">Thể hiện tính giáo dục: Hoạt động hướng đến giá trị, lợi ích gì cho học sinh &amp; giáo viên.</div>
+              </div>
+              <div class="five-w-card">
+                <span class="five-w-tag">HOW</span>
+                <div class="five-w-title">Diễn ra như thế nào?</div>
+                <div class="five-w-desc">Mô tả không khí (sôi nổi, trang nghiêm, xúc động) và hoạt động điểm nhấn (tiết mục văn nghệ, phát biểu...).</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #f8fafc; border-left: 4px solid #0077ed; padding: 10px 14px; margin-bottom: 12px; border-radius: 4px;">
+            <strong style="color: #0b3c61; font-size: 0.9rem;">c. Kết bài:</strong>
+            <p style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
+              Ý nghĩa của hoạt động và lời hứa hẹn, kỳ vọng cho các hoạt động tiếp theo (linh hoạt theo từng nội dung).
+            </p>
+          </div>
+
+          <div style="background: #f8fafc; border-left: 4px solid #0077ed; padding: 10px 14px; margin-bottom: 12px; border-radius: 4px;">
+            <strong style="color: #0b3c61; font-size: 0.9rem;">d. Khối thông tin cố định (Footer &amp; Hashtags bắt buộc):</strong>
+            <p style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
+              Dưới mỗi bài đăng cần thông tin rõ người chịu trách nhiệm về nội dung (tên Thầy/Cô viết bài và tổ chuyên môn) và hình ảnh (tên Thầy/Cô hoặc bộ phận ghi hình, chụp ảnh) kèm thông tin liên hệ chính thức của trường:
+            </p>
+
+            <div class="footer-preview-box">
+              <button type="button" class="btn-copy-in-box" onclick="copyFooterTemplate()">📋 Sao chép mẫu này</button>
+Chịu trách nhiệm nội dung: [Họ tên Thầy/Cô] - [Tổ / Đơn vị]
+Chịu trách nhiệm hình ảnh: [Họ tên Thầy/Cô hoặc Bộ phận chụp ảnh]
+---------------------------------------
+Mọi thông tin chi tiết xin liên hệ:
+TRƯỜNG THPT MẠC ĐĨNH CHI - PHƯỜNG PHÚ LÂM - THÀNH PHỐ HỒ CHÍ MINH
+Địa chỉ: Số 4 Tân Hòa Đông, Phường Phú Lâm, Thành phố Hồ Chí Minh
+Website: https://thptmacdinhchi.hcm.edu.vn/homemb2  
+Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/  
+#THPTMacDinhChi</div>
+          </div>
+
+          <h3 class="guide-section-title">
+            <span>III. YÊU CẦU VỀ VĂN PHONG</span>
+          </h3>
+          <ul class="guide-rule-list">
+            <li>Sử dụng ngôn ngữ khách quan, chính xác, giản dị và trong sáng. Không sử dụng lối diễn đạt máy móc, từ ngữ cường điệu hoá.</li>
+            <li>Tránh sự khô khan, cứng nhắc, thể hiện được tinh thần trẻ trung, năng động nhằm dễ tiếp cận học sinh. Bên cạnh thông tin sự kiện, Thầy/Cô có thể lồng ghép câu cảm nghĩ, cảm nhận, hoặc trích dẫn các câu nhận định phù hợp truyền cảm hứng và động lực.</li>
+            <li>Giữ sự trang trọng, chuẩn mực sư phạm, không dùng tiếng lóng, teencode hoặc văn nói đời thường.</li>
+          </ul>
+        </div>
+
+        <!-- TAB 2: KẾ HOẠCH & ĐỊNH MỨC NĂM HỌC 2026-2027 -->
+        <div id="tabGuidelines_plan" class="guidelines-tab-panel">
+          <h3 class="guide-section-title">
+            <span>I. QUY CHẾ VẬN HÀNH &amp; ĐỊNH MỨC TRUYỀN THÔNG (KẾ HOẠCH BTT 2026 - 2027)</span>
+          </h3>
+          <ul class="guide-rule-list">
+            <li><strong>Định mức đăng bài:</strong> Trong 1 tháng, mỗi tổ bộ môn, phòng ban, bộ phận xây dựng <u>ít nhất 01 bài đăng truyền thông</u> bám sát các hoạt động được tổ chức.</li>
+            <li><strong>Sản phẩm hoàn chỉnh:</strong> Bao gồm <strong>01 bài đăng Fanpage Facebook và 01 bài đăng trên Website trường</strong>.</li>
+            <li><strong>Kênh tiếp nhận duy nhất:</strong> Toàn bộ bài viết và ảnh/video gửi qua <u>đường link Cổng Web trực tuyến</u> do Ban Truyền Thông xây dựng. <strong>Ban Truyền Thông tuyệt đối không nhận sản phẩm qua Zalo, tin nhắn</strong> vì sẽ làm giảm chất lượng, vỡ hạt hình ảnh và video.</li>
+            <li><strong>Thời hạn thông tin:</strong> Ban Truyền Thông cần được nhận thông tin kế hoạch hoạt động cụ thể và phân công nhiệm vụ <u>trước thời gian quy định tối thiểu là 1 tuần</u>.</li>
+            <li><strong>Đăng ký đầu tuần:</strong> Vào mỗi Thứ 2 đầu tuần, đại diện truyền thông các tổ tiến hành đăng ký sản phẩm truyền thông của bộ phận mình.</li>
+            <li><strong>Quy chế kiểm duyệt &amp; phản hồi:</strong> Ban Quản trị và kiểm duyệt BTT nhận xét gửi phản hồi về các bộ phận <strong>tối đa 02 lần</strong> (nếu có sai sót) và yêu cầu chỉnh sửa:
+              <br>• Nếu sau 02 lần chỉnh sửa vẫn tồn tại sai sót: sản phẩm được tính <em>không đảm bảo chất lượng</em>.
+              <br>• Nếu nộp trễ so với thời hạn đăng ký: sản phẩm được tính <em>không đảm bảo tiến độ</em>.
+            </li>
+            <li><strong>Phân định trách nhiệm:</strong> Thành viên Ban Truyền Thông không làm thay các bộ phận khác về công tác soạn bài, chụp ảnh, quay video clip; chỉ làm công việc biên tập lại, chỉnh sửa nội dung, kiểm duyệt và đăng bài.</li>
+          </ul>
+
+          <h3 class="guide-section-title">
+            <span>II. DANH SÁCH 27 ĐẠI DIỆN TRUYỀN THÔNG CÁC TỔ &amp; PHÒNG BAN (THEO KẾ HOẠCH)</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.75rem;">
+            Theo Kế hoạch hoạt động số 01/KH-THPTMĐC được Hiệu trưởng phê duyệt:
+          </p>
+
+          <div class="rep-table-wrap">
+            <table class="rep-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">STT</th>
+                  <th>Tổ Bộ Môn / Bộ Phận</th>
+                  <th>Đại Diện Truyền Thông</th>
+                  <th>Ghi Chú</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td><strong>Tổ Toán</strong></td><td>Thầy Đoàn Minh Tâm</td><td>Đại diện tổ</td></tr>
+                <tr><td>2</td><td><strong>Tổ Vật lí</strong></td><td>Thầy Lương Tuấn Anh</td><td>Đại diện tổ</td></tr>
+                <tr><td>3</td><td><strong>Tổ Hóa học</strong></td><td>Cô Nguyễn Lan Anh</td><td>Đại diện tổ</td></tr>
+                <tr><td>4</td><td><strong>Tổ Ngữ Văn</strong></td><td>Cô Nguyễn Khánh Ninh</td><td>Đại diện tổ</td></tr>
+                <tr><td>5</td><td><strong>Tổ Tiếng Anh</strong></td><td>Thầy Nguyễn Lê Công Trường</td><td>Đại diện tổ</td></tr>
+                <tr><td>6</td><td><strong>Tổ Lịch Sử</strong></td><td>Thầy Ngô Phạm Gia Bảo</td><td>Đại diện tổ</td></tr>
+                <tr><td>7</td><td><strong>Tổ Địa lí</strong></td><td>Thầy Lê Phương Trựt Nhân</td><td>Đại diện tổ</td></tr>
+                <tr><td>8</td><td><strong>Tổ GDKT&amp;PL</strong></td><td>Cô Nguyễn Thị Mai</td><td>Đại diện tổ</td></tr>
+                <tr><td>9</td><td><strong>Tổ Công nghệ</strong></td><td>Cô Huỳnh Thị Hồng Cẩm</td><td>Đại diện tổ</td></tr>
+                <tr><td>10</td><td><strong>Tổ GDTC - GDQP&amp;AN</strong></td><td>Thầy Phan Xuân Anh</td><td>Đại diện tổ</td></tr>
+                <tr><td>11</td><td><strong>Tổ Sinh học</strong></td><td>Cô Nguyễn Mỹ Kim Ngân</td><td>Đại diện tổ</td></tr>
+                <tr><td>12</td><td><strong>Tổ Tin học</strong></td><td>Thầy Huỳnh Diệp Tân</td><td>Đại diện tổ</td></tr>
+                <tr><td>13</td><td><strong>Nhóm HĐTNHN - GDĐP</strong></td><td>Thầy Nguyễn Minh Tâm</td><td>Đại diện nhóm</td></tr>
+                <tr><td>14</td><td><strong>Chi bộ</strong></td><td>Cô Phạm Thị Thu Thùy</td><td>Chi ủy viên</td></tr>
+                <tr><td>15</td><td><strong>Công đoàn</strong></td><td>Thầy Đặng Thái Phong</td><td>Chủ tịch Công đoàn</td></tr>
+                <tr><td>16</td><td><strong>Đoàn trường</strong></td><td>Thầy Du Quế Lộc</td><td>Trợ lý thanh niên</td></tr>
+                <tr><td>17</td><td><strong>Chi đoàn Giáo viên</strong></td><td>Thầy Lê Phát Tài</td><td>Bí thư Chi đoàn GV</td></tr>
+                <tr><td>18</td><td><strong>GVCN</strong></td><td>Cô Lê Thị Thúy Hằng</td><td>Đại diện GVCN</td></tr>
+                <tr><td>19</td><td><strong>Văn phòng</strong></td><td>Thầy Nguyễn Hoài Nam</td><td>Văn phòng - Học vụ</td></tr>
+                <tr><td>20</td><td><strong>Giám thị</strong></td><td>Thầy Phan Phi</td><td>Giám thị</td></tr>
+                <tr><td>21</td><td><strong>CLB Khoa học – Khởi nghiệp</strong></td><td>Thầy Lương Tuấn Anh</td><td>Cố vấn CLB</td></tr>
+                <tr><td>22</td><td><strong>CLB Truyền thông</strong></td><td>Cô Trịnh Thị Hà Trang</td><td>Cố vấn CLB</td></tr>
+                <tr><td>23</td><td><strong>CLB Văn nghệ - Cổ động</strong></td><td>Cô Trần Nguyễn Thanh Mai</td><td>Cố vấn CLB</td></tr>
+                <tr><td>24</td><td><strong>CLB Tiếng Anh</strong></td><td>Cô Phan Huỳnh Nhật Linh</td><td>Cố vấn CLB</td></tr>
+                <tr><td>25</td><td><strong>CLB Văn học – Diễn thuyết và Kịch</strong></td><td>Cô Phan Quỳnh Anh</td><td>Cố vấn CLB</td></tr>
+                <tr><td>26</td><td><strong>CLB Kỹ năng sống</strong></td><td>Cô Nguyễn Thị Mỹ Thu</td><td>Cố vấn CLB</td></tr>
+                <tr><td>27</td><td><strong>CLB Hội họa</strong></td><td>Cô Nguyễn Hoàng Yến</td><td>Cố vấn CLB</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="guide-section-title">
+            <span>III. LỊCH TRÌNH SỰ KIỆN TRỌNG TÂM CÁC THÁNG TRONG NĂM HỌC</span>
+          </h3>
+          <ul class="guide-rule-list" style="font-size: 0.85rem;">
+            <li><strong>Tháng 09/2026:</strong> Lễ Khai giảng năm học mới; Hoạt động đầu năm của các tổ chuyên môn.</li>
+            <li><strong>Tháng 10/2026:</strong> Đại hội Đoàn trường; Tiếng hát Học sinh Mạc Đĩnh Chi.</li>
+            <li><strong>Tháng 11/2026:</strong> Lễ Kỷ niệm Ngày Nhà giáo Việt Nam 20/11; Gặp gỡ Lãnh đạo trường &amp; Cán bộ Đoàn 3 khối.</li>
+            <li><strong>Tháng 12/2026:</strong> Kỷ niệm Ngày thành lập QĐND Việt Nam 22/12; Sơ kết HKI.</li>
+            <li><strong>Tháng 01/2027:</strong> Hội trại truyền thống 9/1; Hoạt động chuẩn bị Tết Nguyên Đán.</li>
+            <li><strong>Tháng 02/2027:</strong> Hoạt động mừng Đảng mừng Xuân; Khởi động học kỳ II.</li>
+            <li><strong>Tháng 03/2027:</strong> Chuẩn bị tuyển sinh 10; Tháng Thanh niên; Khen thưởng HS giỏi.</li>
+            <li><strong>Tháng 04/2027:</strong> Công tác khen thưởng HS giỏi các cấp; Chuyên đề chuyên môn.</li>
+            <li><strong>Tháng 05/2027:</strong> Lễ Bế giảng &amp; Khen thưởng cuối năm; Trưởng thành &amp; Tri ân Khối 12.</li>
+            <li><strong>Tháng 06/2027:</strong> Tiếp sức mùa thi tốt nghiệp THPT; Hoạt động hè.</li>
+            <li><strong>Tháng 07/2027:</strong> Tuyển sinh 10 (Báo trúng tuyển, đón PHHS, thủ tục nhập học, tư vấn tổ hợp).</li>
+          </ul>
+        </div>
+
+        <!-- TAB 3: TẢI FILE PDF GỐC -->
+        <div id="tabGuidelines_docs" class="guidelines-tab-panel">
+          <p style="font-size: 0.88rem; color: #475569; margin-bottom: 1.25rem;">
+            Thầy/Cô có thể tải trực tiếp các văn bản quy định và kế hoạch chính thức đã được phê duyệt để lưu trữ trên máy tính hoặc chia sẻ trong tổ:
+          </p>
+
+          <!-- File 1: Yêu cầu về nội dung các bài đăng -->
+          <div class="pdf-download-card">
+            <div class="pdf-card-info">
+              <span class="pdf-icon">📄</span>
+              <div>
+                <div class="pdf-title">Yêu Cầu Về Nội Dung Các Bài Đăng Truyền Thông</div>
+                <div class="pdf-meta">Quy chuẩn 5W+1H, Header IN HOA, Mẫu Footer bắt buộc, Nguyên tắc sư phạm • File PDF</div>
+              </div>
+            </div>
+            <a href="docs/Yeu_cau_ve_noi_dung_cac_bai_dang.pdf" target="_blank" download="Yeu_cau_ve_noi_dung_cac_bai_dang_THPT_MDC.pdf" class="btn-pdf-download">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Tải File PDF</span>
+            </a>
+          </div>
+
+          <!-- File 2: Kế hoạch Ban truyền thông 2026-2027 -->
+          <div class="pdf-download-card">
+            <div class="pdf-card-info">
+              <span class="pdf-icon">📜</span>
+              <div>
+                <div class="pdf-title">Kế Hoạch Hoạt Động Ban Truyền Thông Năm Học 2026 - 2027</div>
+                <div class="pdf-meta">Kế hoạch số 01/KH-THPTMĐC do Hiệu trưởng Trần Thanh Bình ký duyệt • File PDF 9 trang</div>
+              </div>
+            </div>
+            <a href="docs/Ke_hoach_Ban_truyen_thong_2026_2027.pdf" target="_blank" download="Ke_hoach_Ban_truyen_thong_2026_2027_THPT_MDC.pdf" class="btn-pdf-download">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Tải File PDF</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="guidelines-modal-footer">
+        <button type="button" class="btn-insert-footer" onclick="insertFooterTemplate(); closeGuidelinesModal();">
+          📝 Chèn ngay mẫu Footer chuẩn vào Caption &amp; Đóng
+        </button>
+        <button type="button" class="btn-secondary" onclick="closeGuidelinesModal()" style="margin: 0; padding: 8px 18px;">
+          Đóng cửa sổ
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="js/config.js"></script>
