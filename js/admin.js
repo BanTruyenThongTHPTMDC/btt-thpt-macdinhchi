@@ -156,7 +156,8 @@ async function fetchTickets(isManualRefresh = false) {
     emptyState.style.display = "none";
   }
 
-    const url = `${CONFIG.API_ENDPOINT}?action=getTickets`;
+  try {
+    const url = `${CONFIG.API_ENDPOINT}?action=getTickets&_t=${Date.now()}`;
     const response = await fetch(url, { credentials: "omit" });
     const rawText = await response.text();
     let data = null;
