@@ -554,6 +554,7 @@ async function handleSendDirectEmail() {
     feedback: feedback,
     channel: channel,
     postUrl: postUrl,
+    handler: document.getElementById("updateHandler").value || "Ban Quản Trị BTT",
     adminUser: document.getElementById("updateHandler").value || "Ban Quản Trị BTT"
   };
 
