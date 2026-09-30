@@ -41,7 +41,7 @@ const CONFIG = {
     "Phạm Thị Thu Thùy (Chi ủy viên)",
     "Du Quế Lộc (Trợ lý thanh niên)",
     "Phan Quỳnh Anh (Bí thư Chi đoàn GV)",
-    "Trịnh Thị Hà Trang (Cố vấn CLB Truyền thông)",
+    "Trịnh Thị Hà Trang (Cố vấn CLB Nhiếp ảnh - Báo chí)",
     "Nguyễn Hồ Trọng Tín (Tổ Tin học - Quản trị)",
     "Nguyễn Huỳnh Trọng Phúc (Tổ Tin học)",
     "Trần Quang Vĩ (Tổ Lịch sử)",

@@ -15,7 +15,7 @@ const DEPARTMENTS = {
   ],
   student: [
     "CLB Khoa học – Khởi nghiệp",
-    "CLB Truyền thông",
+    "CLB Nhiếp ảnh - Báo chí",
     "CLB Văn nghệ - Cổ động",
     "CLB Tiếng Anh",
     "CLB Văn học – Diễn thuyết và Kịch",
@@ -109,7 +109,7 @@ const DEFAULT_TEACHER_DIRECTORY = {
   "CLB Thiết kế Hội hoạ": [
     { name: "Nguyễn Hoàng Yến", phone: "0839315315", email: "nguyenhoangyenmdc@gmail.com", role: "Cố vấn CLB" }
   ],
-  "CLB Truyền thông": [
+  "CLB Nhiếp ảnh - Báo chí": [
     { name: "Trịnh Thị Hà Trang", phone: "", email: "", role: "Cố vấn CLB" }
   ],
   "CLB Văn nghệ - Cổ động": [

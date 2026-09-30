@@ -742,7 +742,7 @@ const ALL_MDC_DEPTS = [
   "Tổ Lịch Sử", "Tổ Địa lí", "Tổ GDKT&PL", "Tổ Công nghệ", "Tổ GDTC - GDQP&AN",
   "Tổ Sinh học", "Tổ Tin học", "Nhóm HĐTNHN - GDĐP", "Chi bộ", "Công đoàn",
   "Đoàn trường", "Chi đoàn Giáo viên", "GVCN", "Văn phòng", "Phòng Giám thị",
-  "CLB Khoa học – Khởi nghiệp", "CLB Truyền thông", "CLB Văn nghệ - Cổ động",
+  "CLB Khoa học – Khởi nghiệp", "CLB Nhiếp ảnh - Báo chí", "CLB Văn nghệ - Cổ động",
   "CLB Tiếng Anh", "CLB Văn học – Diễn thuyết và Kịch", "CLB Kỹ năng sống", "CLB Hội họa"
 ];
 
@@ -1033,7 +1033,7 @@ function getSystemSettings() {
     bannerActive: false,
     bannerText: "Chào mừng năm học 2026 - 2027. Ban Truyền Thông tiếp nhận tư liệu các hoạt động phong trào và chuyên môn.",
     clubsList: [
-      "CLB Khoa học – Khởi nghiệp", "CLB Truyền thông", "CLB Văn nghệ - Cổ động",
+      "CLB Khoa học – Khởi nghiệp", "CLB Nhiếp ảnh - Báo chí", "CLB Văn nghệ - Cổ động",
       "CLB Tiếng Anh", "CLB Văn học – Diễn thuyết và Kịch", "CLB Kỹ năng sống", "CLB Hội họa"
     ]
   };
