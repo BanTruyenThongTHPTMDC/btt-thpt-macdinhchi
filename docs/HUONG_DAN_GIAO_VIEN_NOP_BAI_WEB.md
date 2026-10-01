@@ -1,147 +1,93 @@
-# HƯỚNG DẪN THẦY/CÔ NỘP BÀI TRUYỀN THÔNG TRỰC TUYẾN
-### TRƯỜNG THPT MẠC ĐĨNH CHI — NĂM HỌC 2026 - 2027
-*(Hệ thống tiếp nhận bài viết, hình ảnh & video hoạt động của Tổ Chuyên môn & Câu lạc bộ)*
+# 📱 HƯỚNG DẪN THẦY/CÔ NỘP BÀI TRUYỀN THÔNG NHANH
+### Cẩm nang thao tác trên điện thoại & máy tính — THPT Mạc Đĩnh Chi
+
+> **Kính gửi Quý Thầy/Cô đại diện các Tổ Chuyên môn và Câu Lạc Bộ,**  
+> Để việc gửi tin bài, hình ảnh hoạt động của tổ mình về Ban Truyền Thông diễn ra nhanh nhất (chỉ mất 2 – 3 phút), Thầy/Cô không cần đăng nhập Gmail phức tạp mà có thể nộp trực tiếp qua Cổng tiếp nhận trực tuyến của trường:  
+> 👉 **Địa chỉ website:** [https://bantruyenthong.pages.dev/](https://bantruyenthong.pages.dev/)
 
 ---
 
-## 📌 LỜI NÓI ĐẦU & ĐỊA CHỈ TRUY CẬP
-
-Nhằm chuẩn hóa quy trình tiếp nhận, lưu trữ tư liệu hoạt động và kịp thời lan tỏa các hình ảnh đẹp của nhà trường lên Website & Fanpage chính thức, Ban Truyền Thông trường THPT Mạc Đĩnh Chi triển khai **Cổng tiếp nhận bài truyền thông trực tuyến**.
-
-* **Địa chỉ truy cập website:** [https://bantruyenthong.pages.dev/](https://bantruyenthong.pages.dev/)  
-  *(Hoặc đường link / mã QR do Nhà trường gửi trong nhóm Zalo Hội đồng Sư phạm)*
-* **Thiết bị hỗ trợ:** Sử dụng thuận tiện trên cả **Điện thoại di động**, **Máy tính bảng** và **Máy tính để bàn / Laptop**.
-* **Đặc điểm nổi bật:**
-  - ✅ **KHÔNG CẦN ĐĂNG NHẬP GMAIL**: Thầy/Cô mở web là nộp được ngay.
-  - ✅ **TỰ ĐỘNG CẤP MÃ BÀI (TICKET ID)**: Mã có dạng `TT-2026-XXXX` để Thầy/Cô dễ dàng theo dõi tiến độ duyệt.
-  - ✅ **NHẬN EMAIL BIÊN NHẬN TỰ ĐỘNG**: Hệ thống tự động gửi thư xác nhận kèm đường link tra cứu ngay sau khi nộp.
-  - ✅ **HỖ TRỢ TẢI NHIỀU ẢNH / VIDEO GỐC**: Tải trực tiếp tối đa 20 tệp (50MB/tệp) và có ô dán link Google Drive nếu có video nặng.
+### 🌟 Ưu điểm tiện lợi cho Thầy/Cô:
+* ✅ **Không cần tài khoản Google / Gmail:** Mở link trên điện thoại hay máy tính là nộp được ngay.
+* ✅ **Tự động cấp mã bài (Ticket ID):** Có mã dạng `TT-2026-XXXX` và email gửi về hộp thư để Thầy/Cô theo dõi tiến độ duyệt.
+* ✅ **Tải ảnh thoải mái:** Hỗ trợ tải cùng lúc tối đa 20 file ảnh/video ngắn (50MB/tệp). Nếu có video nặng thì chỉ cần dán link Google Drive.
+* ✅ **Tiện ích chèn chân trang (Footer):** Có nút bấm tự động chèn sẵn thông tin liên hệ chuẩn của trường.
 
 ---
 
-## 📋 PHẦN 1: CHUẨN BỊ TƯ LIỆU TRƯỚC KHI NỘP BÀI
-*(Chuẩn bị trước sẽ giúp Thầy/Cô hoàn thành nộp bài chỉ trong 2 phút)*
+## 🚀 4 BƯỚC THAO TÁC NỘP BÀI VIẾT MỚI
 
-1. **Thông tin người đại diện:**
-   - Họ và tên Thầy/Cô đại diện tổ chuyên môn / Cố vấn CLB.
-   - Số điện thoại có liên kết Zalo (để BTT liên hệ nhanh khi cần).
-   - Địa chỉ Email (để nhận email biên nhận mã bài tự động).
-2. **Nội dung bài viết (Caption đề xuất):**
-   - Đảm bảo cấu trúc sư phạm cốt lõi **5W + 1H**:
-     - **Ai (Who):** Tổ chuyên môn, Thầy/Cô phụ trách, Ban giám hiệu, các khách mời, học sinh tham dự.
-     - **Làm gì (What):** Tên chuyên đề, hội thi, hoạt động ngoại khóa, thao giảng, vinh danh...
-     - **Khi nào & Ở đâu (When & Where):** Thời gian cụ thể, phòng học / hội trường / sân trường.
-     - **Ý nghĩa & Kết quả (Why & How):** Mục tiêu giáo dục, không khí buổi sinh hoạt, kết quả thi đua.
-   - *Lưu ý:* Kiểm tra chính xác họ tên Thầy/Cô và học sinh đạt giải; tránh viết tắt; không sử dụng ngôn từ thiếu chuẩn mực hoặc lạm dụng AI tạo câu chữ sáo rỗng.
-3. **Hình ảnh & Video gốc:**
-   - Ưu tiên ảnh chụp ngang tỉ lệ **16:9** hoặc **4:3**, rõ nét, góc chụp sáng, trang trọng.
-   - Chọn từ **5 đến 15 ảnh đẹp nhất** thể hiện trọn vẹn diễn biến sự kiện (toàn cảnh, cận cảnh diễn giả/thầy cô, tương tác của học sinh, trao thưởng).
+### 🔹 BƯỚC 1: Mở web và chọn đối tượng nộp bài
+* Thầy/Cô bấm vào link: [https://bantruyenthong.pages.dev/](https://bantruyenthong.pages.dev/)
+* Ở thanh tác vụ đầu trang, hệ thống đã chọn sẵn mặc định:
+  - Tác vụ: **"1. Nộp Bài Viết Mới"**
+  - Đối tượng: **"Giáo Viên / Tổ Chuyên Môn & CLB"**
+* 👉 **Thầy/Cô chỉ cần giữ nguyên lựa chọn này.**
+
+![Hình 1: Giao diện trang chủ - Thầy/Cô giữ nguyên lựa chọn Giáo viên](./huong_dan_images/hinh_1_trang_chu_chon_gv.png)
 
 ---
 
-## 🚀 PHẦN 2: HƯỚNG DẪN 4 BƯỚC NỘP BÀI VIẾT MỚI
+### 🔹 BƯỚC 2: Điền thông tin Thầy/Cô đại diện
+Tại khung **1️⃣ Thông Tin Đại Diện Nộp Bài**, Thầy/Cô điền 4 thông tin cơ bản:
+1. **Tổ Chuyên Môn / Đơn Vị / CLB:** Bấm chọn đúng tên Tổ của mình (Toán, Vật lí, Hóa học, Ngữ văn, Tiếng Anh, CLB...).
+2. **Họ và Tên Thầy/Cô Đại Diện:** Điền họ tên Thầy/Cô phụ trách bài viết.
+3. **Số Điện Thoại / Zalo:** Điền số điện thoại để BTT tiện nhắn tin/trao đổi nhanh khi duyệt gấp.
+4. **Email Nhận Kết Quả:** Điền chính xác email để nhận thư xác nhận kèm Mã Ticket tự động.
 
-Thầy/Cô truy cập vào trang web và thực hiện theo 4 bước trực quan sau:
-
-### BƯỚC 1: CHỌN ĐỐI TƯỢNG NỘP BÀI
-- Ngay đầu trang web, tại mục **"ĐỐI TƯỢNG NỘP BÀI"**, mặc định hệ thống đã chọn:  
-  👉 **"Giáo Viên / Tổ Chuyên Môn & CLB"** (Thầy/Cô giữ nguyên lựa chọn này).
-
----
-
-### BƯỚC 2: KHAI BÁO THÔNG TIN NGƯỜI NỘP
-Điền thông tin tại khung số **1️⃣ Thông Tin Đại Diện Nộp Bài**:
-1. **Tổ Chuyên Môn / Đơn Vị / CLB:** Bấm chọn đúng tên Tổ của Thầy/Cô trong danh sách xổ xuống (Toán, Vật lí, Hóa học, Ngữ văn, Tiếng Anh, CLB...).
-2. **Họ và Tên Thầy/Cô Đại Diện:** Nhập đầy đủ họ và tên (Ví dụ: *Nguyễn Văn A*).
-3. **Số Điện Thoại / Zalo Liên Hệ:** Nhập số điện thoại để BTT tiện liên lạc khi cần duyệt gấp.
-4. **Email Nhận Kết Quả Duyệt Bài:** Nhập chính xác email để nhận thông báo biên nhận tự động từ hệ thống.
+![Hình 2: Khung điền thông tin Thầy/Cô đại diện](./huong_dan_images/hinh_2_thong_tin_nguoi_nop.png)
 
 ---
 
-### BƯỚC 3: NHẬP NỘI DUNG SỰ KIỆN & BÀI VIẾT
-Điền thông tin tại khung số **2️⃣ Nội Dung Sự Kiện & Bài Viết**:
-1. **Phân Loại Hoạt Động:** Chọn đúng phân loại phù hợp (Chuyên môn, Hoạt động học sinh, Đoàn - Phong trào, Cuộc thi, Thành tích...).
-2. **Tên Sự Kiện / Tiêu Đề Bài Viết:** Viết tiêu đề rõ ràng, trọng tâm.  
-   *(Ví dụ: "Chuyên đề STEM môn Hóa học: Tinh dầu thiên nhiên và ứng dụng trong đời sống")*.
-3. **Thời Gian & Địa Điểm:** Ghi rõ thời gian tổ chức. *(Ví dụ: Tiết 3-4 ngày 15/10/2026 tại Phòng Đa năng)*.
-4. **Caption Đề Xuất Đăng Fanpage / Web:**
-   - Thầy/Cô soạn thảo nội dung bài viết vào ô này (hoặc copy từ file Word dán sang).
-   - 💡 **Mẹo cực nhanh:** Ngay phía trên ô nhập có nút màu xanh **"Chèn mẫu Footer chuẩn vào Caption"**. Thầy/Cô bấm nút này, hệ thống sẽ tự động chèn sẵn phần chân trang chuẩn của trường gồm:
-     ```text
-     Chịu trách nhiệm nội dung: [Tên Thầy/Cô - Tổ...]
-     Chịu trách nhiệm hình ảnh: [Tên Thầy/Cô hoặc CLB...]
-     ---------------------------------------
-     Mọi thông tin chi tiết xin liên hệ:
-     TRƯỜNG THPT MẠC ĐĨNH CHI - TP. HỒ CHÍ MINH
-     Địa chỉ: Số 4 Tân Hòa Đông, Phường Phú Lâm, TP.HCM
-     Website: https://thptmacdinhchi.hcm.edu.vn/homemb2
-     Fanpage chính thức: https://www.facebook.com/thptmacdinhchi.edu/
-     #THPTMacDinhChi
-     ```
-   - Thầy/Cô chỉ cần viết phần nội dung sự kiện ở phía trên và điền tên người chịu trách nhiệm.
+### 🔹 BƯỚC 3: Nhập nội dung sự kiện & Viết Caption
+Tại khung **2️⃣ Nội Dung Sự Kiện & Bài Viết**, Thầy/Cô điền:
+* **Phân loại hoạt động:** Chọn Hoạt động chuyên môn, Hoạt động học sinh, Đoàn - Phong trào, Hội thi, Khen thưởng...
+* **Tên Sự Kiện / Tiêu Đề Bài Viết:** Viết ngắn gọn trọng tâm *(Ví dụ: Chuyên đề STEM môn Vật lí...)*.
+* **Thời Gian & Địa Điểm:** Ghi rõ thời gian, phòng học / hội trường diễn ra sự kiện.
+* **Caption Đề Xuất Đăng Fanpage / Web:** Soạn nội dung bài viết (hoặc dán từ Word sang).
+
+> 💡 **MẸO CỰC NHANH DÀNH CHO THẦY/CÔ:**  
+> Ngay phía trên ô Caption có nút màu xanh: **[Chèn mẫu Footer chuẩn vào Caption]**.  
+> Thầy/Cô chỉ cần bấm 1 cái vào nút này, hệ thống sẽ tự động chèn sẵn toàn bộ thông tin chuẩn của trường gồm: *Chịu trách nhiệm nội dung, Chịu trách nhiệm hình ảnh, Địa chỉ trường (Số 4 Tân Hòa Đông), Link Website, Fanpage và Hashtag*. Thầy/Cô chỉ việc viết nội dung sự kiện ở phía trên và điền tên mình vào là xong!
+
+![Hình 3: Khung nội dung sự kiện và nút chèn Footer mẫu chuẩn](./huong_dan_images/hinh_3_noi_dung_caption.png)
 
 ---
 
-### BƯỚC 4: TẢI ẢNH, VIDEO VÀ GỬI BÀI DUYỆT
-Thực hiện tại khung số **3️⃣ Tải Lên Hình Ảnh & Video Gốc**:
-1. **Tải tệp ảnh/video trực tiếp:**
-   - Thầy/Cô bấm vào vùng ô nét đứt có biểu tượng đám mây để chọn ảnh/video từ máy tính hoặc thư viện ảnh trên điện thoại.
-   - Thầy/Cô có thể chọn nhiều ảnh cùng một lúc (hỗ trợ JPG, PNG, MP4, MOV, PDF, Word).
-   - Danh sách ảnh đã chọn sẽ hiện thumbnail thu nhỏ bên dưới. Thầy/Cô có thể bấm dấu **✕** nếu muốn bỏ bớt ảnh nào.
-2. **Nếu có Video dung lượng lớn (hàng trăm MB hoặc nhiều GB):**
-   - Không cần tải trực tiếp làm chậm mạng. Thầy/Cô chỉ cần tải video lên Google Drive cá nhân, mở quyền chia sẻ *"Bất kỳ ai có liên kết"* và dán link vào ô: **"Link Google Drive / Cloud chứa Video dung lượng lớn"**.
-3. **Bấm nút GỬI BÀI:**
-   - Bấm vào nút màu xanh đậm: **"GỬI BÀI DUYỆT TRUYỀN THÔNG"**.
-   - Vui lòng chờ 5 - 15 giây để hệ thống tự động tải file lên Google Drive nhà trường và ghi nhận dữ liệu.
-   - Khi hoàn tất, màn hình sẽ hiện hộp thoại thông báo màu xanh chúc mừng:
-     > 🎉 **NỘP BÀI THÀNH CÔNG!**  
-     > **Mã Ticket ID của Thầy/Cô:** `TT-2026-XXXX`  
-     > *(Ví dụ: TT-2026-0012)*
-   - Một email xác nhận tiếp nhận cũng đã được gửi ngay đến hòm thư của Thầy/Cô.
+### 🔹 BƯỚC 4: Tải ảnh/video và bấm Gửi bài
+Tại khung **3️⃣ Tải Lên Hình Ảnh & Video Gốc**:
+1. **Chọn ảnh từ máy:** Bấm vào khung nét đứt có biểu tượng đám mây để chọn ảnh từ album điện thoại hoặc máy tính (chọn được nhiều ảnh cùng lúc, hỗ trợ JPG, PNG, MP4, PDF, Word).
+2. **Nếu có Video dung lượng lớn (hàng trăm MB - hàng GB):** Thầy/Cô tải lên Google Drive cá nhân, mở quyền xem và dán link vào ô *"Link Google Drive / Cloud chứa Video dung lượng lớn"*.
+3. **Bấm nút GỬI BÀI DUYỆT TRUYỀN THÔNG:**  
+   - Chờ từ 5 – 15 giây để hệ thống tải file lên Drive của trường.
+   - Màn hình sẽ hiện thông báo chúc mừng: **🎉 NỘP BÀI THÀNH CÔNG!** kèm mã bài viết dạng `TT-2026-XXXX`.
+   - Một email xác nhận tiếp nhận cũng được gửi ngay về hòm thư của Thầy/Cô.
+
+![Hình 4: Vùng kéo thả ảnh/video và ô dán link Google Drive](./huong_dan_images/hinh_4_tai_anh_video_gui_bai.png)
 
 ---
 
-## 🔄 PHẦN 3: HƯỚNG DẪN TRA CỨU & BỔ SUNG / SỬA BÀI VIẾT (KHI CÓ YÊU CẦU)
+## 🔄 KHI CẦN: CÁCH TRA CỨU & BỔ SUNG / SỬA BÀI THEO PHẢN HỒI
 
-Trong trường hợp Ban Biên Tập duyệt bài và nhận thấy cần bổ sung ảnh gốc rõ hơn, làm rõ tên đại biểu/học sinh, Thầy/Cô sẽ nhận được **Email** hoặc **Thông báo Zalo** đề nghị điều chỉnh.
+Nếu Ban Biên Tập duyệt bài và nhận thấy cần bổ sung ảnh nét hơn hoặc đính chính danh sách học sinh đạt giải, Thầy/Cô **KHÔNG CẦN** nộp lại bài mới từ đầu, mà chỉ cần:
 
-Thầy/Cô không cần nộp lại bài mới từ đầu, mà chỉ cần thao tác chỉnh sửa bổ sung như sau:
+1. Bấm vào tab **"2. Bổ Sung / Sửa Bài Viết"** ở đầu trang web.
+2. Nhập **Mã bài viết (Ticket ID)** (Ví dụ: `TT-2026-0012`) hoặc nhập **Số điện thoại / Họ tên** ➔ Bấm **"Tìm bài viết"**.
+3. Xem hộp phản hồi màu vàng: Đọc kỹ lời dặn của BTT xem cần bổ sung chi tiết nào.
+4. Chỉnh sửa lại Caption trực tiếp trong ô hoặc bấm chọn thêm ảnh mới.
+5. Bấm nút **"GỬI BẢN CẬP NHẬT CHỈNH SỬA"**. Trạng thái sẽ tự chuyển thành `ĐÃ SỬA – CHỜ DUYỆT` để BTT ưu tiên duyệt đăng ngay cho Tổ.
 
-1. **Vào chế độ Sửa bài:**
-   - Trên đầu trang web, bấm vào tab số **2️⃣ Bổ Sung / Sửa Bài Viết**.
-2. **Tra cứu bài viết cần sửa:**
-   - Nhập **Mã bài viết (Ticket ID)** (Ví dụ: `TT-2026-0012`), hoặc nhập **Họ tên / Số điện thoại** của Thầy/Cô vào ô tìm kiếm.
-   - Bấm nút **"Tìm bài viết"**.
-3. **Xem phản hồi của Ban Biên Tập:**
-   - Hệ thống mở bài viết và hiển thị hộp thông báo màu vàng:  
-     👉 **"📢 NỘI DUNG CẦN ĐIỀU CHỈNH / BỔ SUNG TỪ BAN BIÊN TẬP"** (kèm tên thành viên BTT đang phụ trách duyệt bài của Thầy/Cô).
-4. **Tiến hành cập nhật:**
-   - Thầy/Cô sửa lại nội dung Caption trực tiếp trên ô văn bản.
-   - Hoặc bấm chọn thêm các ảnh chụp rõ nét hơn nếu được yêu cầu bổ sung hình ảnh.
-5. **Gửi bản cập nhật:**
-   - Bấm nút **"GỬI BẢN CẬP NHẬT CHỈNH SỬA"**.
-   - Bài viết sẽ tự động chuyển sang trạng thái **"ĐÃ SỬA – CHỜ DUYỆT"** để Ban Truyền Thông ưu tiên duyệt và xuất bản bài ngay cho Tổ.
+![Hình 5: Tab tra cứu và chỉnh sửa bài viết theo phản hồi của BTT](./huong_dan_images/hinh_5_tra_cuu_sua_bai.png)
 
 ---
 
-## ⏰ PHẦN 4: MỘT SỐ QUY ĐỊNH & LƯU Ý QUAN TRỌNG
+## 📌 VÀI LƯU Ý NHỎ GIÚP BÀI ĐĂNG HOÀN HẢO
 
-1. **Thời hạn gửi bài (Đảm bảo tính thời sự):**
-   - Các hoạt động chuyên môn, sự kiện, phong trào của Tổ nên được gửi tư liệu trong vòng **24h - 48h** sau khi sự kiện kết thúc. Việc gửi sớm giúp bài đăng có độ lan tỏa và tương tác cao nhất trên Fanpage trường.
-2. **Số lần chỉnh sửa:**
-   - Theo quy định của Ban Truyền Thông, mỗi bài viết chỉ nên chỉnh sửa tối đa **02 lần**. Thầy/Cô vui lòng đọc kỹ lời dặn của BTT để bổ sung đầy đủ trong 1 lần.
-3. **Chất lượng hình ảnh:**
-   - Nên gửi **ảnh gốc**, hạn chế tải ảnh đã qua gửi dạng nén thường trên Facebook Messenger/Zalo vì ảnh sẽ bị vỡ nét khi thiết kế đăng Website/Fanpage.
-
----
-
-## ☎️ PHẦN 5: THÔNG TIN HỖ TRỢ KỸ THUẬT
-
-Nếu gặp khó khăn trong quá trình tải tệp hoặc thao tác trên website, Thầy/Cô vui lòng liên hệ ngay với Bộ phận Kỹ thuật Ban Truyền Thông:
-
-* **Thầy Nguyễn Hồ Trọng Tín** (Tổ Tin học - Quản trị Kỹ thuật BTT)
-* **Thầy Nguyễn Huỳnh Trọng Phúc** (Tổ Tin học - Hỗ trợ Kỹ thuật)
-* Hoặc nhắn tin trực tiếp trong nhóm Zalo **Truyền Thông THPT Mạc Đĩnh Chi**.
+* **Thời điểm gửi bài lý tưởng:** Gửi trong vòng **24h – 48h** sau khi sự kiện kết thúc để bài đăng giữ được độ lan tỏa và tương tác cao nhất.
+* **Chất lượng hình ảnh:** Thầy/Cô ưu tiên gửi ảnh gốc sắc nét, hạn chế gửi qua Zalo dạng thường vì ảnh sẽ bị giảm chất lượng khi đăng lên Fanpage.
+* **Hỗ trợ kỹ thuật bất cứ lúc nào:**
+  - **Thầy Nguyễn Hồ Trọng Tín** (Tổ Tin học - Kỹ thuật BTT).
+  - Thầy/Cô có thể nhắn trực tiếp qua nhóm Zalo Truyền Thông MĐC để được hỗ trợ nhanh nhất.
 
 ---
-*Ban Truyền Thông trường THPT Mạc Đĩnh Chi trân trọng cảm ơn sự phối hợp nhiệt tình của Quý Thầy/Cô!*
+*Ban Truyền Thông trường THPT Mạc Đĩnh Chi trân trọng cảm ơn sự đồng hành của Quý Thầy/Cô! ❤️*
