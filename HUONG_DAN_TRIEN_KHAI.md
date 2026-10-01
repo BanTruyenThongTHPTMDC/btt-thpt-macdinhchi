@@ -67,8 +67,8 @@ Repository GitHub của bạn đã được tạo và đẩy mã nguồn thành 
    - **Build output directory**: Để trống (hoặc `/`).
 7. Bấm **Save and Deploy** (Lưu và Triển khai).
 8. Sau ~20 giây, Cloudflare Pages sẽ cấp đường link trực tuyến miễn phí trọn đời:
-   👉 **`https://btt-thpt-macdinhchi.pages.dev`**  
-   *(Và trang admin: `https://btt-thpt-macdinhchi.pages.dev/admin.html`)*
+   👉 **`https://bantruyenthong.pages.dev/`**  
+   *(Và trang admin: `https://bantruyenthong.pages.dev/admin.html`)*
 
 ✨ **Lợi ích cực lớn:** Kể từ bây giờ, bất cứ khi nào bạn chỉnh sửa code trên máy tính và gõ lệnh `git push`, Cloudflare Pages sẽ tự động nhận diện và cập nhật website ngay lập tức mà không cần làm thủ công lại!
 
