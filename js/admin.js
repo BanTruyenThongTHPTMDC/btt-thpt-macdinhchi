@@ -1075,6 +1075,7 @@ function loadSystemSettings() {
   toggleBannerStateFields();
   renderClubsTags();
   renderAdminTeacherDirectory();
+  renderStudentEventsAdmin();
 }
 
 function togglePortalStateFields() {
@@ -1324,6 +1325,253 @@ async function syncTeacherDirectoryAdmin() {
     alert("Không thể kết nối API Google Sheet: " + err.message + "\nHệ thống đang dùng danh bạ tích hợp sẵn.");
     renderAdminTeacherDirectory();
   }
+}
+
+/**
+ * ==========================================================================
+ * 14B. QUẢN LÝ SỰ KIỆN THU THẬP HÌNH ẢNH HỌC SINH (SUPER ADMIN)
+ * ==========================================================================
+ */
+
+function getStudentEventsAdmin() {
+  try {
+    const raw = localStorage.getItem("btt_student_events_v1");
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) return list;
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc danh sách sự kiện học sinh:", e);
+  }
+  const defaultEvents = (typeof CONFIG !== "undefined" && CONFIG.DEFAULT_STUDENT_EVENTS) ? CONFIG.DEFAULT_STUDENT_EVENTS : [];
+  localStorage.setItem("btt_student_events_v1", JSON.stringify(defaultEvents));
+  return defaultEvents;
+}
+
+function saveStudentEventsAdmin(events) {
+  localStorage.setItem("btt_student_events_v1", JSON.stringify(events));
+  // Đồng bộ ngầm lên Google Apps Script nếu có kết nối
+  if (typeof CONFIG !== "undefined" && CONFIG.API_ENDPOINT) {
+    fetch(CONFIG.API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "saveStudentEvents", events: events })
+    }).catch(err => console.log("Không đồng bộ được events lên backend:", err));
+  }
+}
+
+function renderStudentEventsAdmin() {
+  const container = document.getElementById("studentEventsAdminList");
+  if (!container) return;
+
+  const events = getStudentEventsAdmin();
+
+  if (events.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 2rem 1rem; color: #64748b;">
+        <p style="font-size: 1rem; margin-bottom: 0.5rem;">Chưa có sự kiện thu thập ảnh nào được tạo.</p>
+        <button type="button" class="btn-action-primary" onclick="openAddStudentEventModal()">+ Tạo Sự Kiện Mới</button>
+      </div>
+    `;
+    return;
+  }
+
+  let html = `
+    <div class="student-events-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th style="width: 250px;">TÊN SỰ KIỆN / LỄ TUYÊN DƯƠNG</th>
+            <th>HƯỚNG DẪN / YÊU CẦU ẢNH</th>
+            <th>THƯ MỤC DRIVE CHUNG</th>
+            <th style="width: 140px; text-align: center;">TRẠNG THÁI</th>
+            <th style="width: 130px; text-align: center;">THAO TÁC</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  events.forEach(ev => {
+    const isAct = ev.active !== false;
+    const folderDisplay = ev.folderId
+      ? `<a href="${ev.folderId.startsWith('http') ? ev.folderId : 'https://drive.google.com/drive/folders/' + ev.folderId}" target="_blank" class="drive-link" style="font-size: 0.8rem;">📁 Mở Thư Mục Riêng</a>`
+      : `<span class="badge badge-teal" style="font-size: 0.72rem;">📁 Tự động gom vào Drive trường</span>`;
+
+    html += `
+      <tr>
+        <td>
+          <strong style="color: #1e293b; font-size: 0.9rem;">${ev.name}</strong>
+        </td>
+        <td>
+          <span style="font-size: 0.84rem; color: #475569;">${ev.note || "<em>(Không có ghi chú riêng)</em>"}</span>
+        </td>
+        <td>${folderDisplay}</td>
+        <td style="text-align: center;">
+          <span class="status-badge ${isAct ? 'badge-green' : 'badge-gray'}" style="cursor: pointer;" onclick="handleToggleStudentEvent('${ev.id}')" title="Bấm để bật/tắt">
+            ${isAct ? '● Đang Nhận Ảnh' : '○ Tạm Ngưng'}
+          </span>
+        </td>
+        <td style="text-align: center;">
+          <div style="display: flex; gap: 6px; justify-content: center;">
+            <button type="button" class="btn-action-outline" style="padding: 3px 8px; font-size: 0.75rem;" onclick="openEditStudentEventModal('${ev.id}')" title="Sửa sự kiện">
+              ✏️ Sửa
+            </button>
+            <button type="button" class="btn-action-outline" style="padding: 3px 8px; font-size: 0.75rem; color: #dc2626; border-color: #fca5a5;" onclick="handleDeleteStudentEvent('${ev.id}')" title="Xóa sự kiện">
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+function openAddStudentEventModal() {
+  if (currentUserRole !== "superadmin") {
+    const pin = prompt("Chức năng thiết lập sự kiện dành riêng cho Super Admin.\nVui lòng nhập mã PIN Super Admin (tinmdc2026):");
+    if (!pin || pin.trim() !== (CONFIG.SUPER_ADMIN_PIN || "tinmdc2026").trim()) {
+      alert("Mã PIN không đúng. Chỉ Super Admin mới có quyền quản lý sự kiện!");
+      return;
+    }
+    currentUserRole = "superadmin";
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";
+  }
+
+  const modal = document.getElementById("studentEventModal");
+  const form = document.getElementById("studentEventForm");
+  const title = document.getElementById("studentEventModalTitle");
+  const editId = document.getElementById("editEventId");
+  const activeChk = document.getElementById("eventFormActive");
+
+  if (form) form.reset();
+  if (editId) editId.value = "";
+  if (title) title.textContent = "Tạo Sự Kiện Thu Thập Hình Học Sinh Mới";
+  if (activeChk) activeChk.checked = true;
+  if (modal) modal.style.display = "flex";
+}
+
+function openEditStudentEventModal(eventId) {
+  if (currentUserRole !== "superadmin") {
+    const pin = prompt("Chức năng thiết lập sự kiện dành riêng cho Super Admin.\nVui lòng nhập mã PIN Super Admin (tinmdc2026):");
+    if (!pin || pin.trim() !== (CONFIG.SUPER_ADMIN_PIN || "tinmdc2026").trim()) {
+      alert("Mã PIN không đúng. Chỉ Super Admin mới có quyền quản lý sự kiện!");
+      return;
+    }
+    currentUserRole = "superadmin";
+    currentUserTitle = "Thầy Nguyễn Hồ Trọng Tín (Quản trị viên)";
+  }
+
+  const events = getStudentEventsAdmin();
+  const target = events.find(ev => ev.id === eventId);
+  if (!target) return;
+
+  const modal = document.getElementById("studentEventModal");
+  const title = document.getElementById("studentEventModalTitle");
+  const editId = document.getElementById("editEventId");
+  const nameInput = document.getElementById("eventFormName");
+  const noteInput = document.getElementById("eventFormNote");
+  const folderInput = document.getElementById("eventFormFolderId");
+  const activeChk = document.getElementById("eventFormActive");
+
+  if (editId) editId.value = target.id;
+  if (title) title.textContent = "Chỉnh Sửa Sự Kiện: " + target.name;
+  if (nameInput) nameInput.value = target.name || "";
+  if (noteInput) noteInput.value = target.note || "";
+  if (folderInput) folderInput.value = target.folderId || "";
+  if (activeChk) activeChk.checked = target.active !== false;
+
+  if (modal) modal.style.display = "flex";
+}
+
+function closeStudentEventModal() {
+  const modal = document.getElementById("studentEventModal");
+  if (modal) modal.style.display = "none";
+}
+
+function handleSaveStudentEvent(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const editId = (document.getElementById("editEventId")?.value || "").trim();
+  const name = (document.getElementById("eventFormName")?.value || "").trim();
+  const note = (document.getElementById("eventFormNote")?.value || "").trim();
+  const folderId = (document.getElementById("eventFormFolderId")?.value || "").trim();
+  const active = !!document.getElementById("eventFormActive")?.checked;
+
+  if (!name) {
+    alert("Vui lòng nhập tên sự kiện!");
+    return;
+  }
+
+  let events = getStudentEventsAdmin();
+
+  if (editId) {
+    const idx = events.findIndex(ev => ev.id === editId);
+    if (idx !== -1) {
+      events[idx] = {
+        ...events[idx],
+        name: name,
+        note: note,
+        folderId: folderId,
+        active: active
+      };
+      logAudit("Cấu hình sự kiện", `Cập nhật sự kiện tuyên dương: [${name}]`, "-");
+    }
+  } else {
+    const newId = "ev_" + Date.now();
+    events.push({
+      id: newId,
+      name: name,
+      note: note,
+      folderId: folderId,
+      active: active,
+      createdAt: new Date().toISOString()
+    });
+    logAudit("Cấu hình sự kiện", `Tạo sự kiện tuyên dương mới: [${name}]`, "-");
+  }
+
+  saveStudentEventsAdmin(events);
+  closeStudentEventModal();
+  renderStudentEventsAdmin();
+  alert(`✓ Đã lưu sự kiện "${name}" thành công! Học sinh vào tab Học sinh > Khác sẽ thấy ngay.`);
+}
+
+function handleToggleStudentEvent(eventId) {
+  let events = getStudentEventsAdmin();
+  const target = events.find(ev => ev.id === eventId);
+  if (!target) return;
+
+  target.active = target.active === false ? true : false;
+  saveStudentEventsAdmin(events);
+  renderStudentEventsAdmin();
+  logAudit("Cấu hình sự kiện", `${target.active ? 'Mở' : 'Đóng'} nhận ảnh sự kiện: [${target.name}]`, "-");
+}
+
+function handleDeleteStudentEvent(eventId) {
+  if (currentUserRole !== "superadmin") {
+    alert("Chỉ Super Admin mới có quyền xóa sự kiện!");
+    return;
+  }
+
+  let events = getStudentEventsAdmin();
+  const target = events.find(ev => ev.id === eventId);
+  if (!target) return;
+
+  if (!confirm(`Xác nhận XÓA sự kiện tuyên dương: "${target.name}"?\n(Lưu ý: Các ảnh đã nộp trên Google Drive vẫn được bảo toàn nguyên vẹn).`)) {
+    return;
+  }
+
+  events = events.filter(ev => ev.id !== eventId);
+  saveStudentEventsAdmin(events);
+  renderStudentEventsAdmin();
+  logAudit("Cấu hình sự kiện", `Xóa sự kiện: [${target.name}]`, "-");
 }
 
 /**

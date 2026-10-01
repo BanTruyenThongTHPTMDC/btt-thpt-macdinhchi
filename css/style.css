@@ -3460,5 +3460,121 @@ body {
   text-decoration: underline;
 }
 
+/* ==========================================================================
+   7. CHẾ ĐỘ THU THẬP ẢNH TUYÊN DƯƠNG HỌC SINH (KHI CHỌN "KHÁC")
+   ========================================================================== */
+.student-photo-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.85) 100%);
+  border: 1.5px solid #a5b4fc;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
+  animation: fadeInBanner 0.3s ease-out;
+}
+
+@keyframes fadeInBanner {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.student-photo-banner-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  padding: 8px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.student-photo-banner-content {
+  flex: 1;
+}
+
+.student-photo-banner-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #3730a3;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+
+.student-photo-banner-desc {
+  font-size: 0.88rem;
+  color: #4338ca;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.event-hint-note {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-left: 3.5px solid #0077ed;
+  border-radius: 4px 8px 8px 4px;
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* Badge đổi tên file theo cú pháp [Tên_Học_Sinh]_[STT].[ext] */
+.file-rename-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin-top: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #166534;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-rename-badge .rename-icon {
+  font-size: 0.8rem;
+}
+
+.file-rename-badge .rename-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Quản lý sự kiện trong Super Admin */
+.student-events-table-wrap {
+  overflow-x: auto;
+}
+
+.student-events-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.student-events-table-wrap th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1.5px solid #e2e8f0;
+}
+
+.student-events-table-wrap td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
 
 

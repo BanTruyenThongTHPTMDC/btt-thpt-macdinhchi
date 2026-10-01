@@ -62,5 +62,30 @@ const CONFIG = {
     "ĐÃ LÊN LỊCH",
     "ĐÃ ĐĂNG",
     "TẠM DỪNG – CHỜ XÁC MINH"
+  ],
+
+  // Danh sách sự kiện thu thập ảnh tuyên dương / khen thưởng học sinh (mặc định)
+  DEFAULT_STUDENT_EVENTS: [
+    {
+      id: "event_tuyen_duong_3_tot",
+      name: "Lễ Tuyên Dương Học Sinh 3 Tốt Năm Học 2026 - 2027",
+      note: "Học sinh tải lên 1 ảnh chân dung rõ mặt (áo dài / đồng phục MĐC) và 1 ảnh nhận giấy chứng nhận / hoạt động tiêu biểu.",
+      active: true,
+      folderId: "" // Có thể dán link/ID thư mục Google Drive riêng nếu muốn
+    },
+    {
+      id: "event_hsg_quoc_gia_tp",
+      name: "Vinh Danh Học Sinh Giỏi Cấp Quốc Gia & Cấp Thành Phố",
+      note: "Học sinh tải lên ảnh chân dung sắc nét và ảnh nhận giải thưởng / huy chương.",
+      active: true,
+      folderId: ""
+    },
+    {
+      id: "event_hkpd_the_thao",
+      name: "Khen Thưởng Hội Khỏe Phù Đổng & Giải Thể Thao MĐC",
+      note: "Học sinh tải lên ảnh nhận huy chương / giấy khen và ảnh thi đấu thể thao.",
+      active: true,
+      folderId: ""
+    }
   ]
 };

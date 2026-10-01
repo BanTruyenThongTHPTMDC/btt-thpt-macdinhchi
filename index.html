@@ -168,6 +168,15 @@
             <span id="step1Title">Thông Tin Đại Diện Nộp Bài</span>
           </legend>
 
+          <!-- Banner chế độ Thu thập ảnh tuyên dương học sinh (khi chọn Khác) -->
+          <div id="studentPhotoBanner" class="student-photo-banner" style="display: none;">
+            <div class="student-photo-banner-icon">📸</div>
+            <div class="student-photo-banner-content">
+              <h4 class="student-photo-banner-title">CHẾ ĐỘ THU THẬP HÌNH ẢNH TUYÊN DƯƠNG HỌC SINH</h4>
+              <p class="student-photo-banner-desc">Học sinh chỉ cần chọn <strong>Sự kiện tương ứng</strong>, điền <strong>Họ tên</strong>, <strong>Số điện thoại</strong> và tải ảnh lên. Hệ thống sẽ tự động đổi tên hình theo cú pháp <em>[Họ Tên]_[STT]</em> và lưu vào thư mục lưu trữ chung của nhà trường.</p>
+            </div>
+          </div>
+
           <div class="form-grid grid-2">
             <!-- Đơn vị / Bộ phận -->
             <div class="form-group">
@@ -186,13 +195,13 @@
 
             <!-- Số điện thoại / Zalo -->
             <div class="form-group">
-              <label for="submitterPhone" class="input-label required">Số Điện Thoại / Zalo Liên Hệ</label>
+              <label for="submitterPhone" id="submitterPhoneLabel" class="input-label required">Số Điện Thoại / Zalo Liên Hệ</label>
               <input type="tel" id="submitterPhone" name="phone" required placeholder="Ví dụ: 090xxxxxxx"
                 class="custom-input">
             </div>
 
             <!-- Email nhận biên nhận -->
-            <div class="form-group">
+            <div class="form-group" id="emailFormGroup">
               <label for="submitterEmail" class="input-label required">Email Nhận Kết Quả Duyệt Bài</label>
               <input type="email" id="submitterEmail" name="email" required
                 placeholder="Địa chỉ email để nhận mã Ticket tự động" class="custom-input">
@@ -204,15 +213,15 @@
         </fieldset>
 
         <!-- Fieldset: Nội dung bài viết -->
-        <fieldset class="form-section">
+        <fieldset class="form-section" id="sectionContent">
           <legend class="legend-title">
             <span class="step-num">2</span>
-            <span>Nội Dung Sự Kiện &amp; Bài Viết</span>
+            <span id="step2Title">Nội Dung Sự Kiện &amp; Bài Viết</span>
           </legend>
 
           <div class="form-grid grid-2">
             <!-- Phân loại hoạt động -->
-            <div class="form-group">
+            <div class="form-group" id="categoryGroup">
               <label for="categorySelect" class="input-label required">Phân Loại Hoạt Động</label>
               <select id="categorySelect" name="category" required class="custom-select">
                 <option value="Hoạt động chuyên môn">Hoạt động chuyên môn (Chuyên đề, Thao giảng, SHCM)</option>
@@ -225,23 +234,32 @@
               </select>
             </div>
 
-            <!-- Tiêu đề sự kiện -->
-            <div class="form-group">
+            <!-- Tiêu đề sự kiện thông thường -->
+            <div class="form-group" id="eventNameInputGroup">
               <label for="eventName" class="input-label required">Tên Sự Kiện / Tiêu Đề Bài Viết</label>
               <input type="text" id="eventName" name="eventName" required
                 placeholder="Ví dụ: Chuyên đề dạy học STEM môn Vật lí..." class="custom-input">
             </div>
+
+            <!-- Lựa chọn sự kiện tuyên dương cố định (dành riêng cho học sinh chọn Khác) -->
+            <div class="form-group" id="studentEventGroup" style="display: none; grid-column: 1 / -1;">
+              <label for="studentEventSelect" class="input-label required">Chọn Sự Kiện / Lễ Tuyên Dương Khen Thưởng</label>
+              <select id="studentEventSelect" class="custom-select">
+                <!-- Được load từ SuperAdmin / Config -->
+              </select>
+              <div id="studentEventNote" class="event-hint-note"></div>
+            </div>
           </div>
 
           <!-- Thời gian & Địa điểm -->
-          <div class="form-group">
+          <div class="form-group" id="timeLocationGroup">
             <label for="timeLocation" class="input-label">Thời Gian &amp; Địa Điểm Diễn Ra (Nếu có)</label>
             <input type="text" id="timeLocation" name="timeLocation"
               placeholder="Ví dụ: 08:00 sáng Thứ Hai 28/09/2026 tại Hội trường A" class="custom-input">
           </div>
 
           <!-- Card nhắc nhở Quy chuẩn nội dung bài đăng & Footer mẫu -->
-          <div class="guidelines-callout-card">
+          <div class="guidelines-callout-card" id="guidelinesCallout">
             <div class="callout-header-row">
               <div class="callout-title-wrap">
                 <span class="callout-badge-icon">📖</span>
@@ -298,7 +316,7 @@
           </div>
 
           <!-- Caption đề xuất -->
-          <div class="form-group">
+          <div class="form-group" id="captionGroup">
             <label for="captionText" class="input-label required">Caption Đề Xuất Đăng Fanpage / Web</label>
             <textarea id="captionText" name="caption" rows="6" required
               placeholder="Nhập nội dung bài viết chi tiết... Vui lòng kiểm tra chính xác họ tên Thầy/Cô, học sinh đạt giải, tránh viết tắt. Bấm nút phía trên để chèn nhanh mẫu Footer chuẩn."

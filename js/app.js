@@ -30,7 +30,7 @@ const DEPARTMENTS = {
     "Đại diện Khối 11",
     "Đại diện Khối 12",
     "Cộng tác viên Media / Nhiếp ảnh",
-    "Khác"
+    "Khác (Thu thập hình tuyên dương / sự kiện học sinh)"
   ]
 };
 
@@ -133,7 +133,8 @@ const DEFAULT_TEACHER_DIRECTORY = {
 };
 
 // State
-let currentRole = "teacher"; // "teacher"
+let currentRole = "teacher"; // "teacher" | "student"
+let isStudentPhotoMode = false; // Chế độ thu thập hình tuyên dương cho học sinh khi chọn "Khác"
 let selectedFiles = []; // Mảng chứa các File object nộp mới
 let selectedRevFiles = []; // Mảng chứa các File object chỉnh sửa bổ sung
 let currentTeacherDirectory = { ...DEFAULT_TEACHER_DIRECTORY };
@@ -149,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDragAndDrop();
   setupRevisionDragAndDrop();
   setupDeptAutoFillListener();
+  setupStudentNameRenameListener();
 });
 
 /**
@@ -162,13 +164,13 @@ function getStudentDepartments() {
       if (Array.isArray(cfg.clubsList) && cfg.clubsList.length > 0) {
         return [
           ...cfg.clubsList,
-          "Đoàn Thanh niên - Đội Tình nguyện",
+          "Đoàn Thanh niên – Đội Tình nguyện",
           "Ban Chỉ huy Liên chi Đoàn",
           "Đại diện Khối 10",
           "Đại diện Khối 11",
           "Đại diện Khối 12",
           "Cộng tác viên Media / Nhiếp ảnh",
-          "Khác"
+          "Khác (Thu thập hình tuyên dương / sự kiện học sinh)"
         ];
       }
     }
@@ -289,6 +291,9 @@ function switchPortalMode(mode) {
  */
 function switchRole(role) {
   currentRole = role;
+  // Luôn đặt lại chế độ ảnh học sinh khi chuyển tab
+  toggleStudentPhotoMode(false);
+
   const tabTeacher = document.getElementById("tabTeacher");
   const tabStudent = document.getElementById("tabStudent");
   const submitterNameInput = document.getElementById("submitterName");
@@ -381,7 +386,19 @@ function handleDeptChange() {
   const selectedDept = deptSelect ? deptSelect.value : "";
   const noticeEl = document.getElementById("deptAutoFillNotice");
 
-  if (!selectedDept || selectedDept === "Khác") {
+  // Kiểm tra nếu là học sinh chọn mục Khác (Thu thập hình tuyên dương học sinh)
+  if (currentRole === "student" && (selectedDept === "Khác" || selectedDept.startsWith("Khác"))) {
+    toggleStudentPhotoMode(true);
+    if (noticeEl) {
+      noticeEl.style.display = "none";
+      noticeEl.innerHTML = "";
+    }
+    return;
+  } else {
+    toggleStudentPhotoMode(false);
+  }
+
+  if (!selectedDept || selectedDept === "Khác" || selectedDept.startsWith("Khác")) {
     if (noticeEl) {
       noticeEl.style.display = "none";
       noticeEl.innerHTML = "";
@@ -400,6 +417,209 @@ function handleDeptChange() {
       noticeEl.style.display = "none";
       noticeEl.innerHTML = "";
     }
+  }
+}
+
+/**
+ * ==========================================================================
+ * CÁC HÀM XỬ LÝ CHẾ ĐỘ THU THẬP ẢNH TUYÊN DƯƠNG HỌC SINH (KHI CHỌN "KHÁC")
+ * ==========================================================================
+ */
+
+/**
+ * Lấy danh sách sự kiện tuyên dương học sinh (từ localStorage hoặc config mặc định)
+ */
+function getStudentEventsList() {
+  try {
+    const raw = localStorage.getItem("btt_student_events_v1");
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length > 0) return list;
+    }
+  } catch (e) {
+    console.warn("Không đọc được cấu hình sự kiện học sinh:", e);
+  }
+  return CONFIG.DEFAULT_STUDENT_EVENTS || [];
+}
+
+/**
+ * Khởi tạo dropdown sự kiện cố định cho học sinh
+ */
+function initStudentEventSelect() {
+  const select = document.getElementById("studentEventSelect");
+  const noteEl = document.getElementById("studentEventNote");
+  if (!select) return;
+
+  const events = getStudentEventsList().filter(ev => ev.active !== false);
+  select.innerHTML = '<option value="" disabled selected>-- Vui lòng chọn Sự kiện / Lễ tuyên dương tương ứng --</option>';
+
+  events.forEach(ev => {
+    const opt = document.createElement("option");
+    opt.value = ev.id || ev.name;
+    opt.textContent = ev.name;
+    opt.dataset.note = ev.note || "";
+    opt.dataset.name = ev.name;
+    opt.dataset.folderId = ev.folderId || "";
+    select.appendChild(opt);
+  });
+
+  select.onchange = () => {
+    const selectedOpt = select.options[select.selectedIndex];
+    if (selectedOpt && noteEl) {
+      const note = selectedOpt.dataset.note;
+      if (note) {
+        noteEl.innerHTML = `<strong>📌 Yêu cầu ảnh:</strong> ${note}`;
+        noteEl.style.display = "block";
+      } else {
+        noteEl.style.display = "none";
+        noteEl.innerHTML = "";
+      }
+    }
+  };
+
+  // Nếu chỉ có 1 sự kiện active, tự động chọn
+  if (events.length === 1) {
+    select.selectedIndex = 1;
+    select.dispatchEvent(new Event("change"));
+  } else if (noteEl) {
+    noteEl.style.display = "none";
+    noteEl.innerHTML = "";
+  }
+}
+
+/**
+ * Bật / tắt chế độ nộp ảnh tuyên dương học sinh
+ */
+function toggleStudentPhotoMode(active) {
+  isStudentPhotoMode = active;
+  const banner = document.getElementById("studentPhotoBanner");
+  const emailGroup = document.getElementById("emailFormGroup");
+  const submitterEmail = document.getElementById("submitterEmail");
+  const categoryGroup = document.getElementById("categoryGroup");
+  const categorySelect = document.getElementById("categorySelect");
+  const eventNameInputGroup = document.getElementById("eventNameInputGroup");
+  const eventNameInput = document.getElementById("eventName");
+  const studentEventGroup = document.getElementById("studentEventGroup");
+  const studentEventSelect = document.getElementById("studentEventSelect");
+  const timeLocationGroup = document.getElementById("timeLocationGroup");
+  const guidelinesCallout = document.getElementById("guidelinesCallout");
+  const captionGroup = document.getElementById("captionGroup");
+  const captionText = document.getElementById("captionText");
+  const submitterLabel = document.getElementById("submitterLabel");
+  const submitterPhoneLabel = document.getElementById("submitterPhoneLabel");
+  const submitterName = document.getElementById("submitterName");
+  const step1Title = document.getElementById("step1Title");
+  const step2Title = document.getElementById("step2Title");
+
+  if (active) {
+    if (banner) banner.style.display = "flex";
+    if (step1Title) step1Title.textContent = "Thông Tin Học Sinh Tuyên Dương";
+    if (submitterLabel) submitterLabel.textContent = "Họ và Tên Học Sinh";
+    if (submitterName) {
+      submitterName.placeholder = "Ví dụ: Nguyễn Văn A (Lớp 12A1)";
+    }
+    if (submitterPhoneLabel) submitterPhoneLabel.textContent = "Số Điện Thoại Học Sinh / Phụ Huynh";
+
+    // Ẩn Email, bỏ required
+    if (emailGroup) emailGroup.style.display = "none";
+    if (submitterEmail) {
+      submitterEmail.required = false;
+      submitterEmail.value = "";
+    }
+
+    // Ẩn Phân loại hoạt động
+    if (categoryGroup) categoryGroup.style.display = "none";
+    if (categorySelect) categorySelect.required = false;
+
+    // Ẩn ô nhập tên sự kiện tự do, hiện dropdown sự kiện cố định do SuperAdmin quản lý
+    if (eventNameInputGroup) eventNameInputGroup.style.display = "none";
+    if (eventNameInput) {
+      eventNameInput.required = false;
+      eventNameInput.value = "";
+    }
+
+    if (studentEventGroup) {
+      studentEventGroup.style.display = "block";
+      initStudentEventSelect();
+    }
+    if (studentEventSelect) studentEventSelect.required = true;
+
+    // Ẩn Thời gian, Địa điểm, Thẻ quy chuẩn và Caption
+    if (timeLocationGroup) timeLocationGroup.style.display = "none";
+    if (guidelinesCallout) guidelinesCallout.style.display = "none";
+    if (captionGroup) captionGroup.style.display = "none";
+    if (captionText) {
+      captionText.required = false;
+      captionText.value = "";
+    }
+
+    if (step2Title) step2Title.textContent = "Chọn Sự Kiện Tuyên Dương / Khen Thưởng";
+  } else {
+    if (banner) banner.style.display = "none";
+    if (step1Title) step1Title.textContent = "Thông Tin Đại Diện Nộp Bài";
+    if (emailGroup) emailGroup.style.display = "block";
+    if (submitterEmail) submitterEmail.required = true;
+
+    if (categoryGroup) categoryGroup.style.display = "block";
+    if (categorySelect) categorySelect.required = true;
+
+    if (eventNameInputGroup) eventNameInputGroup.style.display = "block";
+    if (eventNameInput) eventNameInput.required = true;
+
+    if (studentEventGroup) studentEventGroup.style.display = "none";
+    if (studentEventSelect) studentEventSelect.required = false;
+
+    if (timeLocationGroup) timeLocationGroup.style.display = "block";
+    if (guidelinesCallout) guidelinesCallout.style.display = "block";
+    if (captionGroup) captionGroup.style.display = "block";
+    if (captionText) captionText.required = true;
+
+    if (currentRole === "student") {
+      if (submitterLabel) submitterLabel.textContent = "Họ và Tên Học Sinh Đại Diện";
+      if (submitterName) submitterName.placeholder = "Ví dụ: Nguyễn Văn A (Đại diện Khối 12 / BCH Liên chi Đoàn)";
+      if (submitterPhoneLabel) submitterPhoneLabel.textContent = "Số Điện Thoại / Zalo Liên Hệ";
+    } else {
+      if (submitterLabel) submitterLabel.textContent = "Họ và Tên Thầy/Cô Đại Diện";
+      if (submitterName) submitterName.placeholder = "Họ và tên Thầy/Cô phụ trách hoặc cố vấn CLB";
+      if (submitterPhoneLabel) submitterPhoneLabel.textContent = "Số Điện Thoại / Zalo Liên Hệ";
+    }
+
+    if (step2Title) step2Title.textContent = "Nội Dung Sự Kiện & Bài Viết";
+  }
+
+  // Cập nhật lại danh sách file xem trước (hiển thị hoặc ẩn badge đổi tên)
+  renderFileList();
+}
+
+/**
+ * Sinh tên tệp tự động theo họ tên học sinh: [Tên_Học_Sinh]_[STT].[ext]
+ */
+function getStudentRenamedFileName(originalName, index) {
+  const submitterNameInput = document.getElementById("submitterName");
+  let rawName = (submitterNameInput ? submitterNameInput.value : "").trim();
+  // Loại bỏ các ký tự cấm trên Drive / File System
+  rawName = rawName.replace(/[\/\\:*?"<>|]/g, "_").trim();
+
+  const ext = originalName.includes(".") ? originalName.substring(originalName.lastIndexOf(".")) : ".jpg";
+  const numStr = String(index + 1).padStart(2, "0");
+
+  if (!rawName) {
+    return `[Chưa điền tên]_${numStr}${ext}`;
+  }
+  return `${rawName}_${numStr}${ext}`;
+}
+
+/**
+ * Lắng nghe ô Họ tên học sinh để tự động cập nhật tên file hiển thị trực tiếp (Live UX)
+ */
+function setupStudentNameRenameListener() {
+  const submitterNameInput = document.getElementById("submitterName");
+  if (submitterNameInput) {
+    submitterNameInput.addEventListener("input", () => {
+      if (isStudentPhotoMode && selectedFiles.length > 0) {
+        renderFileList();
+      }
+    });
   }
 }
 
@@ -490,7 +710,7 @@ function populateDeptDropdown(role = currentRole) {
 
   if (role === "student") {
     select.innerHTML = '<option value="" disabled selected>-- Chọn Đoàn Thể / Khối Lớp Nộp Bài --</option>';
-    const studentList = DEPARTMENTS.student || [];
+    const studentList = getStudentDepartments();
     studentList.forEach(item => {
       const opt = document.createElement("option");
       opt.value = item;
@@ -677,6 +897,15 @@ function renderFileList() {
     sizeLabel.textContent = formatBytes(file.size);
     card.appendChild(sizeLabel);
 
+    // Nếu ở chế độ ảnh học sinh, hiển thị tên file được tự động đổi
+    if (isStudentPhotoMode) {
+      const renamed = getStudentRenamedFileName(file.name, idx);
+      const renameBadge = document.createElement("div");
+      renameBadge.className = "file-rename-badge";
+      renameBadge.innerHTML = `<span class="rename-icon">🏷️</span> <span class="rename-text" title="${renamed}">${renamed}</span>`;
+      card.appendChild(renameBadge);
+    }
+
     container.appendChild(card);
   });
 }
@@ -703,11 +932,38 @@ async function handleFormSubmit(e) {
   const form = document.getElementById("submissionForm");
   const formData = new FormData(form);
 
+  // Kiểm tra tính hợp lệ riêng cho chế độ Thu thập ảnh học sinh
+  if (isStudentPhotoMode) {
+    const studentName = (formData.get("submitter") || "").trim();
+    const phone = (formData.get("phone") || "").trim();
+    const studentEventSelect = document.getElementById("studentEventSelect");
+
+    if (!studentName) {
+      alert("Vui lòng điền Họ và tên học sinh!");
+      document.getElementById("submitterName")?.focus();
+      return;
+    }
+    if (!phone) {
+      alert("Vui lòng nhập Số điện thoại liên hệ!");
+      document.getElementById("submitterPhone")?.focus();
+      return;
+    }
+    if (!studentEventSelect || !studentEventSelect.value) {
+      alert("Vui lòng chọn Sự kiện / Lễ tuyên dương khen thưởng của trường!");
+      studentEventSelect?.focus();
+      return;
+    }
+    if (selectedFiles.length === 0) {
+      alert("Vui lòng tải lên ít nhất 1 ảnh để gửi!");
+      return;
+    }
+  }
+
   // Hiển thị modal tiến trình
   showProgressModal("Đang chuẩn bị và mã hóa tư liệu...", 10);
 
   try {
-    // Chuyển đổi các file sang Base64
+    // Chuyển đổi các file sang Base64 và tự động đổi tên theo học sinh nếu ở chế độ ảnh
     const filePayloads = [];
     const totalFiles = selectedFiles.length;
 
@@ -717,8 +973,18 @@ async function handleFormSubmit(e) {
       showProgressModal(`Đang xử lý tệp ${i + 1}/${totalFiles}: ${file.name}...`, percent);
       
       const base64Data = await compressAndReadAsBase64(file);
+
+      // Đổi tên file theo cú pháp [Tên_Học_Sinh]_[STT].[ext]
+      let finalFileName = file.name;
+      if (isStudentPhotoMode) {
+        const studentName = (formData.get("submitter") || "").trim().replace(/[\/\\:*?"<>|]/g, "_");
+        const ext = file.name.includes(".") ? file.name.substring(file.name.lastIndexOf(".")) : ".jpg";
+        finalFileName = `${studentName}_${String(i + 1).padStart(2, "0")}${ext}`;
+      }
+
       filePayloads.push({
-        name: file.name,
+        name: finalFileName,
+        originalName: file.name,
         type: file.type.startsWith("image/") ? "image/jpeg" : file.type,
         base64: base64Data
       });
@@ -726,22 +992,49 @@ async function handleFormSubmit(e) {
 
     showProgressModal("Đang gửi bài viết đến Google Drive THPT Mạc Đĩnh Chi...", 60);
 
-    // Gói dữ liệu JSON
-    const payload = {
-      role: currentRole === "teacher" ? "Giáo viên / Tổ chuyên môn" : "Học sinh / Câu lạc bộ",
-      dept: formData.get("dept"),
-      submitter: formData.get("submitter"),
-      phone: formData.get("phone"),
-      email: formData.get("email"),
-      category: formData.get("category"),
-      eventName: formData.get("eventName"),
-      timeLocation: formData.get("timeLocation") || "",
-      caption: formData.get("caption"),
-      hugeFileLink: (formData.get("hugeFileLink") || "").trim(),
-      files: filePayloads
-    };
+    // Gói dữ liệu JSON theo từng chế độ
+    let payload;
+    if (isStudentPhotoMode) {
+      const studentEventSelect = document.getElementById("studentEventSelect");
+      const selectedOption = studentEventSelect ? studentEventSelect.options[studentEventSelect.selectedIndex] : null;
+      const eventName = selectedOption ? (selectedOption.dataset.name || selectedOption.textContent) : "Sự kiện Tuyên dương Học sinh";
+      const sharedFolderId = selectedOption ? (selectedOption.dataset.folderId || "") : "";
+      const studentName = (formData.get("submitter") || "").trim();
+      const phone = (formData.get("phone") || "").trim();
 
-    showProgressModal("Hệ thống đang cấp Mã bài viết & khởi tạo thư mục lưu trữ...", 85);
+      payload = {
+        isStudentPhotoCollection: true,
+        studentEventId: studentEventSelect ? studentEventSelect.value : "",
+        sharedFolderId: sharedFolderId,
+        role: "Học sinh",
+        dept: "Học sinh (Khác - Tuyên dương)",
+        submitter: studentName,
+        phone: phone,
+        email: "",
+        category: "Tuyên dương / Khen thưởng học sinh",
+        eventName: eventName,
+        timeLocation: "",
+        caption: `[Thu thập ảnh tuyên dương: ${eventName}] Học sinh: ${studentName} - SĐT: ${phone}`,
+        hugeFileLink: (formData.get("hugeFileLink") || "").trim(),
+        files: filePayloads
+      };
+    } else {
+      payload = {
+        role: currentRole === "teacher" ? "Giáo viên / Tổ chuyên môn" : "Học sinh / Câu lạc bộ",
+        dept: formData.get("dept"),
+        submitter: formData.get("submitter"),
+        phone: formData.get("phone"),
+        email: formData.get("email"),
+        category: formData.get("category"),
+        eventName: formData.get("eventName"),
+        timeLocation: formData.get("timeLocation") || "",
+        caption: formData.get("caption"),
+        hugeFileLink: (formData.get("hugeFileLink") || "").trim(),
+        files: filePayloads
+      };
+    }
+
+    showProgressModal("Hệ thống đang cấp Mã bài viết & lưu trữ vào Google Drive...", 85);
 
     // Gửi dữ liệu bằng text/plain để tránh preflight CORS issues
     const response = await fetch(CONFIG.API_ENDPOINT, {
@@ -854,7 +1147,12 @@ function hideProgressModal() {
 function showSuccessModal(ticketCode, folderUrl, fileCount) {
   const modal = document.getElementById("successModal");
   document.getElementById("ticketCodeDisplay").textContent = ticketCode;
-  document.getElementById("summaryFileCount").textContent = `${fileCount} tệp tư liệu`;
+
+  if (isStudentPhotoMode) {
+    document.getElementById("summaryFileCount").textContent = `${fileCount} ảnh tuyên dương (Đã tự động đổi tên theo học sinh)`;
+  } else {
+    document.getElementById("summaryFileCount").textContent = `${fileCount} tệp tư liệu`;
+  }
   
   const linkEl = document.getElementById("summaryFolderLink");
   const directLink = document.getElementById("btnOpenDriveDirect");
