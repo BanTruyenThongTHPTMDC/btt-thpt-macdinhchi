@@ -151,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupRevisionDragAndDrop();
   setupDeptAutoFillListener();
   setupStudentNameRenameListener();
+  initStudentEventsSync();
 });
 
 /**
@@ -440,6 +441,26 @@ function getStudentEventsList() {
     console.warn("Không đọc được cấu hình sự kiện học sinh:", e);
   }
   return CONFIG.DEFAULT_STUDENT_EVENTS || [];
+}
+
+/**
+ * Tự động đồng bộ danh sách sự kiện từ Google Apps Script (kèm link Drive SuperAdmin đã gán)
+ */
+async function initStudentEventsSync() {
+  if (CONFIG.API_ENDPOINT) {
+    try {
+      const res = await fetch(`${CONFIG.API_ENDPOINT}?action=getStudentEvents`);
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data?.events) && json.data.events.length > 0) {
+        localStorage.setItem("btt_student_events_v1", JSON.stringify(json.data.events));
+        if (isStudentPhotoMode) {
+          initStudentEventSelect();
+        }
+      }
+    } catch(err) {
+      console.log("Dùng cấu hình sự kiện học sinh cục bộ:", err);
+    }
+  }
 }
 
 /**

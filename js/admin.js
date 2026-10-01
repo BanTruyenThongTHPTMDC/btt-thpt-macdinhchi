@@ -1540,7 +1540,11 @@ function handleSaveStudentEvent(e) {
   saveStudentEventsAdmin(events);
   closeStudentEventModal();
   renderStudentEventsAdmin();
-  alert(`✓ Đã lưu sự kiện "${name}" thành công! Học sinh vào tab Học sinh > Khác sẽ thấy ngay.`);
+
+  const msg = folderId 
+    ? `✓ Đã lưu sự kiện "${name}" thành công!\n\n📁 Đã gán thư mục Drive đích: Toàn bộ hình của các học sinh nộp sự kiện này sẽ tự động đổ thẳng vào đúng thư mục Thầy chỉ định!`
+    : `✓ Đã lưu sự kiện "${name}" thành công!\n\n📁 Thư mục tự động: Hệ thống sẽ tự động gom toàn bộ ảnh học sinh vào 1 thư mục chung của sự kiện trên Google Drive.`;
+  alert(msg);
 }
 
 function handleToggleStudentEvent(eventId) {
