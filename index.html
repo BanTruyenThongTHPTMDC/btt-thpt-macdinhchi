@@ -173,7 +173,7 @@
             <div class="student-photo-banner-icon">📸</div>
             <div class="student-photo-banner-content">
               <h4 class="student-photo-banner-title">CHẾ ĐỘ THU THẬP HÌNH ẢNH TUYÊN DƯƠNG HỌC SINH</h4>
-              <p class="student-photo-banner-desc">Học sinh chỉ cần chọn <strong>Sự kiện tương ứng</strong>, điền <strong>Họ tên</strong>, <strong>Số điện thoại</strong> và tải ảnh lên. Hệ thống sẽ tự động đổi tên hình theo cú pháp <em>[Họ Tên]_[STT]</em> và lưu vào thư mục lưu trữ chung của nhà trường.</p>
+              <p class="student-photo-banner-desc">Mỗi học sinh chỉ cần chọn <strong>Sự kiện tương ứng</strong>, điền <strong>Họ tên</strong>, <strong>Số điện thoại</strong> và tải <strong>1 hình ảnh</strong>. Tên ảnh sẽ tự động được đổi thành <em>[Họ Tên].[đuôi ảnh]</em> và đổ trực tiếp vào cùng thư mục chung của nhà trường.</p>
             </div>
           </div>
 
@@ -328,7 +328,7 @@
         <fieldset class="form-section">
           <legend class="legend-title">
             <span class="step-num">3</span>
-            <span>Tải Lên Hình Ảnh &amp; Video Gốc</span>
+            <span id="step3Title">Tải Lên Hình Ảnh &amp; Video Gốc</span>
           </legend>
 
           <div class="upload-container">
@@ -341,9 +341,9 @@
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
               </div>
-              <h3 class="drop-title">Kéo &amp; thả hình ảnh hoặc video vào đây</h3>
+              <h3 class="drop-title" id="dropZoneTitle">Kéo &amp; thả hình ảnh hoặc video vào đây</h3>
               <p class="drop-subtitle">hoặc <span class="highlight-browse">bấm vào để chọn tệp từ máy</span></p>
-              <p class="drop-note">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp (lên đến 50MB/tệp).</p>
+              <p class="drop-note" id="dropZoneNote">Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp (lên đến 50MB/tệp).</p>
               <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.docx" style="display: none;"
                 onchange="handleFilesSelected(event)">
             </div>
@@ -352,7 +352,7 @@
             <div id="fileListContainer" class="file-list-grid" style="display: none;"></div>
 
             <!-- Tùy chọn video dung lượng lớn (Drive/Cloud Link) -->
-            <div class="form-group" style="margin-top: 1.25rem;">
+            <div class="form-group" id="hugeFileGroup" style="margin-top: 1.25rem;">
               <label for="hugeFileLink" class="input-label">
                 Link Google Drive / Cloud chứa Video dung lượng lớn (Không bắt buộc)
               </label>

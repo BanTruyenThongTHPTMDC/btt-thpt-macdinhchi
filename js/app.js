@@ -554,6 +554,23 @@ function toggleStudentPhotoMode(active) {
     }
 
     if (step2Title) step2Title.textContent = "Chọn Sự Kiện Tuyên Dương / Khen Thưởng";
+
+    // Cập nhật giao diện tải ảnh: Mỗi học sinh 1 hình duy nhất
+    const step3Title = document.getElementById("step3Title");
+    if (step3Title) step3Title.textContent = "Tải Lên 1 Hình Ảnh Tuyên Dương Của Học Sinh";
+    const dropZoneTitle = document.getElementById("dropZoneTitle");
+    if (dropZoneTitle) dropZoneTitle.textContent = "Kéo & thả 1 ảnh tuyên dương vào đây";
+    const dropZoneNote = document.getElementById("dropZoneNote");
+    if (dropZoneNote) dropZoneNote.textContent = "Mỗi học sinh nộp đúng 1 ảnh (Định dạng JPG, PNG). Tên ảnh sẽ tự động đổi thành [Họ Tên].[đuôi ảnh]";
+    const hugeFileGroup = document.getElementById("hugeFileGroup");
+    if (hugeFileGroup) hugeFileGroup.style.display = "none";
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) fileInput.multiple = false;
+
+    // Nếu đã chọn nhiều hơn 1 file từ trước, giữ lại đúng 1 file
+    if (selectedFiles.length > 1) {
+      selectedFiles = [selectedFiles[0]];
+    }
   } else {
     if (banner) banner.style.display = "none";
     if (step1Title) step1Title.textContent = "Thông Tin Đại Diện Nộp Bài";
@@ -585,6 +602,17 @@ function toggleStudentPhotoMode(active) {
     }
 
     if (step2Title) step2Title.textContent = "Nội Dung Sự Kiện & Bài Viết";
+
+    const step3Title = document.getElementById("step3Title");
+    if (step3Title) step3Title.textContent = "Tải Lên Hình Ảnh & Video Gốc";
+    const dropZoneTitle = document.getElementById("dropZoneTitle");
+    if (dropZoneTitle) dropZoneTitle.textContent = "Kéo & thả hình ảnh hoặc video vào đây";
+    const dropZoneNote = document.getElementById("dropZoneNote");
+    if (dropZoneNote) dropZoneNote.textContent = "Hỗ trợ JPG, PNG, MP4, MOV, PDF. Tối đa 20 tệp (lên đến 50MB/tệp).";
+    const hugeFileGroup = document.getElementById("hugeFileGroup");
+    if (hugeFileGroup) hugeFileGroup.style.display = "block";
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) fileInput.multiple = true;
   }
 
   // Cập nhật lại danh sách file xem trước (hiển thị hoặc ẩn badge đổi tên)
@@ -592,21 +620,20 @@ function toggleStudentPhotoMode(active) {
 }
 
 /**
- * Sinh tên tệp tự động theo họ tên học sinh: [Tên_Học_Sinh]_[STT].[ext]
+ * Sinh tên tệp tự động theo họ tên học sinh: [Tên_Học_Sinh].[ext] (Không có _01)
  */
-function getStudentRenamedFileName(originalName, index) {
+function getStudentRenamedFileName(originalName) {
   const submitterNameInput = document.getElementById("submitterName");
   let rawName = (submitterNameInput ? submitterNameInput.value : "").trim();
   // Loại bỏ các ký tự cấm trên Drive / File System
   rawName = rawName.replace(/[\/\\:*?"<>|]/g, "_").trim();
 
-  const ext = originalName.includes(".") ? originalName.substring(originalName.lastIndexOf(".")) : ".jpg";
-  const numStr = String(index + 1).padStart(2, "0");
+  const ext = originalName && originalName.includes(".") ? originalName.substring(originalName.lastIndexOf(".")) : ".jpg";
 
   if (!rawName) {
-    return `[Chưa điền tên]_${numStr}${ext}`;
+    return `[Chưa điền tên]${ext}`;
   }
-  return `${rawName}_${numStr}${ext}`;
+  return `${rawName}${ext}`;
 }
 
 /**
@@ -809,8 +836,26 @@ function handleFilesSelected(e) {
  * Thêm file vào danh sách và kiểm tra giới hạn
  */
 function addFiles(fileList) {
-  const maxLimit = CONFIG.MAX_FILES || 20;
   const maxMb = CONFIG.MAX_FILE_SIZE_MB || 50;
+
+  // Nếu ở chế độ ảnh học sinh tuyên dương: Mỗi học sinh 1 ảnh duy nhất
+  if (isStudentPhotoMode) {
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.size > maxMb * 1024 * 1024) {
+        alert(`Tệp "${file.name}" vượt quá kích thước cho phép (${maxMb}MB).`);
+        return;
+      }
+      selectedFiles = [file]; // Thay thế bằng 1 file duy nhất
+      if (fileList.length > 1) {
+        alert("Chế độ thu thập ảnh tuyên dương: Mỗi học sinh chỉ gửi đúng 1 hình. Hệ thống đã chọn ảnh đầu tiên.");
+      }
+    }
+    renderFileList();
+    return;
+  }
+
+  const maxLimit = CONFIG.MAX_FILES || 20;
 
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
@@ -897,9 +942,9 @@ function renderFileList() {
     sizeLabel.textContent = formatBytes(file.size);
     card.appendChild(sizeLabel);
 
-    // Nếu ở chế độ ảnh học sinh, hiển thị tên file được tự động đổi
+    // Nếu ở chế độ ảnh học sinh, hiển thị tên file được tự động đổi: [Tên_Học_Sinh].[ext]
     if (isStudentPhotoMode) {
-      const renamed = getStudentRenamedFileName(file.name, idx);
+      const renamed = getStudentRenamedFileName(file.name);
       const renameBadge = document.createElement("div");
       renameBadge.className = "file-rename-badge";
       renameBadge.innerHTML = `<span class="rename-icon">🏷️</span> <span class="rename-text" title="${renamed}">${renamed}</span>`;
@@ -974,12 +1019,12 @@ async function handleFormSubmit(e) {
       
       const base64Data = await compressAndReadAsBase64(file);
 
-      // Đổi tên file theo cú pháp [Tên_Học_Sinh]_[STT].[ext]
+      // Đổi tên file theo cú pháp [Tên_Học_Sinh].[ext] (Không có _01 vì 1 học sinh 1 hình)
       let finalFileName = file.name;
       if (isStudentPhotoMode) {
         const studentName = (formData.get("submitter") || "").trim().replace(/[\/\\:*?"<>|]/g, "_");
         const ext = file.name.includes(".") ? file.name.substring(file.name.lastIndexOf(".")) : ".jpg";
-        finalFileName = `${studentName}_${String(i + 1).padStart(2, "0")}${ext}`;
+        finalFileName = `${studentName}${ext}`;
       }
 
       filePayloads.push({
